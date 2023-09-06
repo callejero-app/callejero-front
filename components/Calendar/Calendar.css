@@ -1,0 +1,40 @@
+.fc .fc-toolbar-title {
+  font-size: 18px;
+}
+
+.calendar__grid {
+  border-radius: 16px 16px 0 0;
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active,
+.fc .fc-button-primary:not(:disabled):active {
+  background-color: white;
+  border: 2px solid #184135;
+  color: #184135;
+}
+
+.fc .fc-button-primary {
+  background-color: #184135;
+  border: 2px solid #184135;
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active:focus,
+.fc .fc-button-primary:not(:disabled):active:focus,
+.fc .fc-button-primary:focus {
+  box-shadow: none;
+}
+
+.fc .fc-button-primary:hover {
+  background-color: white;
+  /* border: 2px solid #184135; */
+  color: #184135;
+}
+
+.logout-btn {
+  height: 36px;
+  border-radius: 100px;
+}
+
+.logout-btn:hover {
+  transform: scale(1.05);
+}

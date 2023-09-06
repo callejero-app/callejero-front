@@ -1,0 +1,41 @@
+a.relative.inline-flex.items-center.tap-highlight-transparent.outline-none.data-\[focus-visible\=true\]\:z-10.data-\[focus-visible\=true\]\:outline-2.data-\[focus-visible\=true\]\:outline-focus.data-\[focus-visible\=true\]\:outline-offset-2.text-medium.text-foreground.no-underline.hover\:opacity-80.active\:opacity-disabled.transition-opacity {
+  color: #e9e6e3;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 30px;
+  /* &.selected {
+    color: #b0c8bd;
+  } */
+}
+
+.selected {
+  color: #b0c8bd;
+}
+
+nav.flex.z-40.w-full.items-center.justify-center.data-\[menu-open\=true\]\:border-none.sticky.top-0.inset-x-0.border-b.border-divider.backdrop-blur-lg.data-\[menu-open\=true\]\:backdrop-blur-xl.backdrop-saturate-150.bg-callejero.h-20.text-white.px-14 {
+  padding: 0;
+}
+
+header.flex.flex-nowrap.flex-row.gap-4.h-\[var\(--navbar-height\)\].items-center.justify-between.px-6.relative.w-full.z-40 {
+  padding: 0 54px;
+  max-width: 100%;
+}
+
+ul.z-30.px-6.pt-2.fixed.max-w-full.top-\[var\(--navbar-height\)\].inset-x-0.bottom-0.w-screen.flex-col.gap-2.overflow-y-auto.backdrop-blur-xl.backdrop-saturate-150.bg-background\/70.hidden.h-\[calc\(100dvh_-_var\(--navbar-height\)_-_1px\)\].data-\[open\=true\]\:flex {
+  padding-top: 2rem;
+}
+
+.flex.basis-0.flex-row.flex-grow.flex-nowrap.justify-start.bg-transparent.items-center.no-underline.text-medium.whitespace-nowrap.box-border {
+  padding-right: 48px;
+}
+
+a.relative.inline-flex.items-center.tap-highlight-transparent.outline-none.data-\[focus-visible\=true\]\:z-10.data-\[focus-visible\=true\]\:outline-2.data-\[focus-visible\=true\]\:outline-focus.data-\[focus-visible\=true\]\:outline-offset-2.text-medium.text-foreground.no-underline.hover\:opacity-80.active\:opacity-disabled.transition-opacity {
+  padding: 0 12px;
+  border: 2px solid #184135;
+}
+
+a.relative.inline-flex.items-center.tap-highlight-transparent.outline-none.data-\[focus-visible\=true\]\:z-10.data-\[focus-visible\=true\]\:outline-2.data-\[focus-visible\=true\]\:outline-focus.data-\[focus-visible\=true\]\:outline-offset-2.text-medium.text-foreground.no-underline.hover\:opacity-80.active\:opacity-disabled.transition-opacity:hover {
+  border: solid 2px white;
+  height: 38px;
+  border-radius: 20px;
+}
