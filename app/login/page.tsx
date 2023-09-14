@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import { FormEvent, useState } from "react";
 import { Input } from "@nextui-org/react";
@@ -26,19 +26,15 @@ function Login() {
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email");
     const password = formData.get("password");
-    // const masterkey = formData.get("masterkey");
-    // if (masterkey) {
-    //   const masterkeyString = masterkey.toString();
-    //   localStorage.setItem("masterkey", masterkeyString);
-    // }
     localStorage.setItem(
       "timezone",
       Intl.DateTimeFormat().resolvedOptions().timeZone
     );
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/web`;
     try {
       const res = await axios
         .post(
-          "https://callejero.com.co/test/api/v1/auth/web",
+          url,
           {
             email: email,
             password: password,
@@ -51,7 +47,9 @@ function Login() {
         )
         .then((res) => {
           const webToken = res.data.data.webToken;
+          const userId = res.data.data.userId;
           localStorage.setItem("auth", webToken);
+          localStorage.setItem("clientId", userId);
           if (res.status == 200) {
             toast.success("User found!", {
               autoClose: 2000,
@@ -59,7 +57,7 @@ function Login() {
               theme: "dark",
             });
             setLoading(false);
-            window.location.href = "/schedule";
+            window.location.href = "/organizations";
           }
         });
     } catch (error) {
@@ -72,6 +70,19 @@ function Login() {
       setLoading(false);
       localStorage.clear();
     }
+  };
+
+  //middleware
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      validateToken();
+    }
+  }, []);
+
+  const validateToken = () => {
+    const token = localStorage.getItem("auth");
+    if (token) window.location.href = "/organizations";
   };
 
   return (
@@ -89,7 +100,7 @@ function Login() {
             <h1 className="login__title mt-10">Inicia sesión</h1>
             <Input
               name="email"
-              required
+              isRequired
               variant="bordered"
               type="email"
               label="Correo electrónico"
@@ -97,7 +108,7 @@ function Login() {
             />
             <Input
               name="password"
-              required
+              isRequired
               id="passwordInput"
               variant="bordered"
               label="Contraseña"

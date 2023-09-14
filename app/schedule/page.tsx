@@ -1,8 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Calendar from "@/components/Calendar/Calendar";
+import Loader from "@/components/loader/Loader";
 
 function Schedule() {
+  const [loading, setLoading] = useState(false);
+
+  //middleware
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -24,12 +28,7 @@ function Schedule() {
     }
   };
 
-  if (visible)
-    return (
-      <div>
-        <Calendar />
-      </div>
-    );
+  if (visible) return <div>{loading ? <Loader /> : <Calendar />}</div>;
 }
 
 export default Schedule;

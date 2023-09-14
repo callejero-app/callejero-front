@@ -21,3 +21,7 @@ label#react-aria-\:RimmkqH1\:,
 label#react-aria-\:RemmkqH1\: {
   color: #818181;
 }
+
+.after\:text-danger::after {
+  display: none;
+}

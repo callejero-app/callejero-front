@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 import Fullcalendar from "@fullcalendar/react";
 import esLocale from "@fullcalendar/core/locales/es";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -9,12 +8,6 @@ import interactionPlugin from "@fullcalendar/interaction";
 import "./Calendar.css";
 
 function Calendar() {
-  const createEvent = () => {
-    console.log("Hello");
-  };
-
-  createEvent();
-
   return (
     <div className="calendar bg-callejero">
       <div className="calendar__grid bg-white p-6">
@@ -35,7 +28,7 @@ function Calendar() {
             {
               title: "Reserva Juan",
               start: "2023-09-07T12:00:00",
-              end: "2023-09-07T14:00:00",
+              end: "2023-09-07T12:30:00",
             },
             { title: "Reservado", date: "2023-09-05" },
           ]}
@@ -44,14 +37,5 @@ function Calendar() {
     </div>
   );
 }
-
-// function renderEventContent(eventInfo: any) {
-//   return (
-//     <>
-//       <b>{eventInfo.timeText}</b>
-//       <i>{eventInfo.event.title}</i>
-//     </>
-//   );
-// }
 
 export default Calendar;
