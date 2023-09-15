@@ -6,11 +6,17 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
 import "./Calendar.css";
+import { useState } from "react";
 
-function Calendar() {
+function Calendar(data: any) {
+  const [bookings, setBookings] = useState(data.data);
   return (
     <div className="calendar bg-callejero">
       <div className="calendar__grid bg-white p-6">
+        <h1 className="text-2xl mb-6">
+          {localStorage.getItem("organizationName")} /{" "}
+          <b>{localStorage.getItem("gamefieldName")}</b>
+        </h1>
         <Fullcalendar
           locale={esLocale}
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -21,17 +27,12 @@ function Calendar() {
             end: "dayGridMonth,timeGridWeek,timeGridDay", // will normally be on the right. if RTL, will be on the left
           }}
           height={"90vh"}
-          // events={["2023-09-04"]}
           eventColor={"#184135"}
-          events={[
-            { title: "Juego de Practica", date: "2023-09-04T08:00:00" },
-            {
-              title: "Reserva Juan",
-              start: "2023-09-07T12:00:00",
-              end: "2023-09-07T12:30:00",
-            },
-            { title: "Reservado", date: "2023-09-05" },
-          ]}
+          events={bookings.map((booking: any) => ({
+            title: "Reserva",
+            start: booking.startsAt,
+            end: booking.endsAt,
+          }))}
         />
       </div>
     </div>

@@ -32,15 +32,15 @@ function Organizations() {
         .then((res) => {
           const orgsFound = res.data.data;
           const firstGamefieldId = orgsFound[0].gameFields[0];
-          console.log("organizations", orgsFound);
-          console.log("first gamefield Id", firstGamefieldId);
-          if (organizations.length == 1) {
+          if (orgsFound.length == 1) {
+            localStorage.setItem("organizationId", orgsFound[0]._id);
+            localStorage.setItem("organizationName", orgsFound[0].name);
             window.location.href = "/gamefields";
           } else {
             setOrganizations(orgsFound);
           }
-          if (res.status == 200) {
-            toast.success("Organizations Found!", {
+          if (res.status == 200 && orgsFound.length > 1) {
+            toast.success("Organizaciones cargadas!", {
               autoClose: 2000,
               icon: "✅",
             });
@@ -67,7 +67,6 @@ function Organizations() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const path = window.location.href;
-      console.log("path", path);
       if (!path.includes("/login")) {
         validateToken();
       }
@@ -86,7 +85,7 @@ function Organizations() {
     return (
       <div
         className="text-center items-center flex h-screen"
-        style={{ height: "calc(100vh)" }}
+        style={{ height: "calc(100vh - 80px)" }}
       >
         <ToastContainer />
         <div className="w-full">
