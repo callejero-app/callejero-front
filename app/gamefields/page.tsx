@@ -9,6 +9,9 @@ import "react-toastify/dist/ReactToastify.css";
 function Organizations() {
   const [loading, setLoading] = useState(false);
   const [gamefields, setGamefields] = useState<any[]>([]);
+  const [gamefieldsCharged, setGamefieldCharged] = useState([
+    { id: "", name: "" },
+  ]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -31,7 +34,13 @@ function Organizations() {
         })
         .then((res) => {
           const gamefieldsFound = res.data.data.results;
-          const firstGamefieldId = gamefieldsFound[0].id;
+          const gamefieldsTuples = gamefieldsFound.map((gm: any) => {
+            return { id: gm.id, name: gm.name };
+          });
+          const gamefieldsTuplesJSON = JSON.stringify(gamefieldsTuples);
+          localStorage.setItem("gamefieldsTuples", gamefieldsTuplesJSON);
+          const storage = localStorage.getItem("gamefieldsTuples");
+          console.log("storage", storage);
           if (gamefieldsFound.length == 1) {
             window.location.href = "/gamefields";
           } else {
