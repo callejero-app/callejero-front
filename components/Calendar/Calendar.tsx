@@ -13,10 +13,10 @@ function Calendar(data: any) {
   return (
     <div className="calendar bg-callejero">
       <div className="calendar__grid bg-white p-6">
-        <h1 className="text-2xl mb-6">
+        {/* <h1 className="text-2xl mb-6">
           {localStorage.getItem("organizationName")} /{" "}
           <b>{localStorage.getItem("gamefieldName")}</b>
-        </h1>
+        </h1> */}
         <Fullcalendar
           locale={esLocale}
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -26,7 +26,7 @@ function Calendar(data: any) {
             center: "title",
             end: "dayGridMonth,timeGridWeek,timeGridDay", // will normally be on the right. if RTL, will be on the left
           }}
-          height={"90vh"}
+          height={"calc(100vh - 202px)"}
           eventColor={"#184135"}
           events={bookings.map((booking: any) => ({
             title: "Reserva",
