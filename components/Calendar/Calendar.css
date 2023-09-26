@@ -38,3 +38,75 @@
 .logout-btn:hover {
   transform: scale(1.05);
 }
+
+/* toolbar */
+.fc .fc-toolbar-title {
+  color: #364d42;
+  font-size: 35px;
+  font-weight: 500;
+  line-height: 120%;
+  letter-spacing: 0.175px;
+}
+
+/* dayHeaderContent */
+thead .fc-scroller {
+  overflow: hidden !important;
+}
+
+.headerDay {
+  color: var(--Green, #184135);
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 120%; /* 28.8px */
+  letter-spacing: 0.12px;
+}
+
+.headerWeekday {
+  color: var(--secondary, #818181);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 120%; /* 16.8px */
+  letter-spacing: 0.07px;
+}
+
+/* slots */
+colgroup > col {
+  width: 126px !important;
+}
+
+td.fc-timegrid-slot.fc-timegrid-slot-label.fc-scrollgrid-shrink.slotTimes {
+  height: 88px;
+  width: 126px;
+}
+
+/* font styles for slot times */
+.fc-timegrid-slot-label-cushion.fc-scrollgrid-shrink-cushion {
+  color: #b9b9b9;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 120%; /* 12px */
+  letter-spacing: 0.05px;
+  position: absolute;
+  left: 0;
+  padding: 0 38px;
+  margin-top: -5px;
+}
+
+td.fc-timegrid-slot.fc-timegrid-slot-label.fc-scrollgrid-shrink.slotTimes {
+  display: flex;
+  border: none;
+  place-items: flex-end;
+  justify-content: center;
+}
+
+/* Calendar grid layout */
+.fc-toolbar,
+.fc-scroller-harness {
+  text-transform: capitalize;
+}
+
+th.fc-col-header-cell.fc-day {
+  height: 48px;
+  padding: 16px;
+}

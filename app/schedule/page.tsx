@@ -15,7 +15,7 @@ function Schedule() {
   const [bookings, setBookings] = useState<any[]>([]);
   const [gamefieldIdSelected, setGamefieldIdSelected] = useState("");
   const [gamefieldNameSelected, setGamefieldNameSelected] = useState("");
-  const [gamefieldsList, setGamefieldsList] = useState<any[]>([]);
+  const [gamefieldsList, setGamefieldsList] = useState<any[]>();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -24,8 +24,22 @@ function Schedule() {
       const gamefieldsObject = localStorage.getItem("gamefieldsTuples");
       const gmList = gamefieldsObject && JSON.parse(gamefieldsObject);
       setGamefieldsList(gmList);
+
+      //mock
+      // setGamefieldsList([
+      //   {
+      //     name: "Wembley 1",
+      //     id: "123"
+      //   },
+      //   {
+      //     name: "Wembley 2",
+      //     id: "456"
+      //   }
+      // ])
+      // setGamefieldNameSelected("Wembley 1")
+
       console.log("gamefieldsList", gamefieldsList);
-      // fetchBookings(gamefieldIdSelected);
+      fetchBookings(localStorage.getItem("gamefieldId")!);
     }
   }, []);
 
@@ -140,7 +154,7 @@ function Schedule() {
                       )
                     }
                   >
-                    {gamefieldsList.map((gm: any) => (
+                    {gamefieldsList!.map((gm: any) => (
                       <option key={gm.id} value={gm.name} id={gm.id}>
                         {gm.name}
                       </option>
