@@ -45,11 +45,22 @@ function Schedule() {
 
   const insertPrevButtonInCalendar = () => {
     const timer = setTimeout(() => {
+      //prev next button
       const prevButton = document.getElementsByClassName("fc-toolbar-chunk")[0];
       const firstGrid = document.getElementsByClassName("fc-timegrid-axis")[0];
       if (prevButton && firstGrid) {
         firstGrid.append(prevButton);
       }
+      //select gamefield
+      const selectGamefield =
+        document.getElementsByClassName("selectGamefield")[0];
+      const toolbarRightContainer =
+        document.getElementsByClassName("fc-toolbar-chunk")[1];
+      toolbarRightContainer.insertBefore(
+        selectGamefield,
+        toolbarRightContainer.firstChild
+      );
+      toolbarRightContainer.classList.add("flex");
     }, 100);
     return () => clearTimeout(timer);
   };
@@ -141,26 +152,26 @@ function Schedule() {
             </>
           ) : (
             <>
-              <div className="flex pt-4">
+              <div className="flex pt-4 items-center">
                 <h1 className="text-2xl pl-6 own-toolbar__breadcumb">
                   {localStorage.getItem("organizationName")} /{" "}
                   <b className="own-toolbar__breadcumb--gamefield">
                     {localStorage.getItem("gamefieldName")}
                   </b>
                 </h1>
-                <div>
-                  <Image
+                <div className="selectGamefield">
+                  {/* <Image
                     src={dropdownIcon}
                     alt="icon"
                     height={38}
                     priority={true}
                     className="mx-auto dropdown-icon"
-                  />
+                  /> */}
                   <select
                     name="gamefields"
                     placeholder="Select Gamefield"
                     value={gamefieldNameSelected!}
-                    className="ml-4 select-gamefields"
+                    className="ml-4 selectGamefield__select"
                     onChange={(e) =>
                       handleChangeGamefield(
                         e.target.value,
@@ -174,6 +185,7 @@ function Schedule() {
                       </option>
                     ))}
                   </select>
+                  <div className="selectGamefield__arrow"></div>
                 </div>
               </div>
               <Calendar data={bookings} />
