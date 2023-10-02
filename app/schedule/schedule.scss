@@ -12,6 +12,16 @@
   }
 }
 
+.prevNextButtons {
+  // & button {
+  //   background: transparent;
+  //   border: none;
+  // }
+  // & span {
+  //   color: black;
+  // }
+}
+
 .selectGamefield {
   &__select {
     width: 245px;
@@ -22,6 +32,9 @@
     height: 42px;
     font-size: 16px;
     color: #184135;
+    &:hover {
+      cursor: pointer;
+    }
   }
   &__arrow {
     // position: absolute;

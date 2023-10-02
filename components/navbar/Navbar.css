@@ -31,11 +31,14 @@ ul.z-30.px-6.pt-2.fixed.max-w-full.top-\[var\(--navbar-height\)\].inset-x-0.bott
 
 a.relative.inline-flex.items-center.tap-highlight-transparent.outline-none.data-\[focus-visible\=true\]\:z-10.data-\[focus-visible\=true\]\:outline-2.data-\[focus-visible\=true\]\:outline-focus.data-\[focus-visible\=true\]\:outline-offset-2.text-medium.text-foreground.no-underline.hover\:opacity-80.active\:opacity-disabled.transition-opacity {
   padding: 0 12px;
-  border: 2px solid #184135;
+  height: 40px;
+  border-radius: 20px;
+  background-color: transparent;
+  color: white;
+  transition: all 0.5s;
 }
 
 a.relative.inline-flex.items-center.tap-highlight-transparent.outline-none.data-\[focus-visible\=true\]\:z-10.data-\[focus-visible\=true\]\:outline-2.data-\[focus-visible\=true\]\:outline-focus.data-\[focus-visible\=true\]\:outline-offset-2.text-medium.text-foreground.no-underline.hover\:opacity-80.active\:opacity-disabled.transition-opacity:hover {
-  border: solid 2px white;
-  height: 38px;
-  border-radius: 20px;
+  background-color: #12231e;
+  transition: background-color 0.5s;
 }

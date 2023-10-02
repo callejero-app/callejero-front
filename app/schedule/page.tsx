@@ -47,6 +47,7 @@ function Schedule() {
     const timer = setTimeout(() => {
       //prev next button
       const prevButton = document.getElementsByClassName("fc-toolbar-chunk")[0];
+      prevButton.classList.add("grid", "h-20", "prevNextButtons");
       const firstGrid = document.getElementsByClassName("fc-timegrid-axis")[0];
       if (prevButton && firstGrid) {
         firstGrid.append(prevButton);
@@ -64,7 +65,6 @@ function Schedule() {
     }, 100);
     return () => clearTimeout(timer);
   };
-
   const fetchBookings = async (gamefieldId: string) => {
     setLoading(true);
     const API_URL = process.env.NEXT_PUBLIC_API_URL;

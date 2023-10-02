@@ -5,7 +5,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
-import "./Calendar.css";
+import "./Calendar.scss";
 import { useState } from "react";
 
 function Calendar(data: any) {
