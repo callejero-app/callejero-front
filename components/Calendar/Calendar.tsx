@@ -35,7 +35,7 @@ function Calendar(data: any) {
           headerToolbar={{
             start: "prev,next",
             center: "title",
-            end: "today,dayGridMonth,timeGridWeek,timeGridDay",
+            end: "today,timeGridWeek,timeGridDay",
           }}
           titleFormat={{ year: "numeric", month: "long" }}
           dayHeaderClassNames={"dayHeader"}

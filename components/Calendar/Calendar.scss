@@ -117,6 +117,10 @@ colgroup > col {
 td.fc-timegrid-slot.fc-timegrid-slot-label.fc-scrollgrid-shrink.slotTimes {
   height: 88px;
   width: 126px;
+  display: flex;
+  border: none;
+  place-items: flex-start;
+  justify-content: center;
 }
 
 /* font styles for slot times */
@@ -131,13 +135,6 @@ td.fc-timegrid-slot.fc-timegrid-slot-label.fc-scrollgrid-shrink.slotTimes {
   left: 0;
   padding: 0 38px;
   margin-top: -5px;
-}
-
-td.fc-timegrid-slot.fc-timegrid-slot-label.fc-scrollgrid-shrink.slotTimes {
-  display: flex;
-  border: none;
-  place-items: flex-end;
-  justify-content: center;
 }
 
 /* Calendar grid layout */

@@ -24,20 +24,6 @@ function Schedule() {
       const gamefieldsObject = localStorage.getItem("gamefieldsTuples");
       const gmList = gamefieldsObject && JSON.parse(gamefieldsObject);
       setGamefieldsList(gmList);
-
-      //mock
-      // setGamefieldsList([
-      //   {
-      //     name: "Wembley 1",
-      //     id: "123"
-      //   },
-      //   {
-      //     name: "Wembley 2",
-      //     id: "456"
-      //   }
-      // ])
-      // setGamefieldNameSelected("Wembley 1")
-
       console.log("gamefieldsList", gamefieldsList);
       fetchBookings(localStorage.getItem("gamefieldId")!);
     }
@@ -110,7 +96,6 @@ function Schedule() {
     localStorage.setItem("gamefieldName", name);
     localStorage.setItem("gamefieldId", id);
     fetchBookings(id);
-    console.log(`Se cambio al gamefield: ${name} con id: ${id}`);
   };
 
   //middleware
@@ -153,12 +138,27 @@ function Schedule() {
           ) : (
             <>
               <div className="flex pt-4 items-center">
-                <h1 className="text-2xl pl-6 own-toolbar__breadcumb">
-                  {localStorage.getItem("organizationName")} /{" "}
-                  <b className="own-toolbar__breadcumb--gamefield">
-                    {localStorage.getItem("gamefieldName")}
-                  </b>
-                </h1>
+                <div className="own-toolbar px-6 flex w-full">
+                  <div className="w-1/2 h-11 flex items-center">
+                    <h1 className="text-2xl own-toolbar__breadcumb">
+                      {localStorage.getItem("organizationName")} /{" "}
+                      <b className="own-toolbar__breadcumb--gamefield">
+                        {localStorage.getItem("gamefieldName")}
+                      </b>
+                    </h1>
+                  </div>
+                  <div className="w-1/2 text-right">
+                    <button
+                      onClick={() => {
+                        prompt("Ingresa fecha de la reserva");
+                      }}
+                      className="own-toolbar__create-booking own-toolbar__create-booking text-white bg-callejero
+                        rounded-full px-6 py-2.5 hover:scale-105 duration-300"
+                    >
+                      Crear una reserva
+                    </button>
+                  </div>
+                </div>
                 <div className="selectGamefield">
                   {/* <Image
                     src={dropdownIcon}
