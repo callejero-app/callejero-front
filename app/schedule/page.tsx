@@ -1,14 +1,13 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import Calendar from "@/components/Calendar/Calendar";
-import Loader from "@/components/loader/Loader";
-import Image from "next/image";
-import axios from "axios";
+import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import dropdownIcon from "@/public/images/chevron-right.svg";
-import "./schedule.scss";
 import { Select, SelectItem } from "@nextui-org/react";
+import ModalLoading from "@/components/ModalLoading";
+import axios from "axios";
+import "react-toastify/dist/ReactToastify.css";
+
+import Calendar from "@/components/Calendar/Calendar";
+import "./schedule.scss";
 
 function Schedule() {
   const [loading, setLoading] = useState(false);
@@ -16,6 +15,7 @@ function Schedule() {
   const [gamefieldIdSelected, setGamefieldIdSelected] = useState("");
   const [gamefieldNameSelected, setGamefieldNameSelected] = useState("");
   const [gamefieldsList, setGamefieldsList] = useState<any[]>();
+  const [gridModified, setGridModified] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -24,11 +24,16 @@ function Schedule() {
       const gamefieldsObject = localStorage.getItem("gamefieldsTuples");
       const gmList = gamefieldsObject && JSON.parse(gamefieldsObject);
       setGamefieldsList(gmList);
-      console.log("gamefieldsList", gamefieldsList);
       fetchBookings(localStorage.getItem("gamefieldId")!);
     }
   }, []);
-
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (!gridModified) insertPrevButtonInCalendar();
+      setGridModified(true);
+      setVisible(true);
+    }
+  }, []);
   const insertPrevButtonInCalendar = () => {
     const timer = setTimeout(() => {
       //prev next button
@@ -51,11 +56,11 @@ function Schedule() {
     }, 100);
     return () => clearTimeout(timer);
   };
+
   const fetchBookings = async (gamefieldId: string) => {
     setLoading(true);
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
     const url = `${API_URL}/game-fields/${gamefieldId}/booking/get-all-bookings`;
-    const gameFieldId = localStorage.getItem("gamefieldId");
     try {
       const res = await axios
         .get(url, {
@@ -73,7 +78,6 @@ function Schedule() {
           const bookingsFound = res.data.data.schedules;
           setBookings(bookingsFound);
           if (res.status == 200) {
-            insertPrevButtonInCalendar();
             toast.success("Reservas cargadas!", {
               autoClose: 2000,
               icon: "✅",
@@ -90,10 +94,11 @@ function Schedule() {
     }
   };
 
-  const handleChangeGamefield = (name: string, id: any) => {
-    setGamefieldNameSelected(name);
+  const handleChangeGamefield = (id: string) => {
+    let gamefield = gamefieldsList?.find((e) => e.id == id);
     setGamefieldIdSelected(id);
-    localStorage.setItem("gamefieldName", name);
+    setGamefieldNameSelected(gamefield.name);
+    localStorage.setItem("gamefieldName", gamefield.name);
     localStorage.setItem("gamefieldId", id);
     fetchBookings(id);
   };
@@ -120,77 +125,69 @@ function Schedule() {
 
   if (visible)
     return (
-      <div
-        className="bg-callejero"
-        // className="text-center items-center flex h-screen"
-        // style={{ height: "calc(100vh - 80px)" }}
-      >
+      <div className={`${gridModified} ? "bg-callejero" : "opacity-0"`}>
         <ToastContainer />
         <div
           className="w-full own-toolbar"
           style={{ borderRadius: "16px 16px 0 0", background: "white" }}
         >
-          {loading ? (
+          {loading && (
             <>
-              <h1 className="text-4xl font-bold">Cargando Reservas</h1>
-              <Loader />
-            </>
-          ) : (
-            <>
-              <div className="flex pt-4 items-center">
-                <div className="own-toolbar px-6 flex w-full">
-                  <div className="w-1/2 h-11 flex items-center">
-                    <h1 className="text-2xl own-toolbar__breadcumb">
-                      {localStorage.getItem("organizationName")} /{" "}
-                      <b className="own-toolbar__breadcumb--gamefield">
-                        {localStorage.getItem("gamefieldName")}
-                      </b>
-                    </h1>
-                  </div>
-                  <div className="w-1/2 text-right">
-                    <button
-                      onClick={() => {
-                        prompt("Ingresa fecha de la reserva");
-                      }}
-                      className="own-toolbar__create-booking own-toolbar__create-booking text-white bg-callejero
-                        rounded-full px-6 py-2.5 hover:scale-105 duration-300"
-                    >
-                      Crear una reserva
-                    </button>
-                  </div>
-                </div>
-                <div className="selectGamefield">
-                  {/* <Image
-                    src={dropdownIcon}
-                    alt="icon"
-                    height={38}
-                    priority={true}
-                    className="mx-auto dropdown-icon"
-                  /> */}
-                  <select
-                    name="gamefields"
-                    placeholder="Select Gamefield"
-                    value={gamefieldNameSelected!}
-                    className="ml-4 selectGamefield__select"
-                    onChange={(e) =>
-                      handleChangeGamefield(
-                        e.target.value,
-                        e.target.options[e.target.selectedIndex].id
-                      )
-                    }
-                  >
-                    {gamefieldsList!.map((gm: any) => (
-                      <option key={gm.id} value={gm.name} id={gm.id}>
-                        {gm.name}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="selectGamefield__arrow"></div>
-                </div>
-              </div>
-              <Calendar data={bookings} />
+              <ModalLoading txt={gamefieldNameSelected} />
             </>
           )}
+          <>
+            <div className="flex pt-4 items-center">
+              <div className="own-toolbar px-6 flex w-full">
+                <div className="w-1/2 h-11 flex items-center">
+                  <h1 className="text-2xl own-toolbar__breadcumb">
+                    {localStorage.getItem("organizationName")} /{" "}
+                    <b className="own-toolbar__breadcumb--gamefield">
+                      {localStorage.getItem("gamefieldName")}
+                    </b>
+                  </h1>
+                </div>
+                <div className="w-1/2 text-right">
+                  <button
+                    onClick={() => {
+                      prompt("Ingresa fecha de la reserva");
+                    }}
+                    className="own-toolbar__create-booking own-toolbar__create-booking text-white bg-callejero
+                        rounded-full px-6 py-2.5 hover:scale-105 duration-300"
+                  >
+                    Crear una reserva
+                  </button>
+                </div>
+              </div>
+              <div className="selectGamefield w-60">
+                <Select
+                  aria-labelledby="select-gamefield"
+                  labelPlacement="outside"
+                  radius="full"
+                  placeholder={gamefieldNameSelected}
+                  onChange={(e) => {
+                    if (
+                      e.target.value !== gamefieldIdSelected &&
+                      e.target.value !== ""
+                    )
+                      handleChangeGamefield(e.target.value);
+                  }}
+                >
+                  {gamefieldsList !== undefined ? (
+                    gamefieldsList.map((g) => (
+                      <SelectItem key={g.id} value={g.name} textValue="">
+                        {g.name}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <></>
+                  )}
+                </Select>
+                <div className="selectGamefield__arrow"></div>
+              </div>
+            </div>
+            <Calendar data={bookings} />
+          </>
         </div>
       </div>
     );
