@@ -8,14 +8,21 @@
 
 .fc .fc-button-primary:not(:disabled).fc-button-active,
 .fc .fc-button-primary:not(:disabled):active {
-  background-color: white;
-  border: 2px solid #184135;
-  color: #184135;
+  background: transparent;
+  color: black;
+  border-radius: 8px;
+  height: 35px;
+  margin: 4px 10px;
+  background: white;
+  border: none;
+  font-weight: 500;
 }
 
 .fc .fc-button-primary {
-  background-color: #184135;
-  border: 2px solid #184135;
+  background: transparent;
+  border: none;
+  color: black;
+  margin: 4px 10px;
 }
 
 .fc .fc-button-primary:not(:disabled).fc-button-active:focus,
@@ -26,8 +33,42 @@
 
 .fc .fc-button-primary:hover {
   background-color: white;
-  /* border: 2px solid #184135; */
-  color: #184135;
+  color: black;
+  border-radius: 8px !important;
+  /* height: 35px;
+  margin-top: 8px; */
+}
+
+.fc-direction-ltr .fc-toolbar > * > :not(:first-child) {
+  border-radius: 8px;
+  background: #f4f4f4;
+  height: 42px;
+}
+
+.fc-direction-ltr .fc-button-group > .fc-button:not(:first-child) {
+  margin-left: 0;
+}
+
+button.fc-today-button.fc-button.fc-button-primary {
+  border-radius: 8px !important;
+  &:disabled {
+    background-color: #184135;
+    border: none;
+    pointer-events: none;
+    opacity: 1;
+  }
+}
+
+.fc-prev-button,
+.fc-next-button {
+  margin: 0 !important;
+  height: 80px !important;
+  &:hover {
+    span {
+      transform: scale(1.2);
+      transition: all 0.2s;
+    }
+  }
 }
 
 .logout-btn {
@@ -42,7 +83,7 @@
 /* toolbar */
 .fc .fc-toolbar-title {
   color: #364d42;
-  font-size: 35px;
+  font-size: 32px;
   font-weight: 500;
   line-height: 120%;
   letter-spacing: 0.175px;
@@ -77,6 +118,10 @@ colgroup > col {
 td.fc-timegrid-slot.fc-timegrid-slot-label.fc-scrollgrid-shrink.slotTimes {
   height: 88px;
   width: 126px;
+  display: flex;
+  border: none;
+  place-items: flex-start;
+  justify-content: center;
 }
 
 /* font styles for slot times */
@@ -91,13 +136,6 @@ td.fc-timegrid-slot.fc-timegrid-slot-label.fc-scrollgrid-shrink.slotTimes {
   left: 0;
   padding: 0 38px;
   margin-top: -5px;
-}
-
-td.fc-timegrid-slot.fc-timegrid-slot-label.fc-scrollgrid-shrink.slotTimes {
-  display: flex;
-  border: none;
-  place-items: flex-end;
-  justify-content: center;
 }
 
 /* Calendar grid layout */

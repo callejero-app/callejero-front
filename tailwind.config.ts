@@ -13,6 +13,7 @@ const config: Config = {
     extend: {
       colors: {
         callejero: "#184135",
+        primary: "#184135",
       },
     },
   },
