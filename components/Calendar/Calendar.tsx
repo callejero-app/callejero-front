@@ -8,10 +8,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import "./Calendar.scss";
 
 function Calendar(data: any) {
-  // const [bookingsRecieved, setBookingsRecieved] = useState(false);
   const [bookings, setBookings] = useState(data.data);
-  // const [visible, setVisible] = useState(false);
-  // const [eventsList, setEventsList] = useState();
   const [gridModified, setGridModified] = useState(false);
 
   console.log("bookings", bookings);
@@ -19,39 +16,13 @@ function Calendar(data: any) {
 
   useEffect(() => {
     setBookings(data.data);
-    // setBookingsRecieved(true);
   }, [data]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      // if (!gridModified) insertPrevButtonInCalendar();
       setGridModified(true);
-      // setVisible(true);
     }
   }, []);
-
-  const insertPrevButtonInCalendar = () => {
-    const timer = setTimeout(() => {
-      //prev next button
-      const prevButton = document.getElementsByClassName("fc-toolbar-chunk")[0];
-      prevButton.classList.add("grid", "h-20", "prevNextButtons");
-      const firstGrid = document.getElementsByClassName("fc-timegrid-axis")[0];
-      if (prevButton && firstGrid) {
-        firstGrid.append(prevButton);
-      }
-      //select gamefield
-      const selectGamefield =
-        document.getElementsByClassName("selectGamefield")[0];
-      const toolbarRightContainer =
-        document.getElementsByClassName("fc-toolbar-chunk")[1];
-      toolbarRightContainer.insertBefore(
-        selectGamefield,
-        toolbarRightContainer.firstChild
-      );
-      toolbarRightContainer.classList.add("flex");
-    }, 100);
-    return () => clearTimeout(timer);
-  };
 
   if (gridModified)
     return (
@@ -112,11 +83,6 @@ function Calendar(data: any) {
                   }))
                 : {}
             }
-            // events={bookings.map((booking: any) => ({
-            //   title: "Reserva",
-            //   start: booking.startsAt,
-            //   end: booking.endsAt,
-            // }))}
           />
         </div>
       </div>
