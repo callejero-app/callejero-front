@@ -78,7 +78,6 @@ function Schedule() {
           const bookingsFound = res.data.data.schedules;
           setBookings(bookingsFound);
           if (res.status == 200) {
-            insertPrevButtonInCalendar();
             toast.success("Reservas cargadas!", {
               autoClose: 2000,
               icon: "✅",
