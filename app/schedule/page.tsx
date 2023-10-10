@@ -27,6 +27,7 @@ function Schedule() {
       fetchBookings(localStorage.getItem("gamefieldId")!);
     }
   }, []);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       if (!gridModified) insertPrevButtonInCalendar();
@@ -34,6 +35,7 @@ function Schedule() {
       setVisible(true);
     }
   }, []);
+
   const insertPrevButtonInCalendar = () => {
     const timer = setTimeout(() => {
       //prev next button
@@ -66,7 +68,7 @@ function Schedule() {
         .get(url, {
           params: {
             "start-date": "2023-08-01",
-            "end-date": "2023-10-30",
+            "end-date": "2023-12-30",
           },
           headers: {
             "x-callejero-web-token": localStorage.getItem("auth"),

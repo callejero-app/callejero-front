@@ -40,7 +40,6 @@ function Organizations() {
           const gamefieldsTuplesJSON = JSON.stringify(gamefieldsTuples);
           localStorage.setItem("gamefieldsTuples", gamefieldsTuplesJSON);
           const storage = localStorage.getItem("gamefieldsTuples");
-          console.log("storage", storage);
           if (gamefieldsFound.length == 1) {
             window.location.href = "/gamefields";
           } else {
