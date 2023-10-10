@@ -83,6 +83,7 @@ function Calendar(data: any) {
                   }))
                 : {}
             }
+            eventClassNames={"own-event"}
           />
         </div>
       </div>
