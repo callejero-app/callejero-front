@@ -57,7 +57,7 @@ function Calendar(data: any) {
             }}
             dayHeaderContent={(arg) => {
               var day = arg.date.getDate(); // Obtener el día del mes
-              var weekday = arg.date.toLocaleString("default", {
+              var weekday = arg.date.toLocaleString("es", {
                 weekday: "long",
               });
               return (
