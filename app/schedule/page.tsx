@@ -143,7 +143,13 @@ function Schedule() {
               <div className="own-toolbar px-6 flex w-full">
                 <div className="w-1/2 h-11 flex items-center">
                   <h1 className="text-2xl own-toolbar__breadcumb">
-                    {localStorage.getItem("organizationName")} /{" "}
+                    <a
+                      className="own-toolbar__breadcumb--back"
+                      href="/gamefields"
+                    >
+                      {localStorage.getItem("organizationName")}
+                    </a>{" "}
+                    /{" "}
                     <b className="own-toolbar__breadcumb--gamefield">
                       {localStorage.getItem("gamefieldName")}
                     </b>
