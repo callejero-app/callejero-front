@@ -127,7 +127,7 @@ function Schedule() {
 
   if (visible)
     return (
-      <div className={`${gridModified} ? "bg-callejero" : "opacity-0"`}>
+      <div className={gridModified ? "bg-callejero" : "opacity-0"}>
         <ToastContainer />
         <div
           className="w-full own-toolbar"
