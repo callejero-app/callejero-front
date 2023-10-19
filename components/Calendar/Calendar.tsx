@@ -11,8 +11,8 @@ function Calendar(data: any) {
   const [bookings, setBookings] = useState(data.data);
   const [gridModified, setGridModified] = useState(false);
 
-  console.log("bookings", bookings);
-  console.log("data q llega", data.data);
+  // console.log("bookings", bookings);
+  // console.log("data q llega", data.data);
 
   useEffect(() => {
     setBookings(data.data);
@@ -49,6 +49,7 @@ function Calendar(data: any) {
               end: "today,timeGridWeek,timeGridDay",
             }}
             titleFormat={{ year: "numeric", month: "long" }}
+            titleRangeSeparator=" / "
             dayHeaderClassNames={"dayHeader"}
             dayHeaderFormat={{
               day: "numeric",

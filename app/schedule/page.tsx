@@ -73,7 +73,6 @@ function Schedule() {
           headers: {
             "x-callejero-web-token": localStorage.getItem("auth"),
             "x-tz": localStorage.getItem("timezone"),
-            "accept-language": "es",
           },
         })
         .then((res) => {
@@ -139,8 +138,8 @@ function Schedule() {
             </>
           )}
           <>
-            <div className="flex pt-4 items-center">
-              <div className="own-toolbar px-6 flex w-full">
+            <div className="pt-4 items-center md:block">
+              <div className="own-toolbar px-6 w-full hidden md:flex">
                 <div className="w-1/2 h-11 flex items-center">
                   <h1 className="text-2xl own-toolbar__breadcumb">
                     <a
