@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import logo from "@/public/images/-callejero-light.svg";
+import logoutButton from "@/public/images/right-from-bracket-solid.svg";
 import logoMobile from "@/public/images/callejero-long.svg";
 import { Link, Button } from "@nextui-org/react";
 import "./Navbar2.scss";
@@ -59,7 +60,16 @@ function Navbar2() {
         </div>
       </ul>
       <div className="flex float-right md:hidden items-center">
-        <div className="profile-container__image bg-white w-10 h-10 rounded-full"></div>
+        <button>
+          <Image
+            src={logoutButton}
+            alt="icon"
+            width={38}
+            height={38}
+            priority={true}
+            className="md:hidden"
+          />
+        </button>
       </div>
     </div>
   );

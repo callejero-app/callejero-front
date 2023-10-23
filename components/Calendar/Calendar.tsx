@@ -10,6 +10,7 @@ import "./Calendar.scss";
 function Calendar(data: any) {
   const [bookings, setBookings] = useState(data.data);
   const [gridModified, setGridModified] = useState(false);
+  const [widthScreen, setWidthScreen] = useState(window.innerWidth);
 
   // console.log("bookings", bookings);
   // console.log("data q llega", data.data);
@@ -24,10 +25,22 @@ function Calendar(data: any) {
     }
   }, []);
 
+  useEffect(() => {
+    resizeListener();
+  }, [widthScreen]);
+
+  const resizeListener = () => {
+    window.addEventListener("resize", () => {
+      const width = window.innerWidth;
+      setWidthScreen(width);
+      // if (width > 768) console.log("modo desktop");
+    });
+  };
+
   if (gridModified)
     return (
       <div className="calendar bg-callejero">
-        <div className="calendar__grid bg-white p-6">
+        <div className="calendar__grid bg-white md:p-6">
           <Fullcalendar
             slotDuration="01:00:00"
             slotLabelFormat={[
@@ -72,8 +85,10 @@ function Calendar(data: any) {
             allDaySlot={false}
             locale={esLocale}
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-            initialView={"timeGridWeek"}
-            height={"calc(100vh - 202px)"}
+            initialView={
+              window.innerWidth < 768 ? "timeGridDay" : "timeGridWeek"
+            }
+            height={"calc(100vh - 80px)"}
             eventColor={"#184135"}
             events={
               bookings.length > 0

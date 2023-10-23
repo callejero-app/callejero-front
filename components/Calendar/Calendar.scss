@@ -198,11 +198,26 @@ a.fc-event.fc-event-start.fc-event-end.fc-event-past.fc-timegrid-event.fc-v-even
   transition: all 0.2s;
 }
 
-.fc-toolbar-chunk .fc-button-group {
-  display: none;
+button.fc-today-button.fc-button.fc-button-primary:hover {
+  color: white;
 }
 
 // responsive
+@media (max-width: 767px) {
+  .fc .fc-toolbar.fc-header-toolbar {
+    padding-bottom: 1.5rem;
+    background: #184135;
+    width: 100%;
+    justify-content: center;
+    margin: 0;
+    transform: scaleY(1.02);
+  }
+  // .fc-toolbar-chunk .fc-button-group .fc-today-button,
+  .fc-toolbar-chunk .fc-button-group .fc-timeGridWeek-button,
+  .fc-button-group .fc-timeGridDay-button {
+    display: none;
+  }
+}
 
 @media (min-width: 768px) {
   .fc .fc-toolbar-title {

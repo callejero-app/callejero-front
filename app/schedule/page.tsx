@@ -138,7 +138,7 @@ function Schedule() {
             </>
           )}
           <>
-            <div className="pt-4 items-center md:block">
+            <div className="items-center md:block md:pt-4">
               <div className="own-toolbar px-6 w-full hidden md:flex">
                 <div className="w-1/2 h-11 flex items-center">
                   <h1 className="text-2xl own-toolbar__breadcumb">
@@ -166,7 +166,7 @@ function Schedule() {
                   </button>
                 </div>
               </div>
-              <div className="selectGamefield w-60">
+              <div className="selectGamefield w-72 md:w-60">
                 <Select
                   aria-labelledby="select-gamefield"
                   labelPlacement="outside"
