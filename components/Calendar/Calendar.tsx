@@ -5,12 +5,16 @@ import esLocale from "@fullcalendar/core/locales/es";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import ModalCreateEvent from "@/components/ModalCreateEvent";
 import "./Calendar.scss";
 
 function Calendar(data: any) {
   const [bookings, setBookings] = useState(data.data);
   const [gridModified, setGridModified] = useState(false);
   const [widthScreen, setWidthScreen] = useState(window.innerWidth);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [name, setName] = useState("Nico");
+  const [msg, setMsg] = useState("");
 
   // console.log("bookings", bookings);
   // console.log("data q llega", data.data);
@@ -35,6 +39,14 @@ function Calendar(data: any) {
       setWidthScreen(width);
       // if (width > 768) console.log("modo desktop");
     });
+  };
+
+  // const updateMessage = (msg: string) => {
+  //   setMsg(msg);
+  // };
+
+  const updateOpen = (open: boolean) => {
+    setModalVisible(open);
   };
 
   if (gridModified)
@@ -70,7 +82,7 @@ function Calendar(data: any) {
               omitCommas: true,
             }}
             dayHeaderContent={(arg) => {
-              var day = arg.date.getDate(); // Obtener el día del mes
+              var day = arg.date.getDate();
               var weekday = arg.date.toLocaleString("es", {
                 weekday: "long",
               });
@@ -99,8 +111,22 @@ function Calendar(data: any) {
                   }))
                 : {}
             }
+            eventMinWidth={50}
             eventClassNames={"own-event"}
+            selectable={true}
+            select={(start) => {
+              console.log("click en: ", start);
+              // <ModalCreateEvent />;
+              setModalVisible(true);
+            }}
+            longPressDelay="0"
           />
+          {/* {modalVisible && <ModalCreateEvent open={true} />} */}
+          {modalVisible && (
+            // <ModalCreateEvent name={name} updateMessage={updateMessage} />
+            <ModalCreateEvent open={modalVisible} updateOpen={updateOpen} />
+          )}
+          {/* <h1>Texto del hijo: {msg}</h1> */}
         </div>
       </div>
     );
