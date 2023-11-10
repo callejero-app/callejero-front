@@ -109,7 +109,6 @@ function Schedule() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const path = window.location.href;
-      console.log("path", path);
       if (!path.includes("/login")) {
         validateToken();
       }
