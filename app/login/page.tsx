@@ -26,10 +26,10 @@ function Login() {
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email");
     const password = formData.get("password");
-    localStorage.setItem(
-      "timezone",
-      Intl.DateTimeFormat().resolvedOptions().timeZone
-    );
+    const remoteTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const timezone =
+      remoteTimezone != undefined ? remoteTimezone : "America/Bogota";
+    localStorage.setItem("timezone", timezone);
     const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/web`;
     try {
       const res = await axios

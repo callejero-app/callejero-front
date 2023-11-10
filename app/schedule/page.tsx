@@ -73,7 +73,6 @@ function Schedule() {
           headers: {
             "x-callejero-web-token": localStorage.getItem("auth"),
             "x-tz": localStorage.getItem("timezone"),
-            "accept-language": "es",
           },
         })
         .then((res) => {
@@ -110,7 +109,6 @@ function Schedule() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const path = window.location.href;
-      console.log("path", path);
       if (!path.includes("/login")) {
         validateToken();
       }
@@ -139,8 +137,8 @@ function Schedule() {
             </>
           )}
           <>
-            <div className="flex pt-4 items-center">
-              <div className="own-toolbar px-6 flex w-full">
+            <div className="items-center md:block md:pt-4">
+              <div className="own-toolbar px-6 w-full hidden md:flex">
                 <div className="w-1/2 h-11 flex items-center">
                   <h1 className="text-2xl own-toolbar__breadcumb">
                     <a
@@ -167,7 +165,7 @@ function Schedule() {
                   </button>
                 </div>
               </div>
-              <div className="selectGamefield w-60">
+              <div className="selectGamefield w-72 md:w-60">
                 <Select
                   aria-labelledby="select-gamefield"
                   labelPlacement="outside"

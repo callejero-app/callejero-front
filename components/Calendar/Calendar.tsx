@@ -1,22 +1,40 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Fullcalendar from "@fullcalendar/react";
 import esLocale from "@fullcalendar/core/locales/es";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import ModalCreateEvent from "@/components/ModalCreateEvent";
+import moment from "moment";
 import "./Calendar.scss";
 
 function Calendar(data: any) {
   const [bookings, setBookings] = useState(data.data);
   const [gridModified, setGridModified] = useState(false);
-
-  console.log("bookings", bookings);
-  console.log("data q llega", data.data);
+  const [widthScreen, setWidthScreen] = useState(window.innerWidth);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [bookingInfo, setBookingInfo] = useState({});
+  const [events, setEvents] = useState([]);
 
   useEffect(() => {
     setBookings(data.data);
   }, [data]);
+
+  useEffect(() => {
+    setEvents(
+      bookings.length > 0
+        ? bookings.map((booking: any) => ({
+            title:
+              booking.description != null ? booking.description : "Reserva",
+            start: booking.startsAt,
+            end: booking.endsAt,
+          }))
+        : {}
+    );
+    console.log("bookings", bookings);
+    console.log("events", events);
+  }, [bookings]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -24,10 +42,37 @@ function Calendar(data: any) {
     }
   }, []);
 
+  useEffect(() => {
+    resizeListener();
+  }, [widthScreen]);
+
+  //change calendar view auto by sceen size
+  const resizeListener = () => {
+    window.addEventListener("resize", () => {
+      const width = window.innerWidth;
+      setWidthScreen(width);
+      // if (width > 768) console.log("modo desktop");
+    });
+  };
+
+  const updateOpen = (open: boolean) => {
+    setModalVisible(open);
+  };
+
+  const addEvent = (newEvent: any) => {
+    console.log("llego");
+    console.log("new event:", newEvent);
+    setEvents([
+      ...events,
+      { title: newEvent.title, start: newEvent.start, end: newEvent.end },
+    ]);
+    console.log("event state:", events);
+  };
+
   if (gridModified)
     return (
       <div className="calendar bg-callejero">
-        <div className="calendar__grid bg-white p-6">
+        <div className="calendar__grid bg-white md:p-6">
           <Fullcalendar
             slotDuration="01:00:00"
             slotLabelFormat={[
@@ -49,6 +94,7 @@ function Calendar(data: any) {
               end: "today,timeGridWeek,timeGridDay",
             }}
             titleFormat={{ year: "numeric", month: "long" }}
+            titleRangeSeparator=" / "
             dayHeaderClassNames={"dayHeader"}
             dayHeaderFormat={{
               day: "numeric",
@@ -56,7 +102,7 @@ function Calendar(data: any) {
               omitCommas: true,
             }}
             dayHeaderContent={(arg) => {
-              var day = arg.date.getDate(); // Obtener el día del mes
+              var day = arg.date.getDate();
               var weekday = arg.date.toLocaleString("es", {
                 weekday: "long",
               });
@@ -71,20 +117,68 @@ function Calendar(data: any) {
             allDaySlot={false}
             locale={esLocale}
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-            initialView={"timeGridWeek"}
-            height={"calc(100vh - 202px)"}
-            eventColor={"#184135"}
-            events={
-              bookings.length > 0
-                ? bookings.map((booking: any) => ({
-                    title: "Reserva",
-                    start: booking.startsAt,
-                    end: booking.endsAt,
-                  }))
-                : {}
+            initialView={
+              window.innerWidth < 768 ? "timeGridDay" : "timeGridWeek"
             }
+            height={"calc(100vh - 80px)"}
+            eventColor={"#184135"}
+            events={events}
+            eventClick={(e) => {
+              console.log("click on event:", e);
+            }}
+            eventMinWidth={50}
             eventClassNames={"own-event"}
+            eventStartEditable={false}
+            disableDragging={true}
+            dateClick={(info) => {
+              const dayName = moment(info.dateStr).format("dddd");
+              const dayNumber = moment(info.dateStr).format("D");
+              const monthName = new Date(info.dateStr).toLocaleString("es-ES", {
+                month: "long",
+              });
+              const startHour = moment(info.dateStr).format("hh:mm A");
+              const endHour = moment(info.date)
+                .add(1, "hours")
+                .format("hh:mm A");
+              const startsAtDate = moment(info.date).format("YYYY-MM-DD");
+              const endsAtDate = moment(info.date).format("YYYY-MM-DD");
+              const startsAtTime = moment(info.dateStr).format("hh:mm");
+              const endsAtTime = moment(info.dateStr)
+                .add(1, "hours")
+                .format("hh:mm");
+              const startsAtTime24 = moment(info.dateStr).format("HH:mm");
+              const endsAtTime24 = moment(info.dateStr)
+                .add(1, "hours")
+                .format("HH:mm");
+
+              setBookingInfo({
+                dateStr: info.dateStr,
+                dayName: dayName,
+                dayNumber: dayNumber,
+                monthName: monthName,
+                startHour: startHour,
+                endHour: endHour,
+                startsAtDate: startsAtDate,
+                startsAtTime: startsAtTime,
+                startsAtTime24: startsAtTime24,
+                endsAtDate: endsAtDate,
+                endsAtTime: endsAtTime,
+                endsAtTime24: endsAtTime24,
+              });
+              setModalVisible(true);
+            }}
+            longPressDelay="0"
           />
+          {/* {modalVisible && <ModalCreateEvent open={true} />} */}
+          {modalVisible && (
+            // <ModalCreateEvent name={name} updateMessage={updateMessage} />
+            <ModalCreateEvent
+              open={modalVisible}
+              updateOpen={updateOpen}
+              bookingInfo={bookingInfo}
+              addEvent={addEvent}
+            />
+          )}
         </div>
       </div>
     );
