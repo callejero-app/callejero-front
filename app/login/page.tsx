@@ -31,7 +31,7 @@ function Login() {
       remoteTimezone != undefined ? remoteTimezone : "America/Bogota";
     localStorage.setItem("timezone", timezone);
     // Varaibles de entorno
-    const url = `https://callejero.com.co/test/api/v1/auth/web`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/web`;
     try {
       const res = await axios
         .post(
