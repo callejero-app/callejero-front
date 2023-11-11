@@ -32,6 +32,7 @@ function Calendar(data: any) {
               booking.description != null ? booking.description : "Reserva",
             start: booking.startsAt,
             end: booking.endsAt,
+            tag: "",
             detail: booking,
           }))
         : {}
@@ -72,7 +73,12 @@ function Calendar(data: any) {
     console.log("new event:", newEvent);
     setEvents([
       ...events,
-      { title: newEvent.title, start: newEvent.start, end: newEvent.end },
+      {
+        title: newEvent.title,
+        start: newEvent.start,
+        end: newEvent.end,
+        tag: newEvent.tag,
+      },
     ]);
     console.log("event state:", events);
   };
@@ -132,30 +138,50 @@ function Calendar(data: any) {
             eventColor={"#184135"}
             events={events}
             eventClick={(e) => {
-              const tag = e.event._def.extendedProps.detail.originPlatform;
-              let start = new Date(e.event._def.extendedProps.detail.startsAt);
-              const startStr = moment(start).format("hh:mm A");
-              let end = new Date(e.event._def.extendedProps.detail.endsAt);
-              const endStr = moment(end).format("hh:mm A");
-              const description = e.event._def.extendedProps.detail.description;
-              const teams = e.event._def.extendedProps.detail.teams;
-              const totalPrice =
-                e.event._def.extendedProps.detail.totalPrice.amount;
-              const totalPaid =
-                e.event._def.extendedProps.detail.totalPaid.amount;
-              const responsables = teams.map((t: any) => ({
-                sex: t.teamLeader.sex,
-                id: t.teamLeader.id,
-              }));
-              setBookingDetail({
-                tag: tag,
-                start: startStr,
-                end: endStr,
-                description: description,
-                responsables: responsables,
-                totalPrice: totalPrice,
-                totalPaid: totalPaid,
-              });
+              //PRIORIDAD
+              console.log("evento", e);
+              if (e.event._def.extendedProps.detail) {
+                console.log("viene de la db");
+                const tag = e.event._def.extendedProps.detail.originPlatform;
+                const start = new Date(
+                  e.event._def.extendedProps.detail.startsAt
+                );
+                const startStr = moment(start).format("hh:mm A");
+                const end = new Date(e.event._def.extendedProps.detail.endsAt);
+                const endStr = moment(end).format("hh:mm A");
+                const dayName = moment(start).format("dddd");
+                const dayNumber = moment(start).format("D");
+                const monthName = new Date(start).toLocaleString("es-ES", {
+                  month: "long",
+                });
+                const description =
+                  e.event._def.extendedProps.detail.description;
+                const teams = e.event._def.extendedProps.detail.teams;
+                const totalPrice =
+                  e.event._def.extendedProps.detail.totalPrice.amount;
+                const totalPaid =
+                  e.event._def.extendedProps.detail.totalPaid.amount;
+                const responsables = teams.map((t: any) => ({
+                  name: t.teamLeader.name,
+                  sex: t.teamLeader.sex,
+                  id: t.teamLeader.id,
+                }));
+                setBookingDetail({
+                  tag: tag,
+                  start: startStr,
+                  end: endStr,
+                  dayName: dayName,
+                  dayNumber: dayNumber,
+                  monthName: monthName,
+                  description: description,
+                  responsables: responsables,
+                  totalPrice: totalPrice,
+                  totalPaid: totalPaid,
+                });
+              } else {
+                console.log("recien creada");
+              }
+              // const tag = e.event._def.extendedProps.detail.originPlatform;
               setModalEventDetailVisible(true);
             }}
             eventMinWidth={50}

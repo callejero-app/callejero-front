@@ -26,6 +26,9 @@ const ModalEventDetail: React.FC<{
     tag: string;
     start: string;
     end: string;
+    dayName: string;
+    dayNumber: string;
+    monthName: string;
     description: string;
     responsables: {};
     totalPrice: number;
@@ -44,6 +47,9 @@ const ModalEventDetail: React.FC<{
     tag: bookingDetail.tag,
     start: bookingDetail.start,
     end: bookingDetail.end,
+    dayName: bookingDetail.dayName,
+    dayNumber: bookingDetail.dayNumber,
+    monthName: bookingDetail.monthName,
     description: bookingDetail.description,
     responsables: bookingDetail.responsables,
     totalPrice: bookingDetail.totalPrice,
@@ -97,7 +103,9 @@ const ModalEventDetail: React.FC<{
                     priority={true}
                   />
                   <p className=" modal__date ml-2">
-                    {bookingReceived.start} - {bookingReceived.end}
+                    {bookingReceived.dayName}, {bookingReceived.dayNumber} de{" "}
+                    {bookingReceived.monthName} · {bookingReceived.start} -{" "}
+                    {bookingReceived.end}
                   </p>
                 </div>
                 {bookingDetail.description && (
@@ -119,15 +127,18 @@ const ModalEventDetail: React.FC<{
                     <p className="font-medium text-sm text-[#393939]">
                       Responsables
                     </p>
-                    <div className="flex">
+                    <div className="flex flex-col">
                       {bookingDetail.responsables.map((responsable: any) => (
-                        <div key={responsable.id}>
+                        <div
+                          key={responsable.id}
+                          className="flex items-center mt-4"
+                        >
                           <div
                             className={`${
                               responsable.sex == "m"
                                 ? "bg-blue-300"
                                 : "bg-pink-300"
-                            }  rounded-full flex p-2 mt-2 mr-2`}
+                            }  rounded-full flex p-2 mr-2`}
                           >
                             <Image
                               src={responsable.sex == "m" ? male : female}
@@ -138,6 +149,7 @@ const ModalEventDetail: React.FC<{
                               className=""
                             />
                           </div>
+                          <p className="">{responsable.name}</p>
                         </div>
                       ))}
                     </div>
@@ -150,7 +162,7 @@ const ModalEventDetail: React.FC<{
                   </button>
                 </div>
                 <div className="mb-2 border-b-small border-slate-200"></div>
-                <div className="flex column justify-between mb-2 items-center">
+                {/* <div className="flex column justify-between mb-2 items-center">
                   <p className="font-medium text-sm text-[#393939]">
                     Responsables
                   </p>
@@ -160,8 +172,8 @@ const ModalEventDetail: React.FC<{
                   >
                     Añadir responsables
                   </button>
-                </div>
-                <div className="mb-2 border-b-small border-slate-200"></div>
+                </div> */}
+                {/* <div className="mb-2 border-b-small border-slate-200"></div> */}
                 <div className="mb-2">
                   <p className="font-medium text-sm text-[#393939] mb-2">
                     Dinero Abonado
@@ -169,12 +181,22 @@ const ModalEventDetail: React.FC<{
                   <div className="flex justify-between items-center">
                     <div className="flex flex-col">
                       <p className="text-callejero text-2xl">
-                        ${bookingReceived.totalPaid.toLocaleString()}
+                        $
+                        {bookingReceived.tag == "web" &&
+                          `${bookingReceived.totalPrice.toLocaleString()}`}
+                        {bookingReceived.tag == "app" &&
+                          `${bookingReceived.totalPaid.toLocaleString()}`}
+                        {/* ${bookingReceived.totalPaid.toLocaleString()} */}
                       </p>
                       <p className="text-[#818181] text-xs">
                         $
-                        {bookingReceived.totalPrice - bookingReceived.totalPaid}{" "}
-                        penditente por abonar
+                        {bookingReceived.tag == "web" &&
+                          "0 pendiente por abonar"}
+                        {bookingReceived.tag == "app" &&
+                          `${
+                            bookingReceived.totalPrice -
+                            bookingReceived.totalPaid
+                          } penditente por abonar`}
                       </p>
                     </div>
                     <button
@@ -188,15 +210,17 @@ const ModalEventDetail: React.FC<{
                 <div className="mb-2 border-b-small border-slate-200"></div>
               </ModalBody>
               <ModalFooter>
-                <div className="flex w-full justify-between">
+                {/* <div className="flex w-full justify-between"> */}
+                <div className="flex w-full justify-end">
                   <button
-                    className="h-12 w-[167px] border border-callejero rounded-full text-callejero text-base font-medium hover:scale-105 transition-all"
+                    // className="h-12 w-[167px] border border-callejero rounded-full text-callejero text-base font-medium hover:scale-105 transition-all"
+                    className="h-12 w-full border border-callejero rounded-full text-callejero text-base font-medium hover:scale-105 transition-all"
                     onClick={closeEventDetail}
                   >
-                    Cancelar
+                    Cerrar
                   </button>
                   <button
-                    className="h-12 w-[167px] border bg-callejero rounded-full text-white text-base font-medium mb-2 hover:scale-105 transition-all"
+                    className="h-12 w-[167px] border bg-callejero rounded-full text-white text-base font-medium mb-2 hover:scale-105 transition-all hidden"
                     onClick={() => {}}
                   >
                     Sí
