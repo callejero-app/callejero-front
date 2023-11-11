@@ -73,7 +73,7 @@ function Login() {
   };
 
   //middleware
-
+  const [visible, setVisible] = useState(false);
   useEffect(() => {
     if (typeof window !== "undefined") {
       validateToken();
@@ -82,83 +82,90 @@ function Login() {
 
   const validateToken = () => {
     const token = localStorage.getItem("auth");
-    if (token) window.location.href = "/organizations";
+    if (token) {
+      window.location.href = "/organizations";
+    } else {
+      setVisible(true);
+    }
   };
-
-  return (
-    <div>
-      <div className="login text-center items-center flex h-screen">
-        <div className="w-full flex">
-          <form onSubmit={handleSubmit} className="w-full lg:w-1/2 self-center">
-            <Image
-              src={logo}
-              alt="icon"
-              width={140}
-              priority={true}
-              className="mx-auto"
-            />
-            <h1 className="login__title mt-10">Inicia sesión</h1>
-            <Input
-              name="email"
-              isRequired
-              variant="bordered"
-              type="email"
-              label="Correo electrónico"
-              className="mt-8"
-            />
-            <Input
-              name="password"
-              isRequired
-              id="passwordInput"
-              variant="bordered"
-              label="Contraseña"
-              className="mt-8"
-              type={isVisible ? "text" : "password"}
-              endContent={
-                <button
-                  className="focus:outline-none"
-                  type="button"
-                  onClick={toggleVisibility}
-                >
-                  {isVisible ? (
-                    <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                  ) : (
-                    <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                  )}
-                </button>
-              }
-            />
-            {loading ? (
-              <Loader />
-            ) : (
-              <Button text="Ingresar" width={342} className="mt-8" />
-            )}
-            <p className="mt-8">
-              ¿Olvidaste tu contraseña?{" "}
-              <a href="">
-                <b className="text-callejero">Recupérala aquí.</b>
-              </a>
-            </p>
-            <p className="mt-6">
-              ¿No tienes una cuenta?{" "}
-              <a href="">
-                <b className="text-callejero">Regístrate.</b>
-              </a>
-            </p>
-          </form>
-          <div className="login__banner hidden lg:block lg:w-1/2">
-            <Image
-              src={banner}
-              style={{ height: "85vh" }}
-              alt="icon"
-              priority={true}
-              className="p-9"
-            />
+  if (visible)
+    return (
+      <div>
+        <div className="login text-center items-center flex h-screen">
+          <div className="w-full flex">
+            <form
+              onSubmit={handleSubmit}
+              className="w-full lg:w-1/2 self-center"
+            >
+              <Image
+                src={logo}
+                alt="icon"
+                width={140}
+                priority={true}
+                className="mx-auto"
+              />
+              <h1 className="login__title mt-10">Inicia sesión</h1>
+              <Input
+                name="email"
+                isRequired
+                variant="bordered"
+                type="email"
+                label="Correo electrónico"
+                className="mt-8"
+              />
+              <Input
+                name="password"
+                isRequired
+                id="passwordInput"
+                variant="bordered"
+                label="Contraseña"
+                className="mt-8"
+                type={isVisible ? "text" : "password"}
+                endContent={
+                  <button
+                    className="focus:outline-none"
+                    type="button"
+                    onClick={toggleVisibility}
+                  >
+                    {isVisible ? (
+                      <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                    ) : (
+                      <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                    )}
+                  </button>
+                }
+              />
+              {loading ? (
+                <Loader />
+              ) : (
+                <Button text="Ingresar" width={342} className="mt-8" />
+              )}
+              <p className="mt-8">
+                ¿Olvidaste tu contraseña?{" "}
+                <a href="">
+                  <b className="text-callejero">Recupérala aquí.</b>
+                </a>
+              </p>
+              <p className="mt-6">
+                ¿No tienes una cuenta?{" "}
+                <a href="">
+                  <b className="text-callejero">Regístrate.</b>
+                </a>
+              </p>
+            </form>
+            <div className="login__banner hidden lg:block lg:w-1/2">
+              <Image
+                src={banner}
+                style={{ height: "85vh" }}
+                alt="icon"
+                priority={true}
+                className="p-9"
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
 }
 
 export default Login;
