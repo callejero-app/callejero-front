@@ -15,7 +15,15 @@ function Calendar(data: any) {
   const [gridModified, setGridModified] = useState(false);
   const [widthScreen, setWidthScreen] = useState(window.innerWidth);
   const [bookingInfo, setBookingInfo] = useState({});
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState([
+    {
+      title: "",
+      start: "",
+      end: "",
+      tag: "",
+      detail: {},
+    },
+  ]);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEventDetailVisible, setModalEventDetailVisible] = useState(false);
   const [bookingDetail, setBookingDetail] = useState({});
@@ -33,7 +41,6 @@ function Calendar(data: any) {
             start: booking.startsAt,
             end: booking.endsAt,
             tag: "",
-            detail: booking,
           }))
         : {}
     );
@@ -68,9 +75,14 @@ function Calendar(data: any) {
     setModalEventDetailVisible(openEventDetail);
   };
 
-  const addEvent = (newEvent: any) => {
-    console.log("llego");
-    console.log("new event:", newEvent);
+  interface Event {
+    title: string;
+    start: string;
+    end: string;
+    tag: string;
+  }
+
+  const addEvent = (newEvent: Event) => {
     setEvents([
       ...events,
       {
@@ -78,6 +90,7 @@ function Calendar(data: any) {
         start: newEvent.start,
         end: newEvent.end,
         tag: newEvent.tag,
+        detail: {},
       },
     ]);
     console.log("event state:", events);
@@ -225,12 +238,14 @@ function Calendar(data: any) {
               });
               setModalVisible(true);
             }}
+            //@ts-ignore
             longPressDelay="0"
           />
           {modalVisible && (
             <ModalCreateEvent
               open={modalVisible}
               updateOpen={updateOpen}
+              //@ts-ignore
               bookingInfo={bookingInfo}
               addEvent={addEvent}
             />
@@ -239,6 +254,7 @@ function Calendar(data: any) {
             <ModalEventDetail
               openEventDetail={modalEventDetailVisible}
               updateOpenEventDetail={updateOpenEventDetail}
+              //@ts-ignore
               bookingDetail={bookingDetail}
             />
           )}

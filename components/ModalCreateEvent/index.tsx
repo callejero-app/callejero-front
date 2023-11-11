@@ -35,16 +35,27 @@ const ModalCreateEvent: React.FC<{
   const [emptyDescription, setEmptyDescription] = useState(false);
 
   const [booking, setBooking] = useState({
+    //@ts-ignore
     dayName: bookingInfo.dayName,
+    //@ts-ignore
     dayNumber: bookingInfo.dayNumber,
+    //@ts-ignore
     monthName: bookingInfo.monthName,
+    //@ts-ignore
     startHour: bookingInfo.startHour,
+    //@ts-ignore
     endHour: bookingInfo.endHour,
+    //@ts-ignore
     startsAtDate: bookingInfo.startsAtDate,
+    //@ts-ignore
     startsAtTime: bookingInfo.startsAtTime,
+    //@ts-ignore
     startsAtTime24: bookingInfo.startsAtTime24,
+    //@ts-ignore
     endsAtDate: bookingInfo.endsAtDate,
+    //@ts-ignore
     endsAtTime: bookingInfo.endsAtTime,
+    //@ts-ignore
     endsAtTime24: bookingInfo.endsAtTime24,
   });
 
@@ -74,7 +85,9 @@ const ModalCreateEvent: React.FC<{
   const createEventCalendar = (title: string) => {
     const newEvent = {
       title: title,
+      //@ts-ignore
       start: `${booking.startsAtDate} ${bookingInfo.startsAtTime24}`,
+      //@ts-ignore
       end: `${booking.endsAtDate} ${bookingInfo.endsAtTime24}`,
     };
     addEvent(newEvent);
@@ -84,6 +97,7 @@ const ModalCreateEvent: React.FC<{
     setLoading(true);
     setEmptyDescription(false);
     let descriptionEl = document.getElementById("description");
+    //@ts-ignore
     const description = descriptionEl != null ? descriptionEl.value : "";
     console.log("description", description);
 

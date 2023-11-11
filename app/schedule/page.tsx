@@ -14,9 +14,7 @@ function Schedule() {
   const [bookings, setBookings] = useState<any[]>([]);
   const [gamefieldIdSelected, setGamefieldIdSelected] = useState("");
   const [gamefieldNameSelected, setGamefieldNameSelected] = useState("");
-  const [gamefieldsList, setGamefieldsList] = useState<any[]>([
-    { id: "", name: "" },
-  ]);
+  const [gamefieldsList, setGamefieldsList] = useState([{ id: "", name: "" }]);
   const [gridModified, setGridModified] = useState(false);
 
   useEffect(() => {
@@ -103,8 +101,8 @@ function Schedule() {
   const handleChangeGamefield = (id: string) => {
     let gamefield = gamefieldsList?.find((e) => e.id == id);
     setGamefieldIdSelected(id);
-    setGamefieldNameSelected(gamefield.name);
-    localStorage.setItem("gamefieldName", gamefield.name);
+    if (gamefield) setGamefieldNameSelected(gamefield.name);
+    if (gamefield) localStorage.setItem("gamefieldName", gamefield.name);
     localStorage.setItem("gamefieldId", id);
     fetchBookings(id);
   };
@@ -214,11 +212,11 @@ function Schedule() {
                         // }}
                       >
                         <SelectItem
-                          key={gamefieldsList.id}
-                          value={gamefieldsList.name}
+                          key={gamefieldsList[0].id}
+                          value={gamefieldsList[0].name}
                           textValue=""
                         >
-                          {gamefieldsList.name}
+                          {gamefieldsList[0].name}
                         </SelectItem>
                       </Select>
                     </div>
