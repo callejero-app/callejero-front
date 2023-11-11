@@ -33,7 +33,7 @@ function Schedule() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      if (!gridModified) insertPrevButtonInCalendar();
+      // if (!gridModified) insertPrevButtonInCalendar();
       setGridModified(true);
       setVisible(true);
     }
