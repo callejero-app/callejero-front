@@ -14,7 +14,9 @@ function Schedule() {
   const [bookings, setBookings] = useState<any[]>([]);
   const [gamefieldIdSelected, setGamefieldIdSelected] = useState("");
   const [gamefieldNameSelected, setGamefieldNameSelected] = useState("");
-  const [gamefieldsList, setGamefieldsList] = useState<any[]>();
+  const [gamefieldsList, setGamefieldsList] = useState<any[]>([
+    { id: "", name: "" },
+  ]);
   const [gridModified, setGridModified] = useState(false);
 
   useEffect(() => {
@@ -23,7 +25,10 @@ function Schedule() {
       setGamefieldNameSelected(localStorage.getItem("gamefieldName")!);
       const gamefieldsObject = localStorage.getItem("gamefieldsTuples");
       const gmList = gamefieldsObject && JSON.parse(gamefieldsObject);
+      console.log("Tamaño del json", Object.keys(gmList).length);
       setGamefieldsList(gmList);
+      console.log("gamefieldsList:", gamefieldsList);
+      console.log("length:", gamefieldsList);
       fetchBookings(localStorage.getItem("gamefieldId")!);
     }
   }, []);
@@ -166,7 +171,61 @@ function Schedule() {
                 </div>
               </div>
               <div className="selectGamefield w-72 md:w-60">
-                <Select
+                {/* SELECT */}
+                {gamefieldsList && gamefieldsList.length > 1 && (
+                  <div>
+                    <p>entro 1</p>
+                    <Select
+                      aria-labelledby="select-gamefield"
+                      labelPlacement="outside"
+                      radius="full"
+                      placeholder={gamefieldNameSelected}
+                      onChange={(e) => {
+                        if (
+                          e.target.value !== gamefieldIdSelected &&
+                          e.target.value !== ""
+                        )
+                          handleChangeGamefield(e.target.value);
+                      }}
+                    >
+                      {gamefieldsList.map((g) => (
+                        <SelectItem key={g.id} value={g.name} textValue="">
+                          {g.name}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                  </div>
+                )}
+
+                {gamefieldsList !== undefined &&
+                  gamefieldsList.length == undefined && (
+                    <div>
+                      <Select
+                        aria-labelledby="select-gamefield"
+                        labelPlacement="outside"
+                        radius="full"
+                        placeholder={gamefieldNameSelected}
+                        // onChange={(e) => {
+                        //   if (
+                        //     e.target.value !== gamefieldIdSelected &&
+                        //     e.target.value !== ""
+                        //   )
+                        //     handleChangeGamefield(e.target.value);
+                        // }}
+                      >
+                        <SelectItem
+                          key={gamefieldsList.id}
+                          value={gamefieldsList.name}
+                          textValue=""
+                        >
+                          {gamefieldsList.name}
+                        </SelectItem>
+                      </Select>
+                    </div>
+                  )}
+
+                {/* END SELECT */}
+                {/* <Select
                   aria-labelledby="select-gamefield"
                   labelPlacement="outside"
                   radius="full"
@@ -196,7 +255,7 @@ function Schedule() {
                         {g.name}
                       </SelectItem>
                     ))}
-                </Select>
+                </Select> */}
                 <div className="selectGamefield__arrow"></div>
               </div>
             </div>
