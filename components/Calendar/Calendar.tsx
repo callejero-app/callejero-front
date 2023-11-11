@@ -6,6 +6,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import ModalCreateEvent from "@/components/ModalCreateEvent";
+import ModalEventDetail from "@/components/ModalEventDetail";
 import moment from "moment";
 import "./Calendar.scss";
 
@@ -13,9 +14,11 @@ function Calendar(data: any) {
   const [bookings, setBookings] = useState(data.data);
   const [gridModified, setGridModified] = useState(false);
   const [widthScreen, setWidthScreen] = useState(window.innerWidth);
-  const [modalVisible, setModalVisible] = useState(false);
   const [bookingInfo, setBookingInfo] = useState({});
   const [events, setEvents] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalEventDetailVisible, setModalEventDetailVisible] = useState(false);
+  const [bookingDetail, setBookingDetail] = useState({});
 
   useEffect(() => {
     setBookings(data.data);
@@ -29,6 +32,7 @@ function Calendar(data: any) {
               booking.description != null ? booking.description : "Reserva",
             start: booking.startsAt,
             end: booking.endsAt,
+            detail: booking,
           }))
         : {}
     );
@@ -57,6 +61,10 @@ function Calendar(data: any) {
 
   const updateOpen = (open: boolean) => {
     setModalVisible(open);
+  };
+
+  const updateOpenEventDetail = (openEventDetail: boolean) => {
+    setModalEventDetailVisible(openEventDetail);
   };
 
   const addEvent = (newEvent: any) => {
@@ -124,7 +132,31 @@ function Calendar(data: any) {
             eventColor={"#184135"}
             events={events}
             eventClick={(e) => {
-              console.log("click on event:", e);
+              const tag = e.event._def.extendedProps.detail.originPlatform;
+              let start = new Date(e.event._def.extendedProps.detail.startsAt);
+              const startStr = moment(start).format("hh:mm A");
+              let end = new Date(e.event._def.extendedProps.detail.endsAt);
+              const endStr = moment(end).format("hh:mm A");
+              const description = e.event._def.extendedProps.detail.description;
+              const teams = e.event._def.extendedProps.detail.teams;
+              const totalPrice =
+                e.event._def.extendedProps.detail.totalPrice.amount;
+              const totalPaid =
+                e.event._def.extendedProps.detail.totalPaid.amount;
+              const responsables = teams.map((t: any) => ({
+                sex: t.teamLeader.sex,
+                id: t.teamLeader.id,
+              }));
+              setBookingDetail({
+                tag: tag,
+                start: startStr,
+                end: endStr,
+                description: description,
+                responsables: responsables,
+                totalPrice: totalPrice,
+                totalPaid: totalPaid,
+              });
+              setModalEventDetailVisible(true);
             }}
             eventMinWidth={50}
             eventClassNames={"own-event"}
@@ -169,14 +201,19 @@ function Calendar(data: any) {
             }}
             longPressDelay="0"
           />
-          {/* {modalVisible && <ModalCreateEvent open={true} />} */}
           {modalVisible && (
-            // <ModalCreateEvent name={name} updateMessage={updateMessage} />
             <ModalCreateEvent
               open={modalVisible}
               updateOpen={updateOpen}
               bookingInfo={bookingInfo}
               addEvent={addEvent}
+            />
+          )}
+          {modalEventDetailVisible && (
+            <ModalEventDetail
+              openEventDetail={modalEventDetailVisible}
+              updateOpenEventDetail={updateOpenEventDetail}
+              bookingDetail={bookingDetail}
             />
           )}
         </div>
