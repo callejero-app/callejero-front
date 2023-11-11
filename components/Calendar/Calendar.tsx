@@ -36,11 +36,11 @@ function Calendar(data: any) {
     setEvents(
       bookings.length > 0
         ? bookings.map((booking: any) => ({
+            detail: booking,
             title:
               booking.description != null ? booking.description : "Reserva",
             start: booking.startsAt,
             end: booking.endsAt,
-            tag: "",
           }))
         : {}
     );
