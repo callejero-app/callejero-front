@@ -30,7 +30,7 @@ const ModalEventDetail: React.FC<{
     dayNumber: string;
     monthName: string;
     description: string;
-    responsables: {};
+    responsables: [];
     totalPrice: number;
     totalPaid: number;
   };
@@ -128,33 +128,30 @@ const ModalEventDetail: React.FC<{
                       Responsables
                     </p>
                     <div className="flex flex-col">
-                      {
-                        //@ts-ignore
-                        bookingDetail.responsables.map((responsable: any) => (
+                      {bookingDetail.responsables.map((responsable: any) => (
+                        <div
+                          key={responsable.id}
+                          className="flex items-center mt-4"
+                        >
                           <div
-                            key={responsable.id}
-                            className="flex items-center mt-4"
+                            className={`${
+                              responsable.sex == "m"
+                                ? "bg-blue-300"
+                                : "bg-pink-300"
+                            }  rounded-full flex p-2 mr-2`}
                           >
-                            <div
-                              className={`${
-                                responsable.sex == "m"
-                                  ? "bg-blue-300"
-                                  : "bg-pink-300"
-                              }  rounded-full flex p-2 mr-2`}
-                            >
-                              <Image
-                                src={responsable.sex == "m" ? male : female}
-                                alt="icon"
-                                height={25}
-                                width={25}
-                                priority={true}
-                                className=""
-                              />
-                            </div>
-                            <p className="">{responsable.name}</p>
+                            <Image
+                              src={responsable.sex == "m" ? male : female}
+                              alt="icon"
+                              height={25}
+                              width={25}
+                              priority={true}
+                              className=""
+                            />
                           </div>
-                        ))
-                      }
+                          <p className="">{responsable.name}</p>
+                        </div>
+                      ))}
                     </div>
                   </div>
                   <button
