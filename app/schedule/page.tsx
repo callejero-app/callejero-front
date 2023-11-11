@@ -213,8 +213,8 @@ function Schedule() {
                         // }}
                       >
                         <SelectItem
-                          key={gamefieldsList[0].id}
-                          value={gamefieldsList[0].name}
+                          key={gamefieldIdSelected}
+                          value={gamefieldNameSelected}
                           textValue=""
                         >
                           {gamefieldsList[0].name}
