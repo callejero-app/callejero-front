@@ -80,6 +80,7 @@ function Calendar(data: any) {
     start: string;
     end: string;
     tag: string;
+    detail: {};
   }
 
   const addEvent = (newEvent: Event) => {
@@ -90,7 +91,7 @@ function Calendar(data: any) {
         start: newEvent.start,
         end: newEvent.end,
         tag: newEvent.tag,
-        detail: {},
+        detail: newEvent.detail,
       },
     ]);
     console.log("event state:", events);
