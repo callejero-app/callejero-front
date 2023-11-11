@@ -115,7 +115,8 @@ const ModalCreateEvent: React.FC<{
       console.log("startsAtTime: ", booking.startsAtTime24);
       console.log("endsAtDate: ", booking.endsAtDate);
       console.log("endsAtTime: ", booking.endsAtTime24);
-      const url = `${API_URL}/game-fields/${gamefieldId}/booking/create-client`;
+      // const url = `${API_URL}/game-fields/${gamefieldId}/booking/create-client`;
+      const url = `https://callejero.com.co/test/api/v1/game-fields/${gamefieldId}/booking/create-client`;
       const data = {
         startsAtDate: booking.startsAtDate,
         startsAtTime: booking.startsAtTime24,
