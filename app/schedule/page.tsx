@@ -67,7 +67,7 @@ function Schedule() {
       const res = await axios
         .get(url, {
           params: {
-            "start-date": "2023-08-01",
+            "start-date": "2023-10-01",
             "end-date": "2023-12-30",
           },
           headers: {
@@ -179,15 +179,23 @@ function Schedule() {
                       handleChangeGamefield(e.target.value);
                   }}
                 >
-                  {gamefieldsList !== undefined ? (
+                  {gamefieldsList !== undefined &&
+                    gamefieldsList.length == 1 && (
+                      <SelectItem
+                        key={gamefieldsList[0].id}
+                        value={gamefieldsList[0].name}
+                        textValue=""
+                      >
+                        {gamefieldsList[0].name}
+                      </SelectItem>
+                    )}
+                  {gamefieldsList !== undefined &&
+                    gamefieldsList.length > 0 &&
                     gamefieldsList.map((g) => (
                       <SelectItem key={g.id} value={g.name} textValue="">
                         {g.name}
                       </SelectItem>
-                    ))
-                  ) : (
-                    <></>
-                  )}
+                    ))}
                 </Select>
                 <div className="selectGamefield__arrow"></div>
               </div>

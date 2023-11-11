@@ -34,14 +34,25 @@ function Organizations() {
         })
         .then((res) => {
           const gamefieldsFound = res.data.data.results;
-          const gamefieldsTuples = gamefieldsFound.map((gm: any) => {
-            return { id: gm.id, name: gm.name };
-          });
+          let gamefieldsTuples;
+          if (gamefieldsFound.length == 1) {
+            gamefieldsTuples = {
+              id: gamefieldsFound[0].id,
+              name: gamefieldsFound[0].name,
+            };
+            localStorage.setItem("gamefieldId", gamefieldsFound[0].id);
+            localStorage.setItem("gamefieldName", gamefieldsFound[0].name);
+          }
+          if (gamefieldsFound.length > 1) {
+            gamefieldsTuples = gamefieldsFound.map((gm: any) => {
+              return { id: gm.id, name: gm.name };
+            });
+          }
           const gamefieldsTuplesJSON = JSON.stringify(gamefieldsTuples);
           localStorage.setItem("gamefieldsTuples", gamefieldsTuplesJSON);
           const storage = localStorage.getItem("gamefieldsTuples");
           if (gamefieldsFound.length == 1) {
-            window.location.href = "/gamefields";
+            window.location.href = "/schedule";
           } else {
             setGamefields(gamefieldsFound);
           }
