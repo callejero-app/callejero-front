@@ -30,6 +30,7 @@ function Login() {
     const timezone =
       remoteTimezone != undefined ? remoteTimezone : "America/Bogota";
     localStorage.setItem("timezone", timezone);
+    // Varaibles de entorno
     const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/web`;
     try {
       const res = await axios
