@@ -217,7 +217,7 @@ function Schedule() {
                           value={gamefieldNameSelected}
                           textValue=""
                         >
-                          {gamefieldsList[0].name}
+                          {gamefieldNameSelected}
                         </SelectItem>
                       </Select>
                     </div>
