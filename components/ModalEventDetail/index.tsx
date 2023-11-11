@@ -30,7 +30,7 @@ const ModalEventDetail: React.FC<{
     dayNumber: string;
     monthName: string;
     description: string;
-    responsables: {};
+    responsables: [];
     totalPrice: number;
     totalPaid: number;
   };
