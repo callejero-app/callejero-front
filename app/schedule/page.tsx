@@ -173,7 +173,6 @@ function Schedule() {
                 {/* SELECT */}
                 {gamefieldsList && gamefieldsList.length > 1 && (
                   <div>
-                    <p>entro 1</p>
                     <Select
                       aria-labelledby="select-gamefield"
                       labelPlacement="outside"
