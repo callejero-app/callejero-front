@@ -141,9 +141,9 @@ function Schedule() {
             </>
           )}
           <>
-            <div className="items-center md:block md:pt-4">
-              <div className="own-toolbar px-6 w-full hidden md:flex">
-                <div className="w-1/2 h-11 flex items-center">
+            <div className="items-center md:block md:pt-4 bg-callejero md:bg-white">
+              <div className="own-toolbar__container px-6 w-full flex flex-col md:flex-row">
+                <div className="w-1/2 h-11 items-center hidden md:flex">
                   <h1 className="text-2xl own-toolbar__breadcumb">
                     <a
                       className="own-toolbar__breadcumb--back"
@@ -157,104 +157,53 @@ function Schedule() {
                     </b>
                   </h1>
                 </div>
-                <div className="w-1/2 text-right">
-                  <button
-                    onClick={() => {
-                      prompt("Ingresa fecha de la reserva");
-                    }}
-                    className="own-toolbar__create-booking own-toolbar__create-booking text-white bg-callejero
-                        rounded-full px-6 py-2.5 hover:scale-105 duration-300"
-                  >
-                    Crear una reserva
-                  </button>
-                </div>
-              </div>
-              <div className="selectGamefield w-72 md:w-60">
-                {/* SELECT */}
-                {gamefieldsList && gamefieldsList.length > 1 && (
-                  <div>
-                    <Select
-                      aria-labelledby="select-gamefield"
-                      labelPlacement="outside"
-                      radius="full"
-                      placeholder={gamefieldNameSelected}
-                      onChange={(e) => {
-                        if (
-                          e.target.value !== gamefieldIdSelected &&
-                          e.target.value !== ""
-                        )
-                          handleChangeGamefield(e.target.value);
-                      }}
-                    >
-                      {gamefieldsList.map((g) => (
-                        <SelectItem key={g.id} value={g.name} textValue="">
-                          {g.name}
-                        </SelectItem>
-                      ))}
-                    </Select>
-                  </div>
-                )}
-
-                {gamefieldsList !== undefined &&
-                  gamefieldsList.length == undefined && (
-                    <div>
-                      <Select
-                        aria-labelledby="select-gamefield"
-                        labelPlacement="outside"
-                        radius="full"
-                        placeholder={gamefieldNameSelected}
-                        // onChange={(e) => {
-                        //   if (
-                        //     e.target.value !== gamefieldIdSelected &&
-                        //     e.target.value !== ""
-                        //   )
-                        //     handleChangeGamefield(e.target.value);
-                        // }}
-                      >
-                        <SelectItem
-                          key={gamefieldIdSelected}
-                          value={gamefieldNameSelected}
-                          textValue=""
+                <div className="mx-auto md:flex md:items-end md:flex-col md:w-full">
+                  <div className="selectGamefield w-72 md:w-60">
+                    {gamefieldsList && gamefieldsList.length > 1 && (
+                      <div>
+                        <Select
+                          aria-labelledby="select-gamefield"
+                          labelPlacement="outside"
+                          radius="full"
+                          placeholder={gamefieldNameSelected}
+                          onChange={(e) => {
+                            if (
+                              e.target.value !== gamefieldIdSelected &&
+                              e.target.value !== ""
+                            )
+                              handleChangeGamefield(e.target.value);
+                          }}
                         >
-                          {gamefieldNameSelected}
-                        </SelectItem>
-                      </Select>
-                    </div>
-                  )}
-
-                {/* END SELECT */}
-                {/* <Select
-                  aria-labelledby="select-gamefield"
-                  labelPlacement="outside"
-                  radius="full"
-                  placeholder={gamefieldNameSelected}
-                  onChange={(e) => {
-                    if (
-                      e.target.value !== gamefieldIdSelected &&
-                      e.target.value !== ""
-                    )
-                      handleChangeGamefield(e.target.value);
-                  }}
-                >
-                  {gamefieldsList !== undefined &&
-                    gamefieldsList.length == 1 && (
-                      <SelectItem
-                        key={gamefieldsList[0].id}
-                        value={gamefieldsList[0].name}
-                        textValue=""
-                      >
-                        {gamefieldsList[0].name}
-                      </SelectItem>
+                          {gamefieldsList.map((g) => (
+                            <SelectItem key={g.id} value={g.name} textValue="">
+                              {g.name}
+                            </SelectItem>
+                          ))}
+                        </Select>
+                      </div>
                     )}
-                  {gamefieldsList !== undefined &&
-                    gamefieldsList.length > 0 &&
-                    gamefieldsList.map((g) => (
-                      <SelectItem key={g.id} value={g.name} textValue="">
-                        {g.name}
-                      </SelectItem>
-                    ))}
-                </Select> */}
-                <div className="selectGamefield__arrow"></div>
+
+                    {gamefieldsList !== undefined &&
+                      gamefieldsList.length == undefined && (
+                        <div>
+                          <Select
+                            aria-labelledby="select-gamefield"
+                            labelPlacement="outside"
+                            radius="full"
+                            placeholder={gamefieldNameSelected}
+                          >
+                            <SelectItem
+                              key={gamefieldIdSelected}
+                              value={gamefieldNameSelected}
+                              textValue=""
+                            >
+                              {gamefieldNameSelected}
+                            </SelectItem>
+                          </Select>
+                        </div>
+                      )}
+                  </div>
+                </div>
               </div>
             </div>
             <Calendar data={bookings} />
