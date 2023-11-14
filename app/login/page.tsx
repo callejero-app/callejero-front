@@ -107,38 +107,38 @@ function Login() {
                 className="mx-auto"
               />
               <h1 className="login__title mt-10">Inicia sesión</h1>
-              <Input
-                name="email"
-                isRequired
-                variant="bordered"
-                type="email"
-                label="Correo electrónico"
-                className="mt-8 mx-auto"
-                style={{ width: "40%" }}
-              />
-              <Input
-                name="password"
-                isRequired
-                id="passwordInput"
-                variant="bordered"
-                label="Contraseña"
-                className="mt-8 mx-auto"
-                style={{ width: "40%" }}
-                type={isVisible ? "text" : "password"}
-                endContent={
-                  <button
-                    className="focus:outline-none"
-                    type="button"
-                    onClick={toggleVisibility}
-                  >
-                    {isVisible ? (
-                      <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                    ) : (
-                      <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                    )}
-                  </button>
-                }
-              />
+              <div style={{ width: "40%" }}>
+                <Input
+                  name="email"
+                  isRequired
+                  variant="bordered"
+                  type="email"
+                  label="Correo electrónico"
+                  className="mt-8 mx-auto"
+                />
+                <Input
+                  name="password"
+                  isRequired
+                  id="passwordInput"
+                  variant="bordered"
+                  label="Contraseña"
+                  className="mt-8 mx-auto"
+                  type={isVisible ? "text" : "password"}
+                  endContent={
+                    <button
+                      className="focus:outline-none"
+                      type="button"
+                      onClick={toggleVisibility}
+                    >
+                      {isVisible ? (
+                        <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                      ) : (
+                        <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                      )}
+                    </button>
+                  }
+                />
+              </div>
               {loading ? (
                 <Loader />
               ) : (
