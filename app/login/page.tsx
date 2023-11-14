@@ -113,7 +113,7 @@ function Login() {
                 variant="bordered"
                 type="email"
                 label="Correo electrónico"
-                className="mt-8 mx-auto w-[342]"
+                className="mt-8 mx-auto w-[342px]"
               />
               <Input
                 name="password"
@@ -121,7 +121,7 @@ function Login() {
                 id="passwordInput"
                 variant="bordered"
                 label="Contraseña"
-                className="mt-8 mx-auto w-[342]"
+                className="mt-8 mx-auto w-[342px]"
                 type={isVisible ? "text" : "password"}
                 endContent={
                   <button
