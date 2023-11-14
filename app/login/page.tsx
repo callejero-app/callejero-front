@@ -107,7 +107,7 @@ function Login() {
                 className="mx-auto"
               />
               <h1 className="login__title mt-10">Inicia sesión</h1>
-              <div style={{ width: "40%" }}>
+              <div style={{ width: "40%", margin: "auto" }}>
                 <Input
                   name="email"
                   isRequired
