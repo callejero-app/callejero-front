@@ -7,23 +7,18 @@ function Home() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const path = window.location.href;
-      if (!path.includes("/login")) {
-        validateToken();
-      }
+      // if (!path.includes("/login")) {
+      validateToken();
+      // }
     }
   }, []);
+
   const validateToken = () => {
     const token = localStorage.getItem("auth");
-    const org = localStorage.getItem("organizationId");
-    const gamefield = localStorage.getItem("gamefieldId");
-    if (token && org && gamefield) {
-      window.location.href = "/schedule";
-    } else if (token && !org) {
-      window.location.href = "/organizations";
-    } else if (token && !gamefield) {
-      window.location.href = "/organizations";
-    } else if (!token) {
+    if (!token) {
       window.location.href = "/login";
+    } else {
+      window.location.href = "/organizations";
     }
   };
   if (visible) return <div>Home</div>;

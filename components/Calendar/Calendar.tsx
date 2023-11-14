@@ -100,7 +100,7 @@ function Calendar(data: any) {
   if (gridModified)
     return (
       <div className="calendar bg-callejero">
-        <div className="calendar__grid bg-white md:p-6">
+        <div className="calendar__grid bg-white md:px-6">
           <Fullcalendar
             slotDuration="01:00:00"
             slotLabelFormat={[

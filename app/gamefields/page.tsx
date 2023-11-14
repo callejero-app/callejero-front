@@ -51,11 +51,12 @@ function Organizations() {
           const gamefieldsTuplesJSON = JSON.stringify(gamefieldsTuples);
           localStorage.setItem("gamefieldsTuples", gamefieldsTuplesJSON);
           const storage = localStorage.getItem("gamefieldsTuples");
-          if (gamefieldsFound.length == 1) {
-            window.location.href = "/schedule";
-          } else {
-            setGamefields(gamefieldsFound);
-          }
+          // if (gamefieldsFound.length == 1) {
+          //   window.location.href = "/schedule";
+          // } else {
+          //   setGamefields(gamefieldsFound);
+          // }
+          setGamefields(gamefieldsFound);
           if (res.status == 200) {
             toast.success("Canchas cargadas!", {
               autoClose: 2000,

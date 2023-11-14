@@ -8,7 +8,9 @@ import "react-toastify/dist/ReactToastify.css";
 
 function Organizations() {
   const [loading, setLoading] = useState(false);
-  const [organizations, setOrganizations] = useState<any[]>([]);
+  const [organizations, setOrganizations] = useState<any[]>([
+    { _id: "", name: "" },
+  ]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -31,15 +33,22 @@ function Organizations() {
         })
         .then((res) => {
           const orgsFound = res.data.data;
-          const firstGamefieldId = orgsFound[0].gameFields[0];
+          // console.log(orgsFound);
+
+          // const firstGamefieldId = orgsFound[0].gameFields[0];
           if (orgsFound.length == 1) {
-            localStorage.setItem("organizationId", orgsFound[0]._id);
-            localStorage.setItem("organizationName", orgsFound[0].name);
-            window.location.href = "/gamefields";
+            const orgId = orgsFound[0]._id;
+            const orgName = orgsFound[0].name;
+            localStorage.setItem("organizationId", orgId);
+            localStorage.setItem("organizationName", orgName);
+            setOrganizations([{ _id: orgId, name: orgName }]);
+
+            // window.location.href = "/gamefields";
           } else {
             setOrganizations(orgsFound);
           }
-          if (res.status == 200 && orgsFound.length > 1) {
+          // setOrganizations(orgsFound);
+          if (res.status == 200 && orgsFound.length > 0) {
             toast.success("Organizaciones cargadas!", {
               autoClose: 2000,
               icon: "✅",

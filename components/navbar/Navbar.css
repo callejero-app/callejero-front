@@ -39,6 +39,6 @@ a.relative.inline-flex.items-center.tap-highlight-transparent.outline-none.data-
 }
 
 a.relative.inline-flex.items-center.tap-highlight-transparent.outline-none.data-\[focus-visible\=true\]\:z-10.data-\[focus-visible\=true\]\:outline-2.data-\[focus-visible\=true\]\:outline-focus.data-\[focus-visible\=true\]\:outline-offset-2.text-medium.text-foreground.no-underline.hover\:opacity-80.active\:opacity-disabled.transition-opacity:hover {
-  background-color: #12231e;
-  transition: background-color 0.5s;
+  /* background-color: #12231e;
+  transition: background-color 0.5s; */
 }

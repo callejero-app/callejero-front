@@ -50,11 +50,21 @@ function Navbar2() {
         </div>
         <ul className="hidden md:flex text-white items-center w-full">
           <div className=" flex float-left">
-            <li className="hidden md:block mx-12">
-              <p>Home2</p>
+            <li className="hidden md:block ml-12">
+              <Link
+                href={`/organizations`}
+                className="text-white px-4 py-2 hover:bg-[#557b6b] rounded-full"
+              >
+                Organizaciones
+              </Link>
             </li>
-            <li className="hidden md:block">
-              <p>Calendario</p>
+            <li className="hidden md:block ml-6">
+              <Link
+                href={`/gamefields`}
+                className="text-white px-4 py-2 hover:bg-[#557b6b] rounded-full transition-all"
+              >
+                Canchas
+              </Link>
             </li>
           </div>
           <div className="float-right hidden w-full justify-end md:flex">
@@ -62,7 +72,7 @@ function Navbar2() {
               onClick={logout}
               as={Link}
               fullWidth={false}
-              className="text-white logout-btn"
+              className="text-white logout-btn rounded-full hover:scale-105 transition-all"
               variant="flat"
             >
               Log Out
