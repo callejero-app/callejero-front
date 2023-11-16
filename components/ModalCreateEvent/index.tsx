@@ -28,6 +28,7 @@ const ModalCreateEvent: React.FC<{
     end: { getHours: Function };
   };
 }> = ({ open, updateOpen, addEvent, bookingInfo }) => {
+  //test
   moment.locale("es");
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [modalOpen, setModalOpen] = useState(open);
