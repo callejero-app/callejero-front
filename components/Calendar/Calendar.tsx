@@ -108,6 +108,7 @@ function Calendar(data: any) {
         start: newEvent.start,
         end: newEvent.end,
         detail: newEvent.detail,
+        //@ts-ignore
         description: newEvent.description,
         tag: newEvent.tag,
         totalPrice: newEvent.totalPrice,
