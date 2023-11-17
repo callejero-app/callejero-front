@@ -17,11 +17,13 @@ function Calendar(data: any) {
   const [bookingInfo, setBookingInfo] = useState({});
   const [events, setEvents] = useState([
     {
+      justCreated: false,
       title: "",
       start: "",
       end: "",
       tag: "",
       detail: {},
+      price: 0,
     },
   ]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -36,16 +38,27 @@ function Calendar(data: any) {
     setEvents(
       bookings.length > 0
         ? bookings.map((booking: any) => ({
+            justCreated: false,
             detail: booking,
             title:
               booking.description != null ? booking.description : "Reserva",
             start: booking.startsAt,
             end: booking.endsAt,
+            description:
+              booking.description != null
+                ? booking.description
+                : "Sin descripcción",
           }))
         : {}
     );
-    console.log("bookings", bookings);
-    console.log("events", events);
+    // console.log("bookings", bookings);
+    // console.log("events", events);
+    if (bookings.length > 0)
+      localStorage.setItem(
+        "totalPrice",
+        bookings[0].totalPrice.amount.toLocaleString()
+      );
+    // console.log("totalPrice", localStorage.getItem("totalPrice"));
   }, [bookings]);
 
   useEffect(() => {
@@ -76,25 +89,31 @@ function Calendar(data: any) {
   };
 
   interface Event {
+    justCreated: boolean;
     title: string;
     start: string;
     end: string;
-    tag: string;
     detail: {};
+    description: string;
+    tag: string;
+    totalPrice: 0;
   }
 
   const addEvent = (newEvent: Event) => {
     setEvents([
       ...events,
       {
+        justCreated: newEvent.justCreated,
         title: newEvent.title,
         start: newEvent.start,
         end: newEvent.end,
-        tag: newEvent.tag,
         detail: newEvent.detail,
+        description: newEvent.description,
+        tag: newEvent.tag,
+        totalPrice: newEvent.totalPrice,
       },
     ]);
-    console.log("event state:", events);
+    console.log("Events state:", events);
   };
 
   if (gridModified)
@@ -153,44 +172,82 @@ function Calendar(data: any) {
             events={events}
             eventClick={(e) => {
               //PRIORIDAD
-              console.log("evento", e);
+              // console.log("events:", events);
+              // console.log("event click", e);
+              const justCreated = e.event._def.extendedProps.justCreated;
+              if (justCreated) {
+                // console.log("booking recien creada");
 
-              console.log("viene de la db");
-              const tag = e.event._def.extendedProps.detail.originPlatform;
-              const start = new Date(
-                e.event._def.extendedProps.detail.startsAt
-              );
-              const startStr = moment(start).format("hh:mm A");
-              const end = new Date(e.event._def.extendedProps.detail.endsAt);
-              const endStr = moment(end).format("hh:mm A");
-              const dayName = moment(start).format("dddd");
-              const dayNumber = moment(start).format("D");
-              const monthName = new Date(start).toLocaleString("es-ES", {
-                month: "long",
-              });
-              const description = e.event._def.extendedProps.detail.description;
-              const teams = e.event._def.extendedProps.detail.teams;
-              const totalPrice =
-                e.event._def.extendedProps.detail.totalPrice.amount;
-              const totalPaid =
-                e.event._def.extendedProps.detail.totalPaid.amount;
-              const responsables = teams.map((t: any) => ({
-                name: t.teamLeader.name,
-                sex: t.teamLeader.sex,
-                id: t.teamLeader.id,
-              }));
-              setBookingDetail({
-                tag: tag,
-                start: startStr,
-                end: endStr,
-                dayName: dayName,
-                dayNumber: dayNumber,
-                monthName: monthName,
-                description: description,
-                responsables: responsables,
-                totalPrice: totalPrice,
-                totalPaid: totalPaid,
-              });
+                const start =
+                  e.event._instance && new Date(e.event._instance.range.start);
+
+                const startStr = moment(start).format("hh:mm A");
+                const end =
+                  e.event._instance && new Date(e.event._instance.range.end);
+                const endStr = moment(end).format("hh:mm A");
+                const dayName = moment(start).format("dddd");
+                const dayNumber = moment(start).format("D");
+                const monthName = new Date(start).toLocaleString("es-ES", {
+                  month: "long",
+                });
+                const totalPrice = localStorage.getItem("totalPrice");
+
+                setBookingDetail({
+                  tag: e.event._def.extendedProps.tag,
+                  start: startStr,
+                  end: endStr,
+                  dayName: dayName,
+                  dayNumber: dayNumber,
+                  monthName: monthName,
+                  description: e.event._def.extendedProps.description,
+                  responsables: [
+                    {
+                      name: localStorage.getItem("clientName"),
+                      sex: localStorage.getItem("clientSex"),
+                    },
+                  ],
+                  totalPrice: totalPrice,
+                  totalPaid: totalPrice,
+                });
+              } else {
+                // console.log("booking de la DB");
+                const tag = e.event._def.extendedProps.detail.originPlatform;
+                const start = new Date(
+                  e.event._def.extendedProps.detail.startsAt
+                );
+                const startStr = moment(start).format("hh:mm A");
+                const end = new Date(e.event._def.extendedProps.detail.endsAt);
+                const endStr = moment(end).format("hh:mm A");
+                const dayName = moment(start).format("dddd");
+                const dayNumber = moment(start).format("D");
+                const monthName = new Date(start).toLocaleString("es-ES", {
+                  month: "long",
+                });
+                const description =
+                  e.event._def.extendedProps.detail.description;
+                const teams = e.event._def.extendedProps.detail.teams;
+                const totalPrice =
+                  e.event._def.extendedProps.detail.totalPrice.amount;
+                const totalPaid =
+                  e.event._def.extendedProps.detail.totalPaid.amount;
+                const responsables = teams.map((t: any) => ({
+                  name: t.teamLeader.name,
+                  sex: t.teamLeader.sex,
+                  id: t.teamLeader.id,
+                }));
+                setBookingDetail({
+                  tag: tag,
+                  start: startStr,
+                  end: endStr,
+                  dayName: dayName,
+                  dayNumber: dayNumber,
+                  monthName: monthName,
+                  description: description,
+                  responsables: responsables,
+                  totalPrice: totalPrice,
+                  totalPaid: totalPaid,
+                });
+              }
               setModalEventDetailVisible(true);
             }}
             eventMinWidth={50}

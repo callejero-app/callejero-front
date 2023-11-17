@@ -41,7 +41,7 @@ const ModalEventDetail: React.FC<{
     useState(openEventDetail);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  console.log("lo q llega:", bookingDetail);
+  // console.log("lo q llega:", bookingDetail);
 
   const [bookingReceived, setBookingReceived] = useState({
     tag: bookingDetail.tag,
@@ -56,7 +56,8 @@ const ModalEventDetail: React.FC<{
     totalPaid: bookingDetail.totalPaid,
   });
 
-  console.log("bookingReceived:", bookingReceived);
+  // console.log("bookingReceived:", bookingReceived);
+  // console.log("responsables length:", bookingReceived.responsables.length);
 
   useEffect(() => {
     onOpen();
@@ -80,7 +81,7 @@ const ModalEventDetail: React.FC<{
           {(onClose) => (
             <div className="modal">
               <ModalHeader className="flex flex-col gap-1 modal__title mt-6">
-                Desafío de equipos
+                Información de la reserva
               </ModalHeader>
               <ModalBody>
                 <div className="bg-[#E7E8E2] w-28 h-8 flex items-center rounded-md px-2.5 mb-2">
@@ -103,9 +104,17 @@ const ModalEventDetail: React.FC<{
                     priority={true}
                   />
                   <p className=" modal__date ml-2">
-                    {bookingReceived.dayName}, {bookingReceived.dayNumber} de{" "}
-                    {bookingReceived.monthName} · {bookingReceived.start} -{" "}
-                    {bookingReceived.end}
+                    <span className="capitalize">
+                      {bookingReceived.dayName}
+                    </span>
+                    , {bookingReceived.dayNumber} de{" "}
+                    <span className="capitalize">
+                      {bookingReceived.monthName}
+                    </span>{" "}
+                    ·{" "}
+                    <span className="modal__date--hours font-medium">
+                      {bookingReceived.start} - {bookingReceived.end}
+                    </span>
                   </p>
                 </div>
                 {bookingDetail.description && (
@@ -115,7 +124,7 @@ const ModalEventDetail: React.FC<{
                     </p>
                     <p
                       id="description"
-                      className={`modal__description text-xs`}
+                      className={`modal__description text-xs capitalize`}
                     >
                       {bookingDetail.description}
                     </p>
@@ -128,7 +137,39 @@ const ModalEventDetail: React.FC<{
                       Responsables
                     </p>
                     <div className="flex flex-col">
+                      {bookingReceived.responsables !== undefined &&
+                        bookingReceived.responsables.length == 1 && (
+                          <div
+                            key={bookingReceived.responsables[0].id}
+                            className="flex items-center mt-4"
+                          >
+                            <div
+                              className={`${
+                                bookingReceived.responsables[0].sex == "m"
+                                  ? "bg-blue-300"
+                                  : "bg-pink-300"
+                              }  rounded-full flex p-2 mr-2`}
+                            >
+                              <Image
+                                src={
+                                  bookingReceived.responsables[0].sex == "m"
+                                    ? male
+                                    : female
+                                }
+                                alt="icon"
+                                height={25}
+                                width={25}
+                                priority={true}
+                                className=""
+                              />
+                            </div>
+                            <p className="">
+                              {bookingReceived.responsables[0].name}
+                            </p>
+                          </div>
+                        )}
                       {bookingDetail.responsables &&
+                        bookingReceived.responsables.length > 1 &&
                         bookingDetail.responsables.map((responsable: any) => (
                           <div
                             key={responsable.id}
@@ -182,9 +223,7 @@ const ModalEventDetail: React.FC<{
                   <div className="flex justify-between items-center">
                     <div className="flex flex-col">
                       <p className="text-callejero text-2xl">
-                        $
-                        {bookingReceived.tag == "web" &&
-                          `${bookingReceived.totalPrice.toLocaleString()}`}
+                        ${bookingReceived.tag == "web" && `0,00`}
                         {bookingReceived.tag == "app" &&
                           `${bookingReceived.totalPaid.toLocaleString()}`}
                         {/* ${bookingReceived.totalPaid.toLocaleString()} */}
@@ -192,7 +231,7 @@ const ModalEventDetail: React.FC<{
                       <p className="text-[#818181] text-xs">
                         $
                         {bookingReceived.tag == "web" &&
-                          "0 pendiente por abonar"}
+                          `${bookingReceived.totalPrice.toLocaleString()} pendiente por abonar`}
                         {bookingReceived.tag == "app" &&
                           `${
                             bookingReceived.totalPrice -

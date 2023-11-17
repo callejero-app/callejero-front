@@ -48,10 +48,14 @@ function Login() {
           }
         )
         .then((res) => {
-          const webToken = res.data.data.webToken;
-          const userId = res.data.data.userId;
-          localStorage.setItem("auth", webToken);
-          localStorage.setItem("clientId", userId);
+          // console.log("response", res);
+
+          // const webToken = res.data.data.webToken;
+          // const userId = res.data.data.user.id;
+          localStorage.setItem("auth", res.data.data.webToken);
+          localStorage.setItem("clientId", res.data.data.user.id);
+          localStorage.setItem("clientName", res.data.data.user.name);
+          localStorage.setItem("clientSex", res.data.data.user.sex);
           if (res.status == 200) {
             toast.success("User found!", {
               autoClose: 2000,

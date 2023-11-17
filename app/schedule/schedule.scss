@@ -16,6 +16,9 @@
       color: #184135;
     }
   }
+  &__container {
+    transform: scaleY(1.03);
+  }
 }
 
 .dropdown-icon {

@@ -141,8 +141,8 @@ function Schedule() {
             </>
           )}
           <>
-            <div className="items-center md:block md:pt-4 bg-callejero md:bg-white">
-              <div className="own-toolbar__container px-6 w-full flex flex-col md:flex-row">
+            <div className="own-toolbar__container items-center md:block md:pt-4 bg-callejero md:bg-white">
+              <div className="px-6 w-full flex flex-col md:flex-row">
                 <div className="w-full h-11 items-center hidden md:flex">
                   <h1 className="text-2xl own-toolbar__breadcumb">
                     <a

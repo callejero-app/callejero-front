@@ -202,6 +202,10 @@ button.fc-today-button.fc-button.fc-button-primary:hover {
   color: white;
 }
 
+.fc .fc-toolbar.fc-header-toolbar {
+  margin-bottom: 0;
+}
+
 // responsive
 @media (max-width: 767px) {
   .fc .fc-toolbar.fc-header-toolbar {

@@ -28,7 +28,6 @@ const ModalCreateEvent: React.FC<{
     end: { getHours: Function };
   };
 }> = ({ open, updateOpen, addEvent, bookingInfo }) => {
-  //test
   moment.locale("es");
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [modalOpen, setModalOpen] = useState(open);
@@ -58,6 +57,8 @@ const ModalCreateEvent: React.FC<{
     endsAtTime: bookingInfo.endsAtTime,
     //@ts-ignore
     endsAtTime24: bookingInfo.endsAtTime24,
+    //@ts-ignore
+    totalPrice: localStorage.getItem("totalPrice"),
   });
 
   useEffect(() => {
@@ -70,26 +71,30 @@ const ModalCreateEvent: React.FC<{
     // deleteHoverGray();
   }, []);
 
-  const deleteHoverGray = () => {
-    document
-      .getElementsByClassName(
-        "relative px-3 w-full inline-flex shadow-sm tap-highlight-transparent bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 min-h-unit-10 rounded-medium flex-col items-start justify-center gap-0 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 h-14 py-2"
-      )[0]
-      .classList.remove("data-[hover=true]:bg-default-200");
-    document
-      .getElementsByClassName(
-        "relative px-3 w-full inline-flex shadow-sm tap-highlight-transparent bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 min-h-unit-10 rounded-medium flex-col items-start justify-center gap-0 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 h-14 py-2"
-      )[0]
-      .classList.remove("data-[hover=true]:bg-default-200");
-  };
+  // const deleteHoverGray = () => {
+  //   document
+  //     .getElementsByClassName(
+  //       "relative px-3 w-full inline-flex shadow-sm tap-highlight-transparent bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 min-h-unit-10 rounded-medium flex-col items-start justify-center gap-0 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 h-14 py-2"
+  //     )[0]
+  //     .classList.remove("data-[hover=true]:bg-default-200");
+  //   document
+  //     .getElementsByClassName(
+  //       "relative px-3 w-full inline-flex shadow-sm tap-highlight-transparent bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 min-h-unit-10 rounded-medium flex-col items-start justify-center gap-0 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 h-14 py-2"
+  //     )[0]
+  //     .classList.remove("data-[hover=true]:bg-default-200");
+  // };
 
-  const createEventCalendar = (title: string) => {
+  const createEventCalendar = (description: string) => {
     const newEvent = {
-      title: title,
+      justCreated: true,
+      title: description,
       //@ts-ignore
       start: `${booking.startsAtDate} ${bookingInfo.startsAtTime24}`,
       //@ts-ignore
       end: `${booking.endsAtDate} ${bookingInfo.endsAtTime24}`,
+      description: description,
+      tag: "web",
+      totalPrice: localStorage.getItem("totalPrice"),
     };
     addEvent(newEvent);
   };
@@ -235,7 +240,7 @@ const ModalCreateEvent: React.FC<{
                     <div className="flex flex-col">
                       <p className="text-callejero text-2xl">$0,00</p>
                       <p className="text-[#818181] text-xs">
-                        $50.000,00 penditente por abonar
+                        ${booking.totalPrice} penditente por abonar
                       </p>
                     </div>
                     <button

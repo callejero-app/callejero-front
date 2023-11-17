@@ -9,9 +9,6 @@ import "react-toastify/dist/ReactToastify.css";
 function Organizations() {
   const [loading, setLoading] = useState(false);
   const [gamefields, setGamefields] = useState<any[]>([]);
-  const [gamefieldsCharged, setGamefieldCharged] = useState([
-    { id: "", name: "" },
-  ]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
