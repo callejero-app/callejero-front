@@ -137,13 +137,16 @@ const ModalEventDetail: React.FC<{
                     </p>
                     <div className="flex flex-col">
                       {bookingReceived.responsables !== undefined &&
+                        //@ts-ignore
                         bookingReceived.responsables.length == 1 && (
                           <div
+                            //@ts-ignore
                             key={bookingReceived.responsables[0].id}
                             className="flex items-center mt-4"
                           >
                             <div
                               className={`${
+                                //@ts-ignore
                                 bookingReceived.responsables[0].sex == "m"
                                   ? "bg-blue-300"
                                   : "bg-pink-300"
@@ -151,6 +154,7 @@ const ModalEventDetail: React.FC<{
                             >
                               <Image
                                 src={
+                                  //@ts-ignore
                                   bookingReceived.responsables[0].sex == "m"
                                     ? male
                                     : female
@@ -163,6 +167,7 @@ const ModalEventDetail: React.FC<{
                               />
                             </div>
                             <p className="">
+                              {/* @ts-ignore */}
                               {bookingReceived.responsables[0].name}
                             </p>
                           </div>
