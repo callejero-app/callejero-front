@@ -188,9 +188,14 @@ function Calendar(data: any) {
                 const endStr = moment(end).format("hh:mm A");
                 const dayName = moment(start).format("dddd");
                 const dayNumber = moment(start).format("D");
-                const monthName = new Date(start).toLocaleString("es-ES", {
-                  month: "long",
-                });
+                const monthName =
+                  e.event._instance &&
+                  new Date(e.event._instance.range.start).toLocaleString(
+                    "es-ES",
+                    {
+                      month: "long",
+                    }
+                  );
                 const totalPrice = localStorage.getItem("totalPrice");
 
                 setBookingDetail({
