@@ -12,7 +12,6 @@ import {
 } from "@nextui-org/react";
 import moment from "moment";
 import "moment/locale/es";
-import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./styles.scss";
