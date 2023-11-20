@@ -18,6 +18,8 @@ function Calendar(data: any) {
   const [events, setEvents] = useState([
     {
       justCreated: false,
+      newStart: "",
+      newEnd: "",
       title: "",
       start: "",
       end: "",
@@ -39,6 +41,8 @@ function Calendar(data: any) {
       bookings.length > 0
         ? bookings.map((booking: any) => ({
             justCreated: false,
+            newStart: "",
+            newEnd: "",
             detail: booking,
             title:
               booking.description != null ? booking.description : "Reserva",
@@ -90,6 +94,8 @@ function Calendar(data: any) {
 
   interface Event {
     justCreated: boolean;
+    newStart: string;
+    newEnd: string;
     title: string;
     start: string;
     end: string;
@@ -104,6 +110,8 @@ function Calendar(data: any) {
       ...events,
       {
         justCreated: newEvent.justCreated,
+        newStart: newEvent.newStart,
+        newEnd: newEvent.newEnd,
         title: newEvent.title,
         start: newEvent.start,
         end: newEvent.end,
@@ -177,11 +185,8 @@ function Calendar(data: any) {
               // console.log("event click", e);
               const justCreated = e.event._def.extendedProps.justCreated;
               if (justCreated) {
-                // console.log("booking recien creada");
-
                 const start =
                   e.event._instance && new Date(e.event._instance.range.start);
-
                 const startStr = moment(start).format("hh:mm A");
                 const end =
                   e.event._instance && new Date(e.event._instance.range.end);
@@ -200,8 +205,8 @@ function Calendar(data: any) {
 
                 setBookingDetail({
                   tag: e.event._def.extendedProps.tag,
-                  start: startStr,
-                  end: endStr,
+                  start: e.event._def.extendedProps.newStart,
+                  end: e.event._def.extendedProps.newEnd,
                   dayName: dayName,
                   dayNumber: dayNumber,
                   monthName: monthName,

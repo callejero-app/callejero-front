@@ -87,6 +87,8 @@ const ModalCreateEvent: React.FC<{
   const createEventCalendar = (description: string) => {
     const newEvent = {
       justCreated: true,
+      newStart: booking.startHour,
+      newEnd: booking.endHour,
       title: description,
       //@ts-ignore
       start: `${booking.startsAtDate} ${bookingInfo.startsAtTime24}`,
