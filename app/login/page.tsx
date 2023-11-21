@@ -43,6 +43,7 @@ function Login() {
           },
           {
             headers: {
+              "Content-Type": "application/json",
               "x-tz": localStorage.getItem("timezone"),
             },
           }
