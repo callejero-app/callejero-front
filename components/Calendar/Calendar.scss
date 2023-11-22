@@ -173,6 +173,12 @@ th.fc-col-header-cell.fc-day.fc-day-today.dayHeader {
   padding: 10px;
   margin: 8px;
   border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  &:hover {
+    transform: scale(1.05);
+    transition: all 0.2s;
+  }
 }
 
 .fc-v-event .fc-event-main-frame {
@@ -206,16 +212,25 @@ button.fc-today-button.fc-button.fc-button-primary:hover {
   margin-bottom: 0;
 }
 
+.fc.fc-media-screen.fc-direction-ltr.fc-theme-standard {
+  height: calc(100vh - 120px);
+}
+
 // responsive
 @media (max-width: 767px) {
   .fc .fc-toolbar.fc-header-toolbar {
+    padding: 0 1rem;
     background: #184135;
     width: 100%;
-    justify-content: center;
+    justify-content: space-between;
     margin: 0;
     transform: scaleY(1.02);
+    & .fc-icon-chevron-right::before,
+    .fc-icon-chevron-left::before {
+      color: white;
+    }
   }
-  // .fc-toolbar-chunk .fc-button-group .fc-today-button,
+
   .fc-toolbar-chunk .fc-button-group .fc-timeGridWeek-button,
   .fc-button-group .fc-timeGridDay-button {
     display: none;
@@ -228,6 +243,9 @@ button.fc-today-button.fc-button.fc-button-primary:hover {
   }
   .fc-toolbar-chunk .fc-button-group {
     display: block;
+  }
+  .fc.fc-media-screen.fc-direction-ltr.fc-theme-standard {
+    height: calc(100vh - 150px);
   }
 }
 

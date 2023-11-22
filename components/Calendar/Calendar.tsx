@@ -55,14 +55,11 @@ function Calendar(data: any) {
           }))
         : {}
     );
-    // console.log("bookings", bookings);
-    // console.log("events", events);
     if (bookings.length > 0)
       localStorage.setItem(
         "totalPrice",
         bookings[0].totalPrice.amount.toLocaleString()
       );
-    // console.log("totalPrice", localStorage.getItem("totalPrice"));
   }, [bookings]);
 
   useEffect(() => {
@@ -116,6 +113,7 @@ function Calendar(data: any) {
         start: newEvent.start,
         end: newEvent.end,
         detail: newEvent.detail,
+        //@ts-ignored
         description: newEvent.description,
         tag: newEvent.tag,
         totalPrice: newEvent.totalPrice,
@@ -175,23 +173,16 @@ function Calendar(data: any) {
             initialView={
               window.innerWidth < 768 ? "timeGridDay" : "timeGridWeek"
             }
-            height={"calc(100vh - 80px)"}
             eventColor={"#184135"}
             events={events}
             eventClick={(e) => {
-              //PRIORIDAD
-              // console.log("events:", events);
-              // console.log("event click", e);
               const justCreated = e.event._def.extendedProps.justCreated;
               if (justCreated) {
                 const start =
                   e.event._instance && new Date(e.event._instance.range.start);
-                const startStr = moment(start).format("hh:mm A");
-                const end =
-                  e.event._instance && new Date(e.event._instance.range.end);
-                const endStr = moment(end).format("hh:mm A");
                 const dayName = moment(start).format("dddd");
                 const dayNumber = moment(start).format("D");
+                //@ts-ignored
                 const monthName = new Date(start).toLocaleString("es-ES", {
                   month: "long",
                 });
@@ -215,7 +206,6 @@ function Calendar(data: any) {
                   totalPaid: totalPrice,
                 });
               } else {
-                // console.log("booking de la DB");
                 const tag = e.event._def.extendedProps.detail.originPlatform;
                 const start = new Date(
                   e.event._def.extendedProps.detail.startsAt
