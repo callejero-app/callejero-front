@@ -137,7 +137,10 @@ function Schedule() {
         >
           {loading && (
             <>
-              <ModalLoading txt={gamefieldNameSelected} />
+              <ModalLoading
+                title={gamefieldNameSelected}
+                footer="Cargando reservas"
+              />
             </>
           )}
           <>

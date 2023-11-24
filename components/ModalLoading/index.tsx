@@ -11,7 +11,10 @@ import {
   Spinner,
 } from "@nextui-org/react";
 
-const App: React.FC<{ txt: string }> = ({ txt }) => {
+const App: React.FC<{ title: string; footer: string }> = ({
+  title,
+  footer,
+}) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
@@ -26,11 +29,11 @@ const App: React.FC<{ txt: string }> = ({ txt }) => {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1 text-center">
-                {txt}
+                {title}
               </ModalHeader>
               <ModalBody>
                 <Spinner className="circle1" size="lg" color="primary" />
-                <p className="text-center">Cargando reservas</p>
+                <p className="text-center">{footer}</p>
               </ModalBody>
             </>
           )}

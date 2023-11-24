@@ -64,7 +64,7 @@ function Login() {
               theme: "dark",
             });
             setLoading(false);
-            window.location.href = "/organizations";
+            window.location.href = "/selectgamefield";
           }
         });
     } catch (error) {

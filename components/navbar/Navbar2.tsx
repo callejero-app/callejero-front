@@ -52,13 +52,13 @@ function Navbar2() {
           <div className=" flex float-left">
             <li className="hidden md:block ml-12">
               <Link
-                href={`/organizations`}
+                href={`/selectgamefield`}
                 className="text-white px-4 py-2 hover:bg-[#557b6b] rounded-full"
               >
                 Organizaciones
               </Link>
             </li>
-            <li className="hidden md:block ml-6">
+            <li className="hidden ml-6">
               <Link
                 href={`/gamefields`}
                 className="text-white px-4 py-2 hover:bg-[#557b6b] rounded-full transition-all"
