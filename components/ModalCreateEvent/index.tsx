@@ -242,7 +242,8 @@ const ModalCreateEvent: React.FC<{
                     <div className="flex flex-col">
                       <p className="text-callejero text-2xl">$0,00</p>
                       <p className="text-[#818181] text-xs">
-                        ${booking.totalPrice} penditente por abonar
+                        ${booking.totalPrice?.toLocaleString()} penditente por
+                        abonar
                       </p>
                     </div>
                     <button
@@ -254,7 +255,7 @@ const ModalCreateEvent: React.FC<{
                   </div>
                 </div>
                 <div className="mb-2 border-b-small border-slate-200 hidden"></div>
-                <div className="flex justify-between mb-2 hidden">
+                {/* <div className="flex justify-between mb-2">
                   <p className="text-[#393939] text-sm">
                     Enviar notificaciones a responsables
                   </p>
@@ -262,7 +263,7 @@ const ModalCreateEvent: React.FC<{
                     <input type="checkbox"></input>
                     <span className="slider round"></span>
                   </label>
-                </div>
+                </div> */}
                 <p className="text-[#818181] text-xs hidden">
                   Enviaremos un correo electrónico a los correos registrados
                   para notificarles de la reserva.

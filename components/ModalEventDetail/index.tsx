@@ -232,15 +232,18 @@ const ModalEventDetail: React.FC<{
                           `${bookingReceived.totalPaid.toLocaleString()}`}
                         {/* ${bookingReceived.totalPaid.toLocaleString()} */}
                       </p>
-                      <p className="text-[#818181] text-xs">
+                      <p className="text-[#818181] text-xs mt-1">
                         $
                         {bookingReceived.tag == "web" &&
                           `${bookingReceived.totalPrice.toLocaleString()} pendiente por abonar`}
                         {bookingReceived.tag == "app" &&
-                          `${
+                          `${(
                             bookingReceived.totalPrice -
                             bookingReceived.totalPaid
-                          } penditente por abonar`}
+                          ).toLocaleString()} pendiente por abonar`}
+                      </p>
+                      <p className="text-[#818181] text-xs mt-1">
+                        total: ${bookingReceived.totalPrice.toLocaleString()}
                       </p>
                     </div>
                     <button
@@ -251,7 +254,7 @@ const ModalEventDetail: React.FC<{
                     </button>
                   </div>
                 </div>
-                <div className="mb-2 border-b-small border-slate-200"></div>
+                <div className="border-b-small border-slate-200"></div>
               </ModalBody>
               <ModalFooter>
                 {/* <div className="flex w-full justify-between"> */}
