@@ -111,7 +111,7 @@ colgroup > col {
 }
 
 td.fc-timegrid-slot.fc-timegrid-slot-label.fc-scrollgrid-shrink.slotTimes {
-  height: 88px;
+  height: 100px;
   width: 126px;
   display: flex;
   border: none;
@@ -175,6 +175,13 @@ th.fc-col-header-cell.fc-day.fc-day-today.dayHeader {
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
+  height: 5.2rem;
+  &.fc-v-event .fc-event-title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+  }
   &:hover {
     transform: scale(1.05);
     transition: all 0.2s;
