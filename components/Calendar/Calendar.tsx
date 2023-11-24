@@ -10,8 +10,11 @@ import ModalEventDetail from "@/components/ModalEventDetail";
 import moment from "moment";
 import "./Calendar.scss";
 
-function Calendar(data: any) {
+function Calendar(data: any, suscriptions: any) {
   const [bookings, setBookings] = useState(data.data);
+  const [suscriptionsReceiveds, setSuscriptionsReceiveds] = useState([
+    { title: "title" },
+  ]);
   const [gridModified, setGridModified] = useState(false);
   const [widthScreen, setWidthScreen] = useState(window.innerWidth);
   const [bookingInfo, setBookingInfo] = useState({});
@@ -35,6 +38,10 @@ function Calendar(data: any) {
   useEffect(() => {
     setBookings(data.data);
   }, [data]);
+
+  useEffect(() => {
+    if (suscriptions) setSuscriptionsReceiveds(suscriptions);
+  }, [suscriptions]);
 
   useEffect(() => {
     setEvents(
@@ -61,6 +68,24 @@ function Calendar(data: any) {
         bookings[0].totalPrice.amount.toLocaleString()
       );
   }, [bookings]);
+
+  useEffect(() => {
+    suscriptionsReceiveds.length > 0 &&
+      setEvents([
+        ...events,
+        suscriptions.map((sub: any) => ({
+          justCreated: false,
+          newStart: "",
+          newEnd: "",
+          detail: {},
+          title: "Suscription",
+          start: sub.start,
+          end: sub.end,
+          description:
+            sub.description != null ? sub.description : "Sin descripcción",
+        })),
+      ]);
+  }, [suscriptionsReceiveds]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -104,7 +129,6 @@ function Calendar(data: any) {
 
   const addEvent = (newEvent: Event) => {
     if (events.length == undefined) {
-      console.log("Entro 1");
       setEvents([
         {
           justCreated: newEvent.justCreated,
@@ -121,7 +145,6 @@ function Calendar(data: any) {
         },
       ]);
     } else {
-      console.log("Entro 2");
       setEvents([
         ...events,
         {
@@ -139,7 +162,7 @@ function Calendar(data: any) {
         },
       ]);
     }
-    console.log("Events state:", events);
+    // console.log("Events state:", events);
   };
 
   if (gridModified)

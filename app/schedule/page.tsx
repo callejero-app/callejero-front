@@ -12,6 +12,7 @@ import "./schedule.scss";
 function Schedule() {
   const [loading, setLoading] = useState(false);
   const [bookings, setBookings] = useState<any[]>([]);
+  const [suscriptions, setSuscriptions] = useState<any[]>([]);
   const [gamefieldIdSelected, setGamefieldIdSelected] = useState("");
   const [gamefieldNameSelected, setGamefieldNameSelected] = useState("");
   const [gamefieldsList, setGamefieldsList] = useState([{ id: "", name: "" }]);
@@ -23,10 +24,7 @@ function Schedule() {
       setGamefieldNameSelected(localStorage.getItem("gamefieldName")!);
       const gamefieldsObject = localStorage.getItem("gamefieldsTuples");
       const gmList = gamefieldsObject && JSON.parse(gamefieldsObject);
-      console.log("Tamaño del json", Object.keys(gmList).length);
       setGamefieldsList(gmList);
-      console.log("gamefieldsList:", gamefieldsList);
-      console.log("length:", gamefieldsList);
       fetchBookings(localStorage.getItem("gamefieldId")!);
     }
   }, []);
@@ -81,7 +79,9 @@ function Schedule() {
         })
         .then((res) => {
           const bookingsFound = res.data.data.schedules;
+          const suscriptionsFound = res.data.data.suscriptions;
           setBookings(bookingsFound);
+          setSuscriptions(suscriptionsFound);
           if (res.status == 200) {
             toast.success("Reservas cargadas!", {
               autoClose: 2000,
@@ -209,7 +209,7 @@ function Schedule() {
                 </div>
               </div>
             </div>
-            <Calendar data={bookings} />
+            <Calendar data={bookings} suscriptions={suscriptions} />
           </>
         </div>
       </div>
