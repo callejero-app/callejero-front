@@ -103,22 +103,42 @@ function Calendar(data: any) {
   }
 
   const addEvent = (newEvent: Event) => {
-    setEvents([
-      ...events,
-      {
-        justCreated: newEvent.justCreated,
-        newStart: newEvent.newStart,
-        newEnd: newEvent.newEnd,
-        title: newEvent.title,
-        start: newEvent.start,
-        end: newEvent.end,
-        detail: newEvent.detail,
-        //@ts-ignore
-        description: newEvent.description,
-        tag: newEvent.tag,
-        totalPrice: newEvent.totalPrice,
-      },
-    ]);
+    if (events.length == undefined) {
+      console.log("Entro 1");
+      setEvents([
+        {
+          justCreated: newEvent.justCreated,
+          newStart: newEvent.newStart,
+          newEnd: newEvent.newEnd,
+          title: newEvent.title,
+          start: newEvent.start,
+          end: newEvent.end,
+          detail: newEvent.detail,
+          //@ts-ignore
+          description: newEvent.description,
+          tag: newEvent.tag,
+          totalPrice: newEvent.totalPrice,
+        },
+      ]);
+    } else {
+      console.log("Entro 2");
+      setEvents([
+        ...events,
+        {
+          justCreated: newEvent.justCreated,
+          newStart: newEvent.newStart,
+          newEnd: newEvent.newEnd,
+          title: newEvent.title,
+          start: newEvent.start,
+          end: newEvent.end,
+          detail: newEvent.detail,
+          //@ts-ignore
+          description: newEvent.description,
+          tag: newEvent.tag,
+          totalPrice: newEvent.totalPrice,
+        },
+      ]);
+    }
     console.log("Events state:", events);
   };
 

@@ -242,8 +242,13 @@ const ModalCreateEvent: React.FC<{
                     <div className="flex flex-col">
                       <p className="text-callejero text-2xl">$0,00</p>
                       <p className="text-[#818181] text-xs">
-                        ${booking.totalPrice?.toLocaleString()} penditente por
-                        abonar
+                        $
+                        {booking.totalPrice?.toLocaleString()
+                          ? booking.totalPrice?.toLocaleString()
+                          : localStorage
+                              .getItem("totalPrice")
+                              ?.toLocaleString()}{" "}
+                        penditente por abonar
                       </p>
                     </div>
                     <button

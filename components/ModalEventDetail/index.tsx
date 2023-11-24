@@ -243,7 +243,7 @@ const ModalEventDetail: React.FC<{
                           ).toLocaleString()} pendiente por abonar`}
                       </p>
                       <p className="text-[#818181] text-xs mt-1">
-                        total: ${bookingReceived.totalPrice.toLocaleString()}
+                        Total: ${bookingReceived.totalPrice.toLocaleString()}
                       </p>
                     </div>
                     <button
