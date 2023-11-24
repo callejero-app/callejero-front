@@ -12,7 +12,7 @@ function SelectGamefield() {
   const [loadingOrgs, setLoadingOrgs] = useState(false);
   const [loadingGamefields, setLoadingGamefields] = useState(false);
   const [organizations, setOrganizations] = useState<any[]>([
-    { id: "", name: "", img: "" },
+    { id: "", name: "", image: "" },
   ]);
   const [orgSelected, setOrgSelected] = useState({ id: "", name: "" });
   const [gamefields, setGamefields] = useState<any[]>([]);
@@ -53,7 +53,7 @@ function SelectGamefield() {
           if (orgsFound.length == 1) {
             const orgId = orgsFound[0].id;
             const orgName = orgsFound[0].name;
-            const orgImg = orgsFound[0].name;
+            const orgImg = orgsFound[0].image;
             localStorage.setItem("organizationId", orgId);
             localStorage.setItem("organizationName", orgName);
             setOrganizations([{ id: orgId, name: orgName, image: orgImg }]);
@@ -142,6 +142,7 @@ function SelectGamefield() {
         autoClose: 2000,
         icon: "❌",
       });
+
       setLoadingGamefields(false);
     }
   };
