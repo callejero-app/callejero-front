@@ -69,11 +69,29 @@ function SelectGamefield() {
           }
         });
     } catch (error) {
-      toast.error("Something failed!", {
-        autoClose: 2000,
-        icon: "❌",
-      });
-      setLoadingOrgs(false);
+      //@ts-ignore
+      const codeError = error.response.data.error.code;
+      console.log("codeError", codeError);
+      switch (codeError) {
+        case "auth.web.failure.session.1000":
+        case "auth.web.failure.session.1001":
+        case "auth.web.failure.session.1002":
+        case "auth.web.failure.session.1003":
+        case "auth.web.failure.session.1004:":
+          toast.error("Sesión caducada!", {
+            autoClose: 2000,
+            icon: "❌",
+          });
+          localStorage.clear();
+          window.location.href = "/login";
+          break;
+        default:
+          toast.error("Algo salió mal!", {
+            autoClose: 2000,
+            icon: "❌",
+          });
+          break;
+      }
     }
   };
 

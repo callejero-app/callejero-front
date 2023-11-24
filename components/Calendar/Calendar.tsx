@@ -11,6 +11,8 @@ import moment from "moment";
 import "./Calendar.scss";
 
 function Calendar(data: any, suscriptions: any) {
+  // console.log("suscriptions hijo", suscriptions);
+
   const [bookings, setBookings] = useState(data.data);
   const [suscriptionsReceiveds, setSuscriptionsReceiveds] = useState([
     { title: "title" },
@@ -37,10 +39,14 @@ function Calendar(data: any, suscriptions: any) {
 
   useEffect(() => {
     setBookings(data.data);
+    // console.log("suscriptions hijo", suscriptions);
   }, [data]);
 
   useEffect(() => {
-    if (suscriptions) setSuscriptionsReceiveds(suscriptions);
+    if (suscriptions) {
+      // console.log("suscriptions:", suscriptions);
+      setSuscriptionsReceiveds(suscriptions);
+    }
   }, [suscriptions]);
 
   useEffect(() => {
@@ -69,23 +75,23 @@ function Calendar(data: any, suscriptions: any) {
       );
   }, [bookings]);
 
-  useEffect(() => {
-    suscriptionsReceiveds.length > 0 &&
-      setEvents([
-        ...events,
-        suscriptions.map((sub: any) => ({
-          justCreated: false,
-          newStart: "",
-          newEnd: "",
-          detail: {},
-          title: "Suscription",
-          start: sub.start,
-          end: sub.end,
-          description:
-            sub.description != null ? sub.description : "Sin descripcción",
-        })),
-      ]);
-  }, [suscriptionsReceiveds]);
+  // useEffect(() => {
+  //   suscriptionsReceiveds.length > 0 &&
+  //     setEvents([
+  //       ...events,
+  //       suscriptions.map((sub: any) => ({
+  //         justCreated: false,
+  //         newStart: "",
+  //         newEnd: "",
+  //         detail: {},
+  //         title: "Suscription",
+  //         start: sub.start,
+  //         end: sub.end,
+  //         description:
+  //           sub.description != null ? sub.description : "Sin descripcción",
+  //       })),
+  //     ]);
+  // }, [suscriptionsReceiveds]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -169,6 +175,7 @@ function Calendar(data: any, suscriptions: any) {
     return (
       <div className="calendar bg-callejero">
         <div className="calendar__grid bg-white md:px-6">
+          {/* <p>Suscriptions Received: {suscriptions?.length}</p> */}
           <Fullcalendar
             slotDuration="01:00:00"
             slotLabelFormat={[

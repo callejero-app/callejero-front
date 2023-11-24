@@ -78,10 +78,15 @@ function Schedule() {
           },
         })
         .then((res) => {
+          console.log(res.data.data);
           const bookingsFound = res.data.data.schedules;
           const suscriptionsFound = res.data.data.suscriptions;
+          console.log("suscriptionsFound", suscriptionsFound);
+          console.log("bookingsFound:", bookingsFound);
+
           setBookings(bookingsFound);
           setSuscriptions(suscriptionsFound);
+          console.log(suscriptions);
           if (res.status == 200) {
             toast.success("Reservas cargadas!", {
               autoClose: 2000,
@@ -91,10 +96,29 @@ function Schedule() {
           }
         });
     } catch (error) {
-      toast.error("Something failed!", {
-        autoClose: 2000,
-        icon: "❌",
-      });
+      //@ts-ignore
+      const codeError = error.response.data.error.code;
+      console.log("codeError", codeError);
+      switch (codeError) {
+        case "auth.web.failure.session.1000":
+        case "auth.web.failure.session.1001":
+        case "auth.web.failure.session.1002":
+        case "auth.web.failure.session.1003":
+        case "auth.web.failure.session.1004:":
+          toast.error("Sesión caducada!", {
+            autoClose: 2000,
+            icon: "❌",
+          });
+          localStorage.clear();
+          window.location.href = "/login";
+          break;
+        default:
+          toast.error("Algo salió mal!", {
+            autoClose: 2000,
+            icon: "❌",
+          });
+          break;
+      }
       setLoading(false);
     }
   };
