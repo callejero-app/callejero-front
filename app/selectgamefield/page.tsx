@@ -244,14 +244,10 @@ function SelectGamefield() {
           <div className="w-full">
             {loadingGamefields ? (
               <>
-                {/* <h1 className="text-4xl font-bold">Cargando Canchas</h1>
-                <Loader /> */}
-                <>
-                  <ModalLoading
-                    title={orgSelected.name}
-                    footer="Cargando canchas"
-                  />
-                </>
+                <ModalLoading
+                  title={orgSelected.name}
+                  footer="Cargando canchas"
+                />
               </>
             ) : (
               <>
@@ -278,16 +274,15 @@ function SelectGamefield() {
                       }
                       key={gamefield.id}
                       style={{
-                        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(${
+                        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.6)), url(${
                           gamefield.image
                             ? gamefield.image
                             : "/images/default-org-img.jpeg"
                         })`,
                         backgroundSize: "cover",
-                        // boxShadow: "0 11px 34px 0 rgba(0,0,0,.2)",
                       }}
                       className="btn-gamefield mt-8 bg-callejero px-4 py-4 font-semibold
-                      rounded-2xl text-white hover:scale-105 transition-all w-full 
+                      rounded-2xl text-white hover:scale-[0.95] transition-all w-full 
                       text-2xl h-[210px] md:mx-[12px] md:w-[330px] drop-shadow-xl"
                     >
                       {gamefield.name}

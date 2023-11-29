@@ -18,6 +18,8 @@ import "./styles.scss";
 import Image from "next/image";
 import calendar from "@/public/images/calendar.svg";
 import male from "@/public/images/male.png";
+import admin from "@/public/images/verified-callejero.png";
+// import admin from "@/public/images/verified-callejero-light.png";
 import female from "@/public/images/female.png";
 
 const ModalEventDetail: React.FC<{
@@ -65,6 +67,8 @@ const ModalEventDetail: React.FC<{
     )[0];
     closeBtn.classList.add("close-btn");
     closeBtn.addEventListener("click", () => closeEventDetail());
+    console.log("booking received:", bookingReceived);
+    console.log("res length:", bookingReceived.responsables.length);
   }, []);
 
   const closeEventDetail = () => {
@@ -83,17 +87,27 @@ const ModalEventDetail: React.FC<{
                 Información de la reserva
               </ModalHeader>
               <ModalBody>
-                <div className="bg-[#E7E8E2] w-28 h-8 flex items-center rounded-md px-2.5 mb-2">
-                  {bookingReceived.tag == "app" && (
-                    <p className="uppercase text-xs">
-                      📱 de la {bookingReceived.tag}
-                    </p>
-                  )}
-                  {bookingReceived.tag == "web" && (
-                    <p className="uppercase text-xs">
-                      💻 de la {bookingReceived.tag}
-                    </p>
-                  )}
+                <div className="flex">
+                  <div className="bg-[#E7E8E2] w-28 h-8 flex items-center rounded-md px-2.5 mb-2 justify-center">
+                    {bookingReceived.tag == "sub" && (
+                      <p className="uppercase text-xs">Suscripcción</p>
+                    )}
+                    {bookingReceived.tag == "app" && (
+                      <p className="uppercase text-xs">
+                        de la {bookingReceived.tag}
+                      </p>
+                    )}
+                    {bookingReceived.tag == "web" && (
+                      <p className="uppercase text-xs">
+                        de la {bookingReceived.tag}
+                      </p>
+                    )}
+                  </div>
+                  <p className="text-xl ml-2 mt-[2px]">
+                    {bookingReceived.tag == "sub" && "⭐️"}
+                    {bookingReceived.tag == "app" && "📱"}
+                    {bookingReceived.tag == "web" && "💻"}
+                  </p>
                 </div>
                 <div className="flex mb-3">
                   <Image
@@ -147,24 +161,34 @@ const ModalEventDetail: React.FC<{
                             <div
                               className={`${
                                 //@ts-ignore
-                                bookingReceived.responsables[0].sex == "m"
+                                bookingReceived.responsables[0].sex == "a"
+                                  ? // ? "bg-callejero"
+                                    "bg-slate-300"
+                                  : //@ts-ignore
+                                  bookingReceived.responsables[0].sex == "m"
                                   ? "bg-blue-300"
                                   : "bg-pink-300"
                               }  rounded-full flex p-2 mr-2`}
                             >
+                              {/* @ts-ignore */}
+                              {/* {bookingReceived.responsables[0].sex == "a" && ( */}
                               <Image
                                 src={
-                                  //@ts-ignore
-                                  bookingReceived.responsables[0].sex == "m"
+                                  //  @ts-ignore
+                                  bookingReceived.responsables[0].sex == "a"
+                                    ? admin
+                                    : //  @ts-ignore
+                                    bookingReceived.responsables[0].sex == "m"
                                     ? male
                                     : female
                                 }
                                 alt="icon"
-                                height={25}
-                                width={25}
+                                height={30}
+                                width={30}
                                 priority={true}
                                 className=""
                               />
+                              {/* )} */}
                             </div>
                             <p className="">
                               {/* @ts-ignore */}
@@ -201,7 +225,7 @@ const ModalEventDetail: React.FC<{
                     </div>
                   </div>
                   <button
-                    className="text-xs px-6 h-8 border border-callejero rounded-full px-3 opacity-30"
+                    className="text-xs h-8 border border-callejero rounded-full px-3 opacity-30"
                     disabled
                   >
                     Modificar
@@ -227,14 +251,13 @@ const ModalEventDetail: React.FC<{
                   <div className="flex justify-between items-center">
                     <div className="flex flex-col">
                       <p className="text-callejero text-2xl">
-                        ${bookingReceived.tag == "web" && `0,00`}
+                        ${(bookingReceived.tag == "web" || "sub") && `0,00`}
                         {bookingReceived.tag == "app" &&
                           `${bookingReceived.totalPaid.toLocaleString()}`}
-                        {/* ${bookingReceived.totalPaid.toLocaleString()} */}
                       </p>
                       <p className="text-[#818181] text-xs mt-1">
                         $
-                        {bookingReceived.tag == "web" &&
+                        {(bookingReceived.tag == "web" || "sub") &&
                           `${bookingReceived.totalPrice.toLocaleString()} pendiente por abonar`}
                         {bookingReceived.tag == "app" &&
                           `${(

@@ -78,15 +78,10 @@ function Schedule() {
           },
         })
         .then((res) => {
-          console.log(res.data.data);
           const bookingsFound = res.data.data.schedules;
           const suscriptionsFound = res.data.data.suscriptions;
-          console.log("suscriptionsFound", suscriptionsFound);
-          console.log("bookingsFound:", bookingsFound);
-
           setBookings(bookingsFound);
           setSuscriptions(suscriptionsFound);
-          console.log(suscriptions);
           if (res.status == 200) {
             toast.success("Reservas cargadas!", {
               autoClose: 2000,

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import Fullcalendar from "@fullcalendar/react";
 import esLocale from "@fullcalendar/core/locales/es";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -10,19 +10,20 @@ import ModalEventDetail from "@/components/ModalEventDetail";
 import moment from "moment";
 import "./Calendar.scss";
 
-function Calendar(data: any, suscriptions: any) {
-  // console.log("suscriptions hijo", suscriptions);
-
-  const [bookings, setBookings] = useState(data.data);
-  const [suscriptionsReceiveds, setSuscriptionsReceiveds] = useState([
-    { title: "title" },
-  ]);
+const Calendar: FC<{ data: any; suscriptions: any }> = ({
+  data,
+  suscriptions,
+}) => {
+  const [bookings, setBookings] = useState(data);
+  const [suscriptionsReceiveds, setSuscriptionsReceiveds] =
+    useState(suscriptions);
   const [gridModified, setGridModified] = useState(false);
   const [widthScreen, setWidthScreen] = useState(window.innerWidth);
   const [bookingInfo, setBookingInfo] = useState({});
   const [events, setEvents] = useState([
     {
       justCreated: false,
+      subscription: false,
       newStart: "",
       newEnd: "",
       title: "",
@@ -38,60 +39,49 @@ function Calendar(data: any, suscriptions: any) {
   const [bookingDetail, setBookingDetail] = useState({});
 
   useEffect(() => {
-    setBookings(data.data);
-    // console.log("suscriptions hijo", suscriptions);
+    setBookings(data);
   }, [data]);
 
   useEffect(() => {
-    if (suscriptions) {
-      // console.log("suscriptions:", suscriptions);
-      setSuscriptionsReceiveds(suscriptions);
-    }
+    if (suscriptions) setSuscriptionsReceiveds(suscriptions);
   }, [suscriptions]);
 
+  //suscriptions
   useEffect(() => {
-    setEvents(
-      bookings.length > 0
-        ? bookings.map((booking: any) => ({
-            justCreated: false,
-            newStart: "",
-            newEnd: "",
-            detail: booking,
-            title:
-              booking.description != null ? booking.description : "Reserva",
-            start: booking.startsAt,
-            end: booking.endsAt,
-            description:
-              booking.description != null
-                ? booking.description
-                : "Sin descripcción",
-          }))
-        : {}
-    );
+    const subs = suscriptionsReceiveds.map((sub: any) => ({
+      justCreated: false,
+      subscription: true,
+      newStart: "",
+      newEnd: "",
+      detail: sub,
+      title: sub.description != null ? sub.description : "Reserva",
+      start: sub.start,
+      end: sub.end,
+      description:
+        sub.description != null ? sub.description : "Sin descripcción",
+    }));
+    //bookings
+    const books = bookings.map((booking: any) => ({
+      justCreated: false,
+      subscription: false,
+      newStart: "",
+      newEnd: "",
+      detail: booking,
+      title: booking.description != null ? booking.description : "Reserva",
+      start: booking.startsAt,
+      end: booking.endsAt,
+      description:
+        booking.description != null ? booking.description : "Sin descripcción",
+    }));
+
+    setEvents(books);
+    setEvents((prevEvents) => [...prevEvents, ...subs]);
     if (bookings.length > 0)
       localStorage.setItem(
         "totalPrice",
         bookings[0].totalPrice.amount.toLocaleString()
       );
   }, [bookings]);
-
-  // useEffect(() => {
-  //   suscriptionsReceiveds.length > 0 &&
-  //     setEvents([
-  //       ...events,
-  //       suscriptions.map((sub: any) => ({
-  //         justCreated: false,
-  //         newStart: "",
-  //         newEnd: "",
-  //         detail: {},
-  //         title: "Suscription",
-  //         start: sub.start,
-  //         end: sub.end,
-  //         description:
-  //           sub.description != null ? sub.description : "Sin descripcción",
-  //       })),
-  //     ]);
-  // }, [suscriptionsReceiveds]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -122,6 +112,7 @@ function Calendar(data: any, suscriptions: any) {
 
   interface Event {
     justCreated: boolean;
+    subscription: boolean;
     newStart: string;
     newEnd: string;
     title: string;
@@ -138,6 +129,7 @@ function Calendar(data: any, suscriptions: any) {
       setEvents([
         {
           justCreated: newEvent.justCreated,
+          subscription: false,
           newStart: newEvent.newStart,
           newEnd: newEvent.newEnd,
           title: newEvent.title,
@@ -155,6 +147,7 @@ function Calendar(data: any, suscriptions: any) {
         ...events,
         {
           justCreated: newEvent.justCreated,
+          subscription: false,
           newStart: newEvent.newStart,
           newEnd: newEvent.newEnd,
           title: newEvent.title,
@@ -227,6 +220,34 @@ function Calendar(data: any, suscriptions: any) {
             events={events}
             eventClick={(e) => {
               const justCreated = e.event._def.extendedProps.justCreated;
+              const sub = e.event._def.extendedProps.subscription;
+              if (sub) {
+                const tag = "sub";
+                const start = new Date(e.event._def.extendedProps.detail.start);
+                const end = new Date(e.event._def.extendedProps.detail.end);
+                setBookingDetail({
+                  tag: tag,
+                  start: moment(start).format("hh:mm A"),
+                  end: moment(end).format("hh:mm A"),
+                  dayName: moment(start).format("dddd"),
+                  dayNumber: moment(start).format("D"),
+                  monthName: new Date(start).toLocaleString("es-ES", {
+                    month: "long",
+                  }),
+                  description: e.event._def.extendedProps.detail.description,
+                  responsables: [
+                    {
+                      name: e.event._def.extendedProps.detail.creator.name,
+                      sex: e.event._def.extendedProps.detail.creator.sex
+                        ? e.event._def.extendedProps.detail.creator.sex
+                        : "a",
+                      id: e.event._def.extendedProps.detail.creator.id,
+                    },
+                  ],
+                  totalPrice: localStorage.getItem("totalPrice"),
+                  totalPaid: localStorage.getItem("totalPrice"),
+                });
+              }
               if (justCreated) {
                 const start =
                   e.event._instance && new Date(e.event._instance.range.start);
@@ -259,7 +280,8 @@ function Calendar(data: any, suscriptions: any) {
                   totalPrice: totalPrice,
                   totalPaid: totalPrice,
                 });
-              } else {
+              }
+              if (!justCreated && !sub) {
                 const tag = e.event._def.extendedProps.detail.originPlatform;
                 const start = new Date(
                   e.event._def.extendedProps.detail.startsAt
@@ -363,6 +385,6 @@ function Calendar(data: any, suscriptions: any) {
         </div>
       </div>
     );
-}
+};
 
 export default Calendar;
