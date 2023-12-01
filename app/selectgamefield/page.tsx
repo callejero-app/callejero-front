@@ -6,6 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Spinner } from "@nextui-org/react";
 import ModalLoading from "@/components/ModalLoading";
+import Modal from "@/components/Modal";
 import "./styles.scss";
 
 function SelectGamefield() {
@@ -16,6 +17,12 @@ function SelectGamefield() {
   ]);
   const [orgSelected, setOrgSelected] = useState({ id: "", name: "" });
   const [gamefields, setGamefields] = useState<any[]>([]);
+  const [modalDetail, setModalDetail] = useState({
+    title: "",
+    subtitle: "",
+    type: "",
+  });
+  const [modalErrorVisible, setModalErrorVisible] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -61,35 +68,43 @@ function SelectGamefield() {
             setOrganizations(orgsFound);
           }
           if (res.status == 200 && orgsFound.length > 0) {
-            toast.success("Organizaciones cargadas!", {
-              autoClose: 2000,
-              icon: "✅",
+            setModalDetail({
+              title: "Organizaciones cargadas!",
+              subtitle: "",
+              type: "success",
             });
+            setModalErrorVisible(true);
+            setTimeout(() => {
+              setModalErrorVisible(false);
+            }, 1200);
+            // toast.success("Organizaciones cargadas!", {
+            //   autoClose: 2000,
+            //   icon: "✅",
+            // });
             setLoadingOrgs(false);
           }
         });
     } catch (error) {
       //@ts-ignore
       const codeError = error.response.data.error.code;
-      console.log("codeError", codeError);
+      //@ts-ignore
+      const codeMessage = error.response.data.error.message;
+      // console.log("codeError", codeError);
+      // console.log("error", error);
       switch (codeError) {
         case "auth.web.failure.session.1000":
         case "auth.web.failure.session.1001":
         case "auth.web.failure.session.1002":
         case "auth.web.failure.session.1003":
         case "auth.web.failure.session.1004:":
-          toast.error("Sesión caducada!", {
-            autoClose: 2000,
-            icon: "❌",
-          });
+          setModalDetail({ title: codeMessage, subtitle: "", type: "error" });
+          setModalErrorVisible(true);
           localStorage.clear();
           window.location.href = "/login";
           break;
         default:
-          toast.error("Algo salió mal!", {
-            autoClose: 2000,
-            icon: "❌",
-          });
+          setModalDetail({ title: codeMessage, subtitle: "", type: "error" });
+          setModalErrorVisible(true);
           break;
       }
     }
@@ -102,10 +117,19 @@ function SelectGamefield() {
       setOrgSelected({ id: id, name: name });
       fetchGamefields();
     } else {
-      toast.error("Esta cancha ya esta seleccionada!", {
-        autoClose: 1000,
-        icon: "⚠️",
+      setModalDetail({
+        title: "Esta cancha ya esta seleccionada",
+        subtitle: "Intenta escogiendo otra cancha",
+        type: "error",
       });
+      setModalErrorVisible(true);
+      // setTimeout(() => {
+      //   setModalErrorVisible(false);
+      // }, 1000);
+      // toast.error("Esta cancha ya esta seleccionada!", {
+      //   autoClose: 1000,
+      //   icon: "⚠️",
+      // });
     }
   };
 
@@ -148,19 +172,45 @@ function SelectGamefield() {
           // }
           setGamefields(gamefieldsFound);
           if (res.status == 200) {
-            toast.success("Canchas cargadas!", {
-              autoClose: 2000,
-              icon: "✅",
+            setModalDetail({
+              title: "Canchas cargadas!",
+              subtitle: "",
+              type: "success",
             });
+            setModalErrorVisible(true);
+            setTimeout(() => {
+              setModalErrorVisible(false);
+            }, 1200);
+            // toast.success("Canchas cargadas!", {
+            //   autoClose: 2000,
+            //   icon: "✅",
+            // });
             setLoadingGamefields(false);
           }
         });
     } catch (error) {
-      toast.error("Something failed!", {
-        autoClose: 2000,
-        icon: "❌",
-      });
-
+      //@ts-ignore
+      const codeError = error.response.data.error.code;
+      //@ts-ignore
+      const codeMessage = error.response.data.error.message;
+      // console.log("codeError", codeError);
+      // console.log("error", error);
+      switch (codeError) {
+        case "auth.web.failure.session.1000":
+        case "auth.web.failure.session.1001":
+        case "auth.web.failure.session.1002":
+        case "auth.web.failure.session.1003":
+        case "auth.web.failure.session.1004:":
+          setModalDetail({ title: codeMessage, subtitle: "", type: "error" });
+          setModalErrorVisible(true);
+          localStorage.clear();
+          window.location.href = "/login";
+          break;
+        default:
+          setModalDetail({ title: codeMessage, subtitle: "", type: "error" });
+          setModalErrorVisible(true);
+          break;
+      }
       setLoadingGamefields(false);
     }
   };
@@ -169,6 +219,10 @@ function SelectGamefield() {
     localStorage.setItem("gamefieldId", id);
     localStorage.setItem("gamefieldName", name);
     window.location.href = "/schedule";
+  };
+
+  const updateOpen = (open: boolean) => {
+    setModalErrorVisible(open);
   };
 
   //middleware
@@ -242,6 +296,14 @@ function SelectGamefield() {
         <div>
           <ToastContainer />
           <div className="w-full">
+            {modalErrorVisible && (
+              <Modal
+                title={modalDetail.title}
+                footer={modalDetail.subtitle}
+                type={modalDetail.type}
+                updateOpen={updateOpen}
+              />
+            )}
             {loadingGamefields ? (
               <>
                 <ModalLoading

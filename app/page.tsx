@@ -6,10 +6,7 @@ function Home() {
   const [visible, setVisible] = useState(false);
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const path = window.location.href;
-      // if (!path.includes("/login")) {
       validateToken();
-      // }
     }
   }, []);
 
@@ -18,7 +15,7 @@ function Home() {
     if (!token) {
       window.location.href = "/login";
     } else {
-      window.location.href = "/organizations";
+      window.location.href = "/selectgamefield";
     }
   };
   if (visible) return <div>Home</div>;
