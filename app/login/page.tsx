@@ -90,7 +90,7 @@ function Login() {
   const validateToken = () => {
     const token = localStorage.getItem("auth");
     if (token) {
-      window.location.href = "/organizations";
+      window.location.href = "/selectgamefield";
     } else {
       setVisible(true);
     }
