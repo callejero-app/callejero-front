@@ -251,13 +251,17 @@ const ModalEventDetail: React.FC<{
                   <div className="flex justify-between items-center">
                     <div className="flex flex-col">
                       <p className="text-callejero text-2xl">
-                        ${(bookingReceived.tag == "web" || "sub") && `0,00`}
+                        $
+                        {(bookingReceived.tag == "web" ||
+                          bookingReceived.tag == "sub") &&
+                          `0,00`}
                         {bookingReceived.tag == "app" &&
                           `${bookingReceived.totalPaid.toLocaleString()}`}
                       </p>
                       <p className="text-[#818181] text-xs mt-1">
                         $
-                        {(bookingReceived.tag == "web" || "sub") &&
+                        {(bookingReceived.tag == "web" ||
+                          bookingReceived.tag == "sub") &&
                           `${bookingReceived.totalPrice.toLocaleString()} pendiente por abonar`}
                         {bookingReceived.tag == "app" &&
                           `${(
