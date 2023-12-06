@@ -23,11 +23,12 @@ const ModalCreateEvent: React.FC<{
   open: boolean;
   updateOpen: Function;
   addEvent: Function;
+  handleCreateEventError: Function;
   bookingInfo: {
     start: { getHours: Function; getDay: Function; getDate: Function };
     end: { getHours: Function };
   };
-}> = ({ open, updateOpen, addEvent, bookingInfo }) => {
+}> = ({ open, updateOpen, addEvent, handleCreateEventError, bookingInfo }) => {
   moment.locale("es");
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [modalOpen, setModalOpen] = useState(open);
@@ -84,21 +85,29 @@ const ModalCreateEvent: React.FC<{
   //     .classList.remove("data-[hover=true]:bg-default-200");
   // };
 
-  const createEventCalendar = (description: string) => {
-    const newEvent = {
-      justCreated: true,
-      newStart: booking.startHour,
-      newEnd: booking.endHour,
-      title: description,
-      //@ts-ignore
-      start: `${booking.startsAtDate} ${bookingInfo.startsAtTime24}`,
-      //@ts-ignore
-      end: `${booking.endsAtDate} ${bookingInfo.endsAtTime24}`,
-      description: description,
-      tag: "web",
-      totalPrice: localStorage.getItem("totalPrice"),
-    };
-    addEvent(newEvent);
+  const createEventCalendar = (
+    description: string,
+    error: boolean,
+    errorMessage: string
+  ) => {
+    if (error == false) {
+      const newEvent = {
+        justCreated: true,
+        newStart: booking.startHour,
+        newEnd: booking.endHour,
+        title: description,
+        //@ts-ignore
+        start: `${booking.startsAtDate} ${bookingInfo.startsAtTime24}`,
+        //@ts-ignore
+        end: `${booking.endsAtDate} ${bookingInfo.endsAtTime24}`,
+        description: description,
+        tag: "web",
+        totalPrice: localStorage.getItem("totalPrice"),
+      };
+      addEvent(newEvent);
+    } else {
+      handleCreateEventError(errorMessage);
+    }
   };
 
   const createBooking = async () => {
@@ -117,12 +126,7 @@ const ModalCreateEvent: React.FC<{
       setEmptyDescription(false);
       const gamefieldId = localStorage.getItem("gamefieldId");
       const API_URL = process.env.NEXT_PUBLIC_API_URL;
-      console.log(gamefieldId);
-      console.log(API_URL);
-      console.log("startsAtDate: ", booking.startsAtDate);
-      console.log("startsAtTime: ", booking.startsAtTime24);
-      console.log("endsAtDate: ", booking.endsAtDate);
-      console.log("endsAtTime: ", booking.endsAtTime24);
+
       // const url = `${API_URL}/game-fields/${gamefieldId}/booking/create-client`;
       const url = `https://callejero.com.co/test/api/v1/game-fields/${gamefieldId}/booking/create-client`;
       const data = {
@@ -140,21 +144,31 @@ const ModalCreateEvent: React.FC<{
       try {
         const res = await axios.post(url, data, { headers }).then((res) => {
           if (res.status == 200) {
-            createEventCalendar(description);
+            createEventCalendar(description, false, "");
             setLoading(false);
-            toast.success("Reserva creada!", {
-              autoClose: 2000,
-              icon: "✅",
-            });
             close();
           }
         });
       } catch (error) {
         console.log(error);
-        toast.error("No se pudo crear la reserva!", {
-          autoClose: 2000,
-          icon: "❌",
-        });
+        //@ts-ignore
+        const codeError = error.response.data.error.code;
+        //@ts-ignore
+        const codeMessage = error.response.data.error.message;
+        switch (codeError) {
+          case "auth.web.failure.session.1000":
+          case "auth.web.failure.session.1001":
+          case "auth.web.failure.session.1002":
+          case "auth.web.failure.session.1003":
+          case "auth.web.failure.session.1004:":
+            localStorage.clear();
+            window.location.href = "/login";
+            break;
+          default:
+            createEventCalendar("", true, codeMessage);
+            break;
+        }
+        createEventCalendar("", true, codeMessage);
         close();
       }
     }
@@ -169,6 +183,14 @@ const ModalCreateEvent: React.FC<{
     <>
       <Modal isOpen={modalOpen} onOpenChange={onOpenChange}>
         <ToastContainer />
+        {/* {modalInfoVisible && (
+          <Modal
+            title={modalDetail.title}
+            footer={modalDetail.subtitle}
+            type={modalDetail.type}
+            updateOpen={updateOpen}
+          />
+        )} */}
         <ModalContent>
           {(onClose) => (
             <div className="modal">

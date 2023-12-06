@@ -5,6 +5,7 @@ import { Select, SelectItem } from "@nextui-org/react";
 import ModalLoading from "@/components/ModalLoading";
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
+import Modal from "@/components/Modal";
 
 import Calendar from "@/components/Calendar/Calendar";
 import "./schedule.scss";
@@ -17,6 +18,12 @@ function Schedule() {
   const [gamefieldNameSelected, setGamefieldNameSelected] = useState("");
   const [gamefieldsList, setGamefieldsList] = useState([{ id: "", name: "" }]);
   const [gridModified, setGridModified] = useState(false);
+  const [modalDetail, setModalDetail] = useState({
+    title: "",
+    subtitle: "",
+    type: "",
+  });
+  const [modalInfoVisible, setModalInfoVisible] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -83,35 +90,45 @@ function Schedule() {
           setBookings(bookingsFound);
           setSuscriptions(suscriptionsFound);
           if (res.status == 200) {
-            toast.success("Reservas cargadas!", {
-              autoClose: 2000,
-              icon: "✅",
+            setModalDetail({
+              title: "Reservas cargadas!",
+              subtitle: "",
+              type: "success",
             });
+            setModalInfoVisible(true);
+            setTimeout(() => {
+              setModalInfoVisible(false);
+            }, 1200);
+            // toast.success("Reservas cargadas!", {
+            //   autoClose: 2000,
+            //   icon: "✅",
+            // });
             setLoading(false);
           }
         });
     } catch (error) {
       //@ts-ignore
       const codeError = error.response.data.error.code;
-      console.log("codeError", codeError);
+      //@ts-ignore
+      const codeMessage = error.response.data.error.message;
       switch (codeError) {
         case "auth.web.failure.session.1000":
         case "auth.web.failure.session.1001":
         case "auth.web.failure.session.1002":
         case "auth.web.failure.session.1003":
         case "auth.web.failure.session.1004:":
-          toast.error("Sesión caducada!", {
-            autoClose: 2000,
-            icon: "❌",
+          setModalDetail({
+            title: "Sesión caducada!",
+            subtitle: "",
+            type: "error",
           });
+          setModalInfoVisible(true);
           localStorage.clear();
           window.location.href = "/login";
           break;
         default:
-          toast.error("Algo salió mal!", {
-            autoClose: 2000,
-            icon: "❌",
-          });
+          setModalDetail({ title: codeMessage, subtitle: "", type: "error" });
+          setModalInfoVisible(true);
           break;
       }
       setLoading(false);
@@ -125,6 +142,10 @@ function Schedule() {
     if (gamefield) localStorage.setItem("gamefieldName", gamefield.name);
     localStorage.setItem("gamefieldId", id);
     fetchBookings(id);
+  };
+
+  const updateOpen = (open: boolean) => {
+    setModalInfoVisible(open);
   };
 
   //middleware
@@ -154,13 +175,19 @@ function Schedule() {
           className="w-full own-toolbar"
           style={{ borderRadius: "16px 16px 0 0", background: "white" }}
         >
+          {modalInfoVisible && (
+            <Modal
+              title={modalDetail.title}
+              footer={modalDetail.subtitle}
+              type={modalDetail.type}
+              updateOpenInfo={updateOpen}
+            />
+          )}
           {loading && (
-            <>
-              <ModalLoading
-                title={gamefieldNameSelected}
-                footer="Cargando reservas"
-              />
-            </>
+            <ModalLoading
+              title={gamefieldNameSelected}
+              footer="Cargando reservas"
+            />
           )}
           <>
             <div className="own-toolbar__container items-center md:block md:pt-4 bg-callejero md:bg-white">
@@ -169,7 +196,7 @@ function Schedule() {
                   <h1 className="text-2xl own-toolbar__breadcumb">
                     <a
                       className="own-toolbar__breadcumb--back"
-                      href="/gamefields"
+                      href="/selectgamefield"
                     >
                       {localStorage.getItem("organizationName")}
                     </a>{" "}

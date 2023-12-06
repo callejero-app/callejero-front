@@ -301,7 +301,7 @@ function SelectGamefield() {
                 title={modalDetail.title}
                 footer={modalDetail.subtitle}
                 type={modalDetail.type}
-                updateOpen={updateOpen}
+                updateOpenInfo={updateOpen}
               />
             )}
             {loadingGamefields ? (

@@ -18,8 +18,8 @@ const App: React.FC<{
   title: string;
   footer: string;
   type: string;
-  updateOpen: Function;
-}> = ({ title, footer = "", type, updateOpen }) => {
+  updateOpenInfo: Function;
+}> = ({ title, footer = "", type, updateOpenInfo }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [modalOpen, setModalOpen] = useState(true);
 
@@ -35,7 +35,7 @@ const App: React.FC<{
 
   const close = () => {
     setModalOpen(false);
-    updateOpen(false);
+    updateOpenInfo(false);
   };
 
   return (
@@ -49,7 +49,7 @@ const App: React.FC<{
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1 text-center">
+              <ModalHeader className="flex flex-col gap-1 text-center mt-6">
                 {title}
               </ModalHeader>
               <ModalBody className="items-center">

@@ -9,6 +9,7 @@ import ModalCreateEvent from "@/components/ModalCreateEvent";
 import ModalEventDetail from "@/components/ModalEventDetail";
 import moment from "moment";
 import "./Calendar.scss";
+import Modal from "@/components/Modal";
 
 const Calendar: FC<{ data: any; suscriptions: any }> = ({
   data,
@@ -37,6 +38,12 @@ const Calendar: FC<{ data: any; suscriptions: any }> = ({
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEventDetailVisible, setModalEventDetailVisible] = useState(false);
   const [bookingDetail, setBookingDetail] = useState({});
+  const [modalDetail, setModalDetail] = useState({
+    title: "",
+    subtitle: "",
+    type: "",
+  });
+  const [modalInfoVisible, setModalInfoVisible] = useState(false);
 
   useEffect(() => {
     setBookings(data);
@@ -110,6 +117,11 @@ const Calendar: FC<{ data: any; suscriptions: any }> = ({
     setModalEventDetailVisible(openEventDetail);
   };
 
+  const updateOpenInfo = (open: boolean) => {
+    setModalInfoVisible(open);
+    open;
+  };
+
   interface Event {
     justCreated: boolean;
     subscription: boolean;
@@ -162,13 +174,26 @@ const Calendar: FC<{ data: any; suscriptions: any }> = ({
       ]);
     }
     // console.log("Events state:", events);
+    setModalDetail({
+      title: "Reserva creada!",
+      subtitle: "",
+      type: "success",
+    });
+    setModalInfoVisible(true);
+    setTimeout(() => {
+      setModalInfoVisible(false);
+    }, 1200);
+  };
+
+  const handleCreateEventError = (codeMessage: string) => {
+    setModalDetail({ title: codeMessage, subtitle: "", type: "error" });
+    setModalInfoVisible(true);
   };
 
   if (gridModified)
     return (
       <div className="calendar bg-callejero">
         <div className="calendar__grid bg-white md:px-6">
-          {/* <p>Suscriptions Received: {suscriptions?.length}</p> */}
           <Fullcalendar
             slotDuration="01:00:00"
             slotLabelFormat={[
@@ -372,6 +397,7 @@ const Calendar: FC<{ data: any; suscriptions: any }> = ({
               //@ts-ignore
               bookingInfo={bookingInfo}
               addEvent={addEvent}
+              handleCreateEventError={handleCreateEventError}
             />
           )}
           {modalEventDetailVisible && (
@@ -380,6 +406,14 @@ const Calendar: FC<{ data: any; suscriptions: any }> = ({
               updateOpenEventDetail={updateOpenEventDetail}
               //@ts-ignore
               bookingDetail={bookingDetail}
+            />
+          )}
+          {modalInfoVisible && (
+            <Modal
+              title={modalDetail.title}
+              footer={modalDetail.subtitle}
+              type={modalDetail.type}
+              updateOpenInfo={updateOpenInfo}
             />
           )}
         </div>
