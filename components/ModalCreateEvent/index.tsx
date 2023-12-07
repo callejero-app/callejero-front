@@ -88,10 +88,13 @@ const ModalCreateEvent: React.FC<{
   const createEventCalendar = (
     description: string,
     error: boolean,
-    errorMessage: string
+    errorMessage: string,
+    bookingId: string = ""
   ) => {
     if (error == false) {
       const newEvent = {
+        id: "",
+        newId: bookingId,
         justCreated: true,
         newStart: booking.startHour,
         newEnd: booking.endHour,
@@ -116,10 +119,8 @@ const ModalCreateEvent: React.FC<{
     let descriptionEl = document.getElementById("description");
     //@ts-ignore
     const description = descriptionEl != null ? descriptionEl.value : "";
-    console.log("description", description);
 
     if (description == "") {
-      console.log("la descripcion no puede estar vacia");
       setLoading(false);
       setEmptyDescription(true);
     } else {
@@ -144,7 +145,9 @@ const ModalCreateEvent: React.FC<{
       try {
         const res = await axios.post(url, data, { headers }).then((res) => {
           if (res.status == 200) {
-            createEventCalendar(description, false, "");
+            const bookingId = res.data.data.schedule[0]._id;
+            // console.log("id de booking recien creada:", bookingId);
+            createEventCalendar(description, false, "", bookingId);
             setLoading(false);
             close();
           }

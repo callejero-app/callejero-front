@@ -15,6 +15,8 @@ const Calendar: FC<{ data: any; suscriptions: any }> = ({
   data,
   suscriptions,
 }) => {
+  // console.log("data", data);
+  // console.log("suscriptions", suscriptions);
   const [bookings, setBookings] = useState(data);
   const [suscriptionsReceiveds, setSuscriptionsReceiveds] =
     useState(suscriptions);
@@ -23,6 +25,8 @@ const Calendar: FC<{ data: any; suscriptions: any }> = ({
   const [bookingInfo, setBookingInfo] = useState({});
   const [events, setEvents] = useState([
     {
+      id: "",
+      newId: "",
       justCreated: false,
       subscription: false,
       newStart: "",
@@ -53,9 +57,11 @@ const Calendar: FC<{ data: any; suscriptions: any }> = ({
     if (suscriptions) setSuscriptionsReceiveds(suscriptions);
   }, [suscriptions]);
 
-  //suscriptions
+  //fill events
   useEffect(() => {
     const subs = suscriptionsReceiveds.map((sub: any) => ({
+      id: "",
+      newId: "",
       justCreated: false,
       subscription: true,
       newStart: "",
@@ -69,6 +75,8 @@ const Calendar: FC<{ data: any; suscriptions: any }> = ({
     }));
     //bookings
     const books = bookings.map((booking: any) => ({
+      id: booking.id,
+      newId: "",
       justCreated: false,
       subscription: false,
       newStart: "",
@@ -123,6 +131,8 @@ const Calendar: FC<{ data: any; suscriptions: any }> = ({
   };
 
   interface Event {
+    id: string;
+    newId: string;
     justCreated: boolean;
     subscription: boolean;
     newStart: string;
@@ -140,6 +150,8 @@ const Calendar: FC<{ data: any; suscriptions: any }> = ({
     if (events.length == undefined) {
       setEvents([
         {
+          id: "",
+          newId: newEvent.newId,
           justCreated: newEvent.justCreated,
           subscription: false,
           newStart: newEvent.newStart,
@@ -158,6 +170,8 @@ const Calendar: FC<{ data: any; suscriptions: any }> = ({
       setEvents([
         ...events,
         {
+          id: "",
+          newId: newEvent.newId,
           justCreated: newEvent.justCreated,
           subscription: false,
           newStart: newEvent.newStart,
@@ -188,6 +202,44 @@ const Calendar: FC<{ data: any; suscriptions: any }> = ({
   const handleCreateEventError = (codeMessage: string) => {
     setModalDetail({ title: codeMessage, subtitle: "", type: "error" });
     setModalInfoVisible(true);
+  };
+
+  const handleDeleteEvent = (
+    status: boolean,
+    bookingId: string = "",
+    justCreated: boolean
+  ) => {
+    if (status == true) {
+      setModalDetail({
+        title: "Reserva eliminada con exito!",
+        subtitle: "",
+        type: "success",
+      });
+      setModalInfoVisible(true);
+      setTimeout(() => {
+        setModalInfoVisible(false);
+      }, 1200);
+
+      // console.log("Llego al calendar el id:", bookingId);
+      // console.log("estado de eventos antes de eliminar", events);
+      if (justCreated == true) {
+        const newEvents = events.filter((e) => e.newId !== bookingId);
+        setEvents(newEvents);
+        // console.log("nuevos eventos after delete JUST created", newEvents);
+      } else {
+        const newEvents = events.filter((e) => e.id !== bookingId);
+        setEvents(newEvents);
+        // console.log("nuevos eventos after delete", newEvents);
+      }
+      //actualizar estado con new events ->
+    } else {
+      setModalDetail({
+        title: "No se ha podido eliminar la reserva!",
+        subtitle: "",
+        type: "error",
+      });
+      setModalInfoVisible(true);
+    }
   };
 
   if (gridModified)
@@ -244,6 +296,7 @@ const Calendar: FC<{ data: any; suscriptions: any }> = ({
             eventColor={"#184135"}
             events={events}
             eventClick={(e) => {
+              // console.log("click event", e);
               const justCreated = e.event._def.extendedProps.justCreated;
               const sub = e.event._def.extendedProps.subscription;
               if (sub) {
@@ -287,8 +340,11 @@ const Calendar: FC<{ data: any; suscriptions: any }> = ({
                     }
                   );
                 const totalPrice = localStorage.getItem("totalPrice");
-
+                const id = e.event._def.extendedProps.newId;
+                // console.log("id:", id);
                 setBookingDetail({
+                  id: id,
+                  justCreated: true,
                   tag: e.event._def.extendedProps.tag,
                   start: e.event._def.extendedProps.newStart,
                   end: e.event._def.extendedProps.newEnd,
@@ -331,7 +387,9 @@ const Calendar: FC<{ data: any; suscriptions: any }> = ({
                   sex: t.teamLeader.sex,
                   id: t.teamLeader.id,
                 }));
+                const id = e.event._def.extendedProps.detail.id;
                 setBookingDetail({
+                  id: id,
                   tag: tag,
                   start: startStr,
                   end: endStr,
@@ -406,6 +464,7 @@ const Calendar: FC<{ data: any; suscriptions: any }> = ({
               updateOpenEventDetail={updateOpenEventDetail}
               //@ts-ignore
               bookingDetail={bookingDetail}
+              handleDeleteEvent={handleDeleteEvent}
             />
           )}
           {modalInfoVisible && (

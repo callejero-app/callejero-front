@@ -21,9 +21,12 @@ import male from "@/public/images/male.png";
 import admin from "@/public/images/verified-callejero.png";
 // import admin from "@/public/images/verified-callejero-light.png";
 import female from "@/public/images/female.png";
+import axios from "axios";
 
 const ModalEventDetail: React.FC<{
   bookingDetail: {
+    id: string;
+    justCreated: boolean;
     tag: string;
     start: string;
     end: string;
@@ -37,14 +40,21 @@ const ModalEventDetail: React.FC<{
   };
   openEventDetail: boolean;
   updateOpenEventDetail: Function;
-}> = ({ bookingDetail, openEventDetail, updateOpenEventDetail }) => {
+  handleDeleteEvent: Function;
+}> = ({
+  bookingDetail,
+  openEventDetail,
+  updateOpenEventDetail,
+  handleDeleteEvent,
+}) => {
   const [modalEventDetailOpen, setModalEventDetailOpen] =
     useState(openEventDetail);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
-  // console.log("lo q llega:", bookingDetail);
+  const [loading, setLoading] = useState(false);
 
   const [bookingReceived, setBookingReceived] = useState({
+    id: bookingDetail.id,
+    justCreated: bookingDetail.justCreated,
     tag: bookingDetail.tag,
     start: bookingDetail.start,
     end: bookingDetail.end,
@@ -57,8 +67,58 @@ const ModalEventDetail: React.FC<{
     totalPaid: bookingDetail.totalPaid,
   });
 
-  // console.log("bookingReceived:", bookingReceived);
-  // console.log("responsables length:", bookingReceived.responsables.length);
+  const deleteBooking = async () => {
+    setLoading(true);
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
+    const gamefieldId = localStorage.getItem("gamefieldId");
+    const bookingId = bookingDetail.id;
+    const url = `${API_URL}/game-fields/${gamefieldId}/booking/client/${bookingId}`;
+    const headers = {
+      "x-callejero-web-token": localStorage.getItem("auth"),
+      "x-tz": localStorage.getItem("timezone"),
+      "accept-language": "es",
+    };
+
+    try {
+      const res = await axios.delete(url, { headers }).then((res) => {
+        if (res.status == 200) {
+          closeEventDetail();
+          if (bookingReceived.justCreated == true) {
+            handleDeleteEvent(true, bookingReceived.id, true);
+          } else {
+            handleDeleteEvent(true, bookingReceived.id, false);
+          }
+          setLoading(false);
+        }
+      });
+    } catch (error) {
+      console.log(error);
+
+      //@ts-ignore
+      const codeError = error.response.data.error.code;
+      //@ts-ignore
+      const codeMessage = error.response.data.error.message;
+      switch (codeError) {
+        case "auth.web.failure.session.1000":
+        case "auth.web.failure.session.1001":
+        case "auth.web.failure.session.1002":
+        case "auth.web.failure.session.1003":
+        case "auth.web.failure.session.1004:":
+          toast.error("La sesión ha caducado!", {
+            autoClose: 2000,
+            icon: "❌",
+          });
+          localStorage.clear();
+          window.location.href = "/login";
+          break;
+        default:
+          handleDeleteEvent(false);
+          break;
+      }
+      setLoading(false);
+      closeEventDetail();
+    }
+  };
 
   useEffect(() => {
     onOpen();
@@ -67,8 +127,7 @@ const ModalEventDetail: React.FC<{
     )[0];
     closeBtn.classList.add("close-btn");
     closeBtn.addEventListener("click", () => closeEventDetail());
-    console.log("booking received:", bookingReceived);
-    console.log("res length:", bookingReceived.responsables.length);
+    // console.log("booking received:", bookingReceived);
   }, []);
 
   const closeEventDetail = () => {
@@ -284,23 +343,36 @@ const ModalEventDetail: React.FC<{
                 <div className="border-b-small border-slate-200"></div>
               </ModalBody>
               <ModalFooter>
-                {/* <div className="flex w-full justify-between"> */}
-                <div className="flex w-full justify-end">
-                  <button
-                    // className="h-12 w-[167px] border border-callejero rounded-full text-callejero text-base font-medium hover:scale-105 transition-all"
-                    className="h-12 w-full border border-callejero rounded-full text-callejero text-base font-medium hover:scale-105 transition-all"
-                    onClick={closeEventDetail}
-                  >
-                    Cerrar
-                  </button>
-                  <button
-                    className="h-12 w-[167px] border bg-callejero rounded-full text-white text-base font-medium mb-2 hover:scale-105 transition-all hidden"
-                    onClick={() => {}}
-                  >
-                    Sí
-                    {/* {loading ? <Spinner size="sm" color="white" /> : "Guardar"} */}
-                  </button>
-                </div>
+                {bookingReceived.tag === "web" ? (
+                  <div className="flex w-full justify-between">
+                    <button
+                      className="h-12 w-40 border bg-red-600 rounded-full text-white text-base font-medium mb-2 
+                       hover:scale-105 transition-all flex place-items-center justify-center"
+                      onClick={deleteBooking}
+                    >
+                      {loading ? (
+                        <Spinner size="sm" color="white" />
+                      ) : (
+                        "Eliminar"
+                      )}
+                    </button>
+                    <button
+                      className="h-12 w-40 border border-callejero rounded-full text-callejero text-base font-medium hover:scale-105 transition-all"
+                      onClick={closeEventDetail}
+                    >
+                      Cerrar
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex w-full justify-end">
+                    <button
+                      className="h-12 w-[167px] border border-callejero rounded-full text-callejero text-base font-medium hover:scale-105 transition-all"
+                      onClick={closeEventDetail}
+                    >
+                      Cerrar
+                    </button>
+                  </div>
+                )}
               </ModalFooter>
             </div>
           )}
