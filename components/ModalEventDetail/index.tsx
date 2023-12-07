@@ -78,6 +78,7 @@ const ModalEventDetail: React.FC<{
       "x-callejero-web-token": localStorage.getItem("auth"),
       "x-tz": localStorage.getItem("timezone"),
       "accept-language": "es",
+      origin: "callejero.com.co",
     };
 
     try {

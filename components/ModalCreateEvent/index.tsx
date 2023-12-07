@@ -142,6 +142,7 @@ const ModalCreateEvent: React.FC<{
         "x-callejero-web-token": localStorage.getItem("auth"),
         "x-tz": localStorage.getItem("timezone"),
         "accept-language": "es",
+        origin: "callejero.com.co",
       };
       try {
         const res = await axios.post(url, data, { headers }).then((res) => {

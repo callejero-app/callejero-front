@@ -30,6 +30,7 @@ function Organizations() {
             "x-callejero-web-token": localStorage.getItem("auth"),
             "x-tz": localStorage.getItem("timezone"),
             "accept-language": "es",
+            origin: "callejero.com.co",
           },
         })
         .then((res) => {

@@ -82,6 +82,7 @@ function Schedule() {
           headers: {
             "x-callejero-web-token": localStorage.getItem("auth"),
             "x-tz": localStorage.getItem("timezone"),
+            origin: "callejero.com.co",
           },
         })
         .then((res) => {
