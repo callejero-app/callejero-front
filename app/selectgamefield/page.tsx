@@ -49,6 +49,7 @@ function SelectGamefield() {
     try {
       const res = await axios
         .get(`${API_URL}/organizations/${clientId}`, {
+          withCredentials: true,
           headers: {
             "Content-Type": "application/json",
             "x-callejero-web-token": localStorage.getItem("auth"),
