@@ -44,7 +44,8 @@ function SelectGamefield() {
   const fetchOrganization = async () => {
     setLoadingOrgs(true);
     const clientId = localStorage.getItem("clientId");
-    const API_URL = "https://callejero.com.co/test/api/v1";
+    // const API_URL = "https://callejero.com.co/test/api/v1";
+    const API_URL = "https://callejero.com.co/api/v1";
     try {
       const res = await axios
         .get(`${API_URL}/organizations/${clientId}`, {
@@ -136,7 +137,8 @@ function SelectGamefield() {
   const fetchGamefields = async () => {
     setLoadingGamefields(true);
     const organizationId = localStorage.getItem("organizationId");
-    const API_URL = "https://callejero.com.co/test/api/v1";
+    // const API_URL = "https://callejero.com.co/test/api/v1";
+    const API_URL = "https://callejero.com.co/api/v1";
     try {
       const res = await axios
         .get(`${API_URL}/game-fields/org/${organizationId}`, {
