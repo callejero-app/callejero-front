@@ -67,7 +67,7 @@ function Login() {
               theme: "dark",
             });
             setLoading(false);
-            // window.location.href = "/selectgamefield";
+            window.location.href = "/selectgamefield";
           }
         });
     } catch (error) {
