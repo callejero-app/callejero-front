@@ -21,8 +21,8 @@ function Organizations() {
   const fetchOrganization = async () => {
     setLoading(true);
     // const API_URL = "https://callejero.com.co/test/api/v1";
-    // const API_URL = "https://callejero.com.co/api/v1";
-    const API_URL = "https://dbbk.callejero.com.co/api/v1";
+    const API_URL = "https://callejero.com.co/api/v1";
+    // const API_URL = "https://dbbk.callejero.com.co/api/v1";
     const clientId = localStorage.getItem("clientId");
     try {
       const res = await axios

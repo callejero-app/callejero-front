@@ -130,8 +130,8 @@ const ModalCreateEvent: React.FC<{
 
       // const url = `${API_URL}/game-fields/${gamefieldId}/booking/create-client`;
       // const url = `https://callejero.com.co/test/api/v1/game-fields/${gamefieldId}/booking/create-client`;
-      // const url = `https://callejero.com.co/api/v1/game-fields/${gamefieldId}/booking/create-client`;
-      const url = `https://dbbk.callejero.com.co/api/v1/game-fields/${gamefieldId}/booking/create-client`;
+      const url = `https://callejero.com.co/api/v1/game-fields/${gamefieldId}/booking/create-client`;
+      // const url = `https://dbbk.callejero.com.co/api/v1/game-fields/${gamefieldId}/booking/create-client`;
       const data = {
         startsAtDate: booking.startsAtDate,
         startsAtTime: booking.startsAtTime24,

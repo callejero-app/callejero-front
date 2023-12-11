@@ -19,8 +19,8 @@ function Organizations() {
   const fetchGamefields = async () => {
     setLoading(true);
     // const API_URL = "https://callejero.com.co/test/api/v1";
-    // const API_URL = "https://callejero.com.co/api/v1";
-    const API_URL = "https://dbbk.callejero.com.co/api/v1";
+    const API_URL = "https://callejero.com.co/api/v1";
+    // const API_URL = "https://dbbk.callejero.com.co/api/v1";
     const organizationId = localStorage.getItem("organizationId");
     try {
       const res = await axios
