@@ -61,7 +61,7 @@ function SelectGamefield() {
         })
         .then((res) => {
           // const orgsFound = res.data.data;
-          const orgsFound = res.data.results;
+          const orgsFound = res.data.data.results;
           if (orgsFound.length == 1) {
             const orgId = orgsFound[0].id;
             const orgName = orgsFound[0].name;
