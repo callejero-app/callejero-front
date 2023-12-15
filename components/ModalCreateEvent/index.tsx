@@ -127,7 +127,7 @@ const ModalCreateEvent: React.FC<{
       setEmptyDescription(false);
       const gamefieldId = localStorage.getItem("gamefieldId");
       const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
+      // test
       // const url = `${API_URL}/game-fields/${gamefieldId}/booking/create-client`;
       const url = `https://callejero.com.co/test/api/v1/game-fields/${gamefieldId}/booking/create-client`;
       // const url = `https://callejero.com.co/api/v1/game-fields/${gamefieldId}/booking/create-client`;
