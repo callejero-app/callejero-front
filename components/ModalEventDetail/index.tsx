@@ -70,7 +70,8 @@ const ModalEventDetail: React.FC<{
   const deleteBooking = async () => {
     setLoading(true);
     // const API_URL = process.env.NEXT_PUBLIC_API_URL;
-    const API_URL = "https://callejero.com.co/api/v1";
+    const API_URL = "https://callejero.com.co/test/api/v1";
+    // const API_URL = "https://callejero.com.co/api/v1";
     // const API_URL = "https://dbbk.callejero.com.co/api/v1";
     const gamefieldId = localStorage.getItem("gamefieldId");
     const bookingId = bookingDetail.id;

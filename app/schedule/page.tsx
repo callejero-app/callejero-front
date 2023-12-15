@@ -70,8 +70,8 @@ function Schedule() {
   const fetchBookings = async (gamefieldId: string) => {
     setLoading(true);
     // const API_URL = process.env.NEXT_PUBLIC_API_URL;
-    // const url = `https://callejero.com.co/test/api/v1/game-fields/${gamefieldId}/booking/get-all-bookings`;
-    const url = `https://callejero.com.co/api/v1/game-fields/${gamefieldId}/booking/get-all-bookings`;
+    const url = `https://callejero.com.co/test/api/v1/game-fields/${gamefieldId}/booking/get-all-bookings`;
+    // const url = `https://callejero.com.co/api/v1/game-fields/${gamefieldId}/booking/get-all-bookings`;
     // const url = `https://dbbk.callejero.com.co/api/v1/${gamefieldId}/booking/get-all-bookings`;
     try {
       const res = await axios

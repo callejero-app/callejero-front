@@ -44,8 +44,8 @@ function SelectGamefield() {
   const fetchOrganization = async () => {
     setLoadingOrgs(true);
     const clientId = localStorage.getItem("clientId");
-    // const API_URL = "https://callejero.com.co/test/api/v1";
-    const API_URL = "https://callejero.com.co/api/v1";
+    const API_URL = "https://callejero.com.co/test/api/v1";
+    // const API_URL = "https://callejero.com.co/api/v1";
     // const API_URL = "https://dbbk.callejero.com.co/api/v1";
     try {
       const res = await axios
@@ -90,7 +90,7 @@ function SelectGamefield() {
           }
         });
     } catch (error) {
-      //@ts-ignore
+      // @ts-ignore
       const codeError = error.response.data.error.code;
       //@ts-ignore
       const codeMessage = error.response.data.error.message;
@@ -141,8 +141,8 @@ function SelectGamefield() {
   const fetchGamefields = async () => {
     setLoadingGamefields(true);
     const organizationId = localStorage.getItem("organizationId");
-    // const API_URL = "https://callejero.com.co/test/api/v1";
-    const API_URL = "https://callejero.com.co/api/v1";
+    const API_URL = "https://callejero.com.co/test/api/v1";
+    // const API_URL = "https://callejero.com.co/api/v1";
     // const API_URL = "https://dbbk.callejero.com.co/api/v1";
     try {
       const res = await axios
