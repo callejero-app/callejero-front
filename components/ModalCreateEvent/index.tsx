@@ -18,6 +18,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./styles.scss";
 import Image from "next/image";
 import calendar from "@/public/images/calendar.svg";
+import { globals } from "@/app/globals";
 
 const ModalCreateEvent: React.FC<{
   open: boolean;
@@ -126,12 +127,7 @@ const ModalCreateEvent: React.FC<{
     } else {
       setEmptyDescription(false);
       const gamefieldId = localStorage.getItem("gamefieldId");
-      const API_URL = process.env.NEXT_PUBLIC_API_URL;
-      // test
-      // const url = `${API_URL}/game-fields/${gamefieldId}/booking/create-client`;
-      const url = `https://callejero.com.co/test/api/v1/game-fields/${gamefieldId}/booking/create-client`;
-      // const url = `https://callejero.com.co/api/v1/game-fields/${gamefieldId}/booking/create-client`;
-      // const url = `https://dbbk.callejero.com.co/api/v1/game-fields/${gamefieldId}/booking/create-client`;
+      const url = `${globals.apiURL}/game-fields/${gamefieldId}/booking/create-client`;
       const data = {
         startsAtDate: booking.startsAtDate,
         startsAtTime: booking.startsAtTime24,
@@ -143,7 +139,6 @@ const ModalCreateEvent: React.FC<{
         "x-callejero-web-token": localStorage.getItem("auth"),
         "x-tz": localStorage.getItem("timezone"),
         "accept-language": "es",
-        origin: "callejero.com.co",
       };
       try {
         const res = await axios.post(url, data, { headers }).then((res) => {
@@ -245,9 +240,8 @@ const ModalCreateEvent: React.FC<{
                   name="description"
                   type="text"
                   placeholder="Descripcción (Requerido)"
-                  className={`modal__input mb-2 text-xs ${
-                    emptyDescription ? "modal__input--danger" : ""
-                  }`}
+                  className={`modal__input mb-2 text-xs ${emptyDescription ? "modal__input--danger" : ""
+                    }`}
                 />
                 <div className=" mb-2 border-b-small border-slate-200"></div>
                 <div className="flex column justify-between mb-2 items-center hidden">
@@ -274,8 +268,8 @@ const ModalCreateEvent: React.FC<{
                         {booking.totalPrice?.toLocaleString()
                           ? booking.totalPrice?.toLocaleString()
                           : localStorage
-                              .getItem("totalPrice")
-                              ?.toLocaleString()}{" "}
+                            .getItem("totalPrice")
+                            ?.toLocaleString()}{" "}
                         penditente por abonar
                       </p>
                     </div>
