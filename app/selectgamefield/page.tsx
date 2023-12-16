@@ -61,7 +61,7 @@ function SelectGamefield() {
         })
         .then((res) => {
           // const orgsFound = res.data.data;
-          const orgsFound = res.data.results;
+          const orgsFound = res.data.data.results;
           if (orgsFound.length == 1) {
             const orgId = orgsFound[0].id;
             const orgName = orgsFound[0].name;
@@ -256,9 +256,8 @@ function SelectGamefield() {
     return (
       <div className="Orgs Section">
         <h1
-          className={`text-2xl font-medium text-callejero mt-6 text-left px-[28px] ${
-            loadingOrgs ? "opacity-0" : "opacity-100"
-          }`}
+          className={`text-2xl font-medium text-callejero mt-6 text-left px-[28px] ${loadingOrgs ? "opacity-0" : "opacity-100"
+            }`}
         >
           Selecciona una Organizacion
         </h1>
@@ -284,9 +283,8 @@ function SelectGamefield() {
                       onClick={() => handleSelectOrg(org.id, org.name)}
                       key={org.id}
                       style={{
-                        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(${
-                          org.image ? org.image : "/images/default-org-img.jpeg"
-                        })`,
+                        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(${org.image ? org.image : "/images/default-org-img.jpeg"
+                          })`,
                         backgroundSize: "cover",
                       }}
                       className="btn-org font-semibold text-white hover:scale-105
@@ -324,9 +322,8 @@ function SelectGamefield() {
                 {gamefields.length !== 0 && (
                   <div>
                     <h1
-                      className={`text-2xl font-medium text-callejero mt-6 text-left px-[28px] ${
-                        loadingGamefields ? "opacity-0" : "opacity-100"
-                      }`}
+                      className={`text-2xl font-medium text-callejero mt-6 text-left px-[28px] ${loadingGamefields ? "opacity-0" : "opacity-100"
+                        }`}
                     >
                       Selecciona una Cancha
                     </h1>
@@ -344,11 +341,10 @@ function SelectGamefield() {
                       }
                       key={gamefield.id}
                       style={{
-                        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.6)), url(${
-                          gamefield.image
+                        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.6)), url(${gamefield.image
                             ? gamefield.image
                             : "/images/default-org-img.jpeg"
-                        })`,
+                          })`,
                         backgroundSize: "cover",
                       }}
                       className="btn-gamefield mt-8 bg-callejero px-4 py-4 font-semibold
