@@ -408,6 +408,7 @@ const Calendar: FC<{ data: any; suscriptions: any }> = ({
             eventClassNames={"own-event"}
             eventStartEditable={false}
             disableDragging={true}
+            //close times logic
             dateClick={(info) => {
               const dayName = moment(info.dateStr).format("dddd");
               const dayNumber = moment(info.dateStr).format("D");
