@@ -22,6 +22,7 @@ import admin from "@/public/images/verified-callejero.png";
 // import admin from "@/public/images/verified-callejero-light.png";
 import female from "@/public/images/female.png";
 import axios from "axios";
+import { globals } from "@/app/globals";
 
 const ModalEventDetail: React.FC<{
   bookingDetail: {
@@ -69,18 +70,13 @@ const ModalEventDetail: React.FC<{
 
   const deleteBooking = async () => {
     setLoading(true);
-    // const API_URL = process.env.NEXT_PUBLIC_API_URL;
-    const API_URL = "https://callejero.com.co/test/api/v1";
-    // const API_URL = "https://callejero.com.co/api/v1";
-    // const API_URL = "https://dbbk.callejero.com.co/api/v1";
     const gamefieldId = localStorage.getItem("gamefieldId");
     const bookingId = bookingDetail.id;
-    const url = `${API_URL}/game-fields/${gamefieldId}/booking/client/${bookingId}`;
+    const url = `${globals.apiURL}/game-fields/${gamefieldId}/booking/client/${bookingId}`;
     const headers = {
       "x-callejero-web-token": localStorage.getItem("auth"),
       "x-tz": localStorage.getItem("timezone"),
       "accept-language": "es",
-      origin: "callejero.com.co",
     };
 
     try {
@@ -226,12 +222,12 @@ const ModalEventDetail: React.FC<{
                                 //@ts-ignore
                                 bookingReceived.responsables[0].sex == "a"
                                   ? // ? "bg-callejero"
-                                    "bg-slate-300"
+                                  "bg-slate-300"
                                   : //@ts-ignore
                                   bookingReceived.responsables[0].sex == "m"
-                                  ? "bg-blue-300"
-                                  : "bg-pink-300"
-                              }  rounded-full flex p-2 mr-2`}
+                                    ? "bg-blue-300"
+                                    : "bg-pink-300"
+                                }  rounded-full flex p-2 mr-2`}
                             >
                               {/* @ts-ignore */}
                               {/* {bookingReceived.responsables[0].sex == "a" && ( */}
@@ -242,8 +238,8 @@ const ModalEventDetail: React.FC<{
                                     ? admin
                                     : //  @ts-ignore
                                     bookingReceived.responsables[0].sex == "m"
-                                    ? male
-                                    : female
+                                      ? male
+                                      : female
                                 }
                                 alt="icon"
                                 height={30}
@@ -267,11 +263,10 @@ const ModalEventDetail: React.FC<{
                             className="flex items-center mt-4"
                           >
                             <div
-                              className={`${
-                                responsable.sex == "m"
+                              className={`${responsable.sex == "m"
                                   ? "bg-blue-300"
                                   : "bg-pink-300"
-                              }  rounded-full flex p-2 mr-2`}
+                                }  rounded-full flex p-2 mr-2`}
                             >
                               <Image
                                 src={responsable.sex == "m" ? male : female}
@@ -296,16 +291,16 @@ const ModalEventDetail: React.FC<{
                 </div>
                 <div className="mb-2 border-b-small border-slate-200"></div>
                 {/* <div className="flex column justify-between mb-2 items-center">
-                  <p className="font-medium text-sm text-[#393939]">
-                    Responsables
-                  </p>
-                  <button
-                    className="text-xs px-4 h-8 border border-callejero rounded-full opacity-30"
-                    disabled
-                  >
-                    Añadir responsables
-                  </button>
-                </div> */}
+                <p className="font-medium text-sm text-[#393939]">
+                  Responsables
+                </p>
+                <button
+                  className="text-xs px-4 h-8 border border-callejero rounded-full opacity-30"
+                  disabled
+                >
+                  Añadir responsables
+                </button>
+              </div> */}
                 {/* <div className="mb-2 border-b-small border-slate-200"></div> */}
                 <div className="mb-2">
                   <p className="font-medium text-sm text-[#393939] mb-2">
@@ -351,7 +346,7 @@ const ModalEventDetail: React.FC<{
                   <div className="flex w-full justify-between">
                     <button
                       className="h-12 w-40 border bg-red-600 rounded-full text-white text-base font-medium mb-2 
-                       hover:scale-105 transition-all flex place-items-center justify-center"
+                      hover:scale-105 transition-all flex place-items-center justify-center"
                       onClick={deleteBooking}
                     >
                       {loading ? (

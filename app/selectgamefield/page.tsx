@@ -8,6 +8,7 @@ import { Spinner } from "@nextui-org/react";
 import ModalLoading from "@/components/ModalLoading";
 import Modal from "@/components/Modal";
 import "./styles.scss";
+import { globals } from "../globals";
 
 function SelectGamefield() {
   const [loadingOrgs, setLoadingOrgs] = useState(false);
@@ -44,19 +45,15 @@ function SelectGamefield() {
   const fetchOrganization = async () => {
     setLoadingOrgs(true);
     const clientId = localStorage.getItem("clientId");
-    const API_URL = "https://callejero.com.co/test/api/v1";
-    // const API_URL = "https://callejero.com.co/api/v1";
-    // const API_URL = "https://dbbk.callejero.com.co/api/v1";
     try {
       const res = await axios
-        .get(`${API_URL}/organizations/${clientId}`, {
-          withCredentials: true,
+        .get(`${globals.apiURL}/organizations/${clientId}`, {
+          // withCredentials: true,
           headers: {
             "Content-Type": "application/json",
             "x-callejero-web-token": localStorage.getItem("auth"),
             "x-tz": localStorage.getItem("timezone"),
             "accept-language": "es",
-            origin: "callejero.com.co",
           },
         })
         .then((res) => {
@@ -141,17 +138,13 @@ function SelectGamefield() {
   const fetchGamefields = async () => {
     setLoadingGamefields(true);
     const organizationId = localStorage.getItem("organizationId");
-    const API_URL = "https://callejero.com.co/test/api/v1";
-    // const API_URL = "https://callejero.com.co/api/v1";
-    // const API_URL = "https://dbbk.callejero.com.co/api/v1";
     try {
       const res = await axios
-        .get(`${API_URL}/game-fields/org/${organizationId}`, {
+        .get(`${globals.apiURL}/game-fields/org/${organizationId}`, {
           headers: {
             "x-callejero-web-token": localStorage.getItem("auth"),
             "x-tz": localStorage.getItem("timezone"),
             "accept-language": "es",
-            origin: "callejero.com.co",
           },
         })
         .then((res) => {
@@ -256,9 +249,8 @@ function SelectGamefield() {
     return (
       <div className="Orgs Section">
         <h1
-          className={`text-2xl font-medium text-callejero mt-6 text-left px-[28px] ${
-            loadingOrgs ? "opacity-0" : "opacity-100"
-          }`}
+          className={`text-2xl font-medium text-callejero mt-6 text-left px-[28px] ${loadingOrgs ? "opacity-0" : "opacity-100"
+            }`}
         >
           Selecciona una Organizacion
         </h1>
@@ -284,9 +276,8 @@ function SelectGamefield() {
                       onClick={() => handleSelectOrg(org.id, org.name)}
                       key={org.id}
                       style={{
-                        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(${
-                          org.image ? org.image : "/images/default-org-img.jpeg"
-                        })`,
+                        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), url(${org.image ? org.image : "/images/default-org-img.jpeg"
+                          })`,
                         backgroundSize: "cover",
                       }}
                       className="btn-org font-semibold text-white hover:scale-105
@@ -324,9 +315,8 @@ function SelectGamefield() {
                 {gamefields.length !== 0 && (
                   <div>
                     <h1
-                      className={`text-2xl font-medium text-callejero mt-6 text-left px-[28px] ${
-                        loadingGamefields ? "opacity-0" : "opacity-100"
-                      }`}
+                      className={`text-2xl font-medium text-callejero mt-6 text-left px-[28px] ${loadingGamefields ? "opacity-0" : "opacity-100"
+                        }`}
                     >
                       Selecciona una Cancha
                     </h1>
@@ -344,11 +334,10 @@ function SelectGamefield() {
                       }
                       key={gamefield.id}
                       style={{
-                        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.6)), url(${
-                          gamefield.image
-                            ? gamefield.image
-                            : "/images/default-org-img.jpeg"
-                        })`,
+                        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.6)), url(${gamefield.image
+                          ? gamefield.image
+                          : "/images/default-org-img.jpeg"
+                          })`,
                         backgroundSize: "cover",
                       }}
                       className="btn-gamefield mt-8 bg-callejero px-4 py-4 font-semibold
