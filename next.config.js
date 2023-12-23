@@ -1,4 +1,13 @@
+const resolvePrefixPath = () => {
+  const env = process.env.NODE_ENV;
+  if (env === 'test') return '/test';
+  if (env === 'beta') return '/beta';
+  return '';
+}
+
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
+const nextConfig = {
+  basePath: resolvePrefixPath(),
+}
 
 module.exports = nextConfig

@@ -9,6 +9,7 @@ import Modal from "@/components/Modal";
 
 import Calendar from "@/components/Calendar/Calendar";
 import "./schedule.scss";
+import { globals } from "../globals";
 
 function Schedule() {
   const [loading, setLoading] = useState(false);
@@ -69,10 +70,7 @@ function Schedule() {
 
   const fetchBookings = async (gamefieldId: string) => {
     setLoading(true);
-    // const API_URL = process.env.NEXT_PUBLIC_API_URL;
-    const url = `https://callejero.com.co/test/api/v1/game-fields/${gamefieldId}/booking/get-all-bookings`;
-    // const url = `https://callejero.com.co/api/v1/game-fields/${gamefieldId}/booking/get-all-bookings`;
-    // const url = `https://dbbk.callejero.com.co/api/v1/${gamefieldId}/booking/get-all-bookings`;
+    const url = `${globals.apiURL}/game-fields/${gamefieldId}/booking/get-all-bookings`;
     try {
       const res = await axios
         .get(url, {
@@ -83,7 +81,6 @@ function Schedule() {
           headers: {
             "x-callejero-web-token": localStorage.getItem("auth"),
             "x-tz": localStorage.getItem("timezone"),
-            origin: "callejero.com.co",
           },
         })
         .then((res) => {

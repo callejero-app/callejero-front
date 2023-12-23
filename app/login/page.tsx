@@ -14,6 +14,7 @@ import banner from "@/public/images/desktop-login-banner.svg";
 import Image from "next/image";
 import Button from "@/components/Button";
 import Loader from "@/components/loader/Loader";
+import { globals } from "../globals";
 
 function Login() {
   const [isVisible, setIsVisible] = React.useState(false);
@@ -34,28 +35,23 @@ function Login() {
     const email = formData.get("email");
     const password = formData.get("password");
     const remoteTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const timezone =
-      remoteTimezone != undefined ? remoteTimezone : "America/Bogota";
+    const timezone = remoteTimezone != undefined ? remoteTimezone : "America/Bogota";
     localStorage.setItem("timezone", timezone);
-    // Varaibles de entorno
-    // const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/web`;
 
-    const url = `https://callejero.com.co/test/api/v1/auth/web`;
-    // const url = `https://callejero.com.co/api/v1/auth/web`;
-    // const url = `https://dbbk.callejero.com.co/api/v1/auth/web`;
+    const url = `${globals.apiURL}/auth/web`;
     try {
       const res = await axios
         .post(
           url,
           {
-            email: email,
-            password: password,
+            email,
+            password,
           },
           {
+            // withCredentials: true,
             headers: {
               "Content-Type": "application/json",
               "x-tz": localStorage.getItem("timezone"),
-              origin: "callejero.com.co",
               "accept-language": "es",
             },
           }
