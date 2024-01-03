@@ -45,6 +45,8 @@ function Navbar2() {
             src={logoMobile}
             alt="icon"
             priority={true}
+            width={140}
+            height={80}
             className="md:hidden"
           />
         </div>

@@ -186,6 +186,15 @@ th.fc-col-header-cell.fc-day.fc-day-today.dayHeader {
     transform: scale(1.05);
     transition: all 0.2s;
   }
+  &__closeTime {
+    height: auto;
+    background-color: #848a88 !important;
+    z-index: 1000;
+    &:hover {
+      transform: scale(1);
+      cursor: not-allowed;
+    }
+  }
 }
 
 .fc-v-event .fc-event-main-frame {
