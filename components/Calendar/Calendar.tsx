@@ -92,52 +92,53 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
 
     //closetimes
     const closes = closeTimesReceiveds.map((close: any) => {
-      const newHour = "00:00:00";
-      const momentDate = moment(close.start, "YYYY-MM-DD HH:mm:ss");
-      let newDate = momentDate
-        .set({
-          hour: moment(newHour, "HH:mm:ss").hour(),
-          minute: moment(newHour, "HH:mm:ss").minute(),
-          second: moment(newHour, "HH:mm:ss").second(),
-        })
-        .format("YYYY-MM-DD HH:mm:ss");
-      if (close.start != undefined) {
-        return {
-          start: newDate,
-          end: close.start,
-          display: "background",
-          className: "own-event__closeTime",
-        };
-      } else {
-        return {
-          start: newDate,
-          end: close.start,
-          display: "background",
-          className: "own-event__closeTime",
-        };
-      }
-    });
-
-    const closes2 = closeTimesReceiveds.map((close: any) => {
-      const newHour = "23:59:00";
-      const momentDate = moment(close.end, "YYYY-MM-DD HH:mm:ss");
-      let newDate = momentDate
-        .set({
-          hour: moment(newHour, "HH:mm:ss").hour(),
-          minute: moment(newHour, "HH:mm:ss").minute(),
-          second: moment(newHour, "HH:mm:ss").second(),
-        })
-        .format("YYYY-MM-DD HH:mm:ss");
+      // const newHour = "00:00:00";
+      // const momentDate = moment(close.start, "YYYY-MM-DD HH:mm:ss");
+      // let newDate = momentDate
+      //   .set({
+      //     hour: moment(newHour, "HH:mm:ss").hour(),
+      //     minute: moment(newHour, "HH:mm:ss").minute(),
+      //     second: moment(newHour, "HH:mm:ss").second(),
+      //   })
+      //   .format("YYYY-MM-DD HH:mm:ss");
+      // if (close.start != undefined) {
+      //   return {
+      //     start: newDate,
+      //     end: close.start,
+      //     display: "background",
+      //     className: "own-event__closeTime",
+      //   };
+      // } else {
       return {
-        start: close.end,
-        end: newDate,
+        start: close.start,
+        end: close.end,
         display: "background",
         className: "own-event__closeTime",
       };
+      // }
     });
 
+    // const closes2 = closeTimesReceiveds.map((close: any) => {
+    //   const newHour = "23:59:00";
+    //   const momentDate = moment(close.end, "YYYY-MM-DD HH:mm:ss");
+    //   let newDate = momentDate
+    //     .set({
+    //       hour: moment(newHour, "HH:mm:ss").hour(),
+    //       minute: moment(newHour, "HH:mm:ss").minute(),
+    //       second: moment(newHour, "HH:mm:ss").second(),
+    //     })
+    //     .format("YYYY-MM-DD HH:mm:ss");
+    //   return {
+    //     start: close.end,
+    //     end: newDate,
+    //     display: "background",
+    //     className: "own-event__closeTime",
+    //   };
+    // });
+
     setEvents(books);
-    setEvents((prevEvents) => [...prevEvents, ...subs, ...closes, ...closes2]);
+    setEvents((prevEvents) => [...prevEvents, ...subs, ...closes]);
+    // setEvents((prevEvents) => [...prevEvents, ...subs, ...closes, ...closes2]);
     if (bookings.length > 0)
       localStorage.setItem(
         "totalPrice",
