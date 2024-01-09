@@ -11,15 +11,18 @@ import moment from "moment";
 import "./Calendar.scss";
 import Modal from "@/components/Modal";
 
-const Calendar: FC<{ data: any; suscriptions: any }> = ({
+const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
   data,
   suscriptions,
+  closeTimes,
 }) => {
   // console.log("data", data);
   // console.log("suscriptions", suscriptions);
+  // console.log("closeTimes receives in calendar", closeTimes);
   const [bookings, setBookings] = useState(data);
   const [suscriptionsReceiveds, setSuscriptionsReceiveds] =
     useState(suscriptions);
+  const [closeTimesReceiveds, setCloseTimesReceiveds] = useState(closeTimes);
   const [gridModified, setGridModified] = useState(false);
   const [widthScreen, setWidthScreen] = useState(window.innerWidth);
   const [bookingInfo, setBookingInfo] = useState({});
@@ -51,11 +54,9 @@ const Calendar: FC<{ data: any; suscriptions: any }> = ({
 
   useEffect(() => {
     setBookings(data);
-  }, [data]);
-
-  useEffect(() => {
     if (suscriptions) setSuscriptionsReceiveds(suscriptions);
-  }, [suscriptions]);
+    if (closeTimes) setCloseTimesReceiveds(closeTimes);
+  }, [data, suscriptions, closeTimes]);
 
   //fill events
   useEffect(() => {
@@ -89,8 +90,55 @@ const Calendar: FC<{ data: any; suscriptions: any }> = ({
         booking.description != null ? booking.description : "Sin descripcción",
     }));
 
+    //closetimes
+    const closes = closeTimesReceiveds.map((close: any) => {
+      // const newHour = "00:00:00";
+      // const momentDate = moment(close.start, "YYYY-MM-DD HH:mm:ss");
+      // let newDate = momentDate
+      //   .set({
+      //     hour: moment(newHour, "HH:mm:ss").hour(),
+      //     minute: moment(newHour, "HH:mm:ss").minute(),
+      //     second: moment(newHour, "HH:mm:ss").second(),
+      //   })
+      //   .format("YYYY-MM-DD HH:mm:ss");
+      // if (close.start != undefined) {
+      //   return {
+      //     start: newDate,
+      //     end: close.start,
+      //     display: "background",
+      //     className: "own-event__closeTime",
+      //   };
+      // } else {
+      return {
+        start: close.start,
+        end: close.end,
+        display: "background",
+        className: "own-event__closeTime",
+      };
+      // }
+    });
+
+    // const closes2 = closeTimesReceiveds.map((close: any) => {
+    //   const newHour = "23:59:00";
+    //   const momentDate = moment(close.end, "YYYY-MM-DD HH:mm:ss");
+    //   let newDate = momentDate
+    //     .set({
+    //       hour: moment(newHour, "HH:mm:ss").hour(),
+    //       minute: moment(newHour, "HH:mm:ss").minute(),
+    //       second: moment(newHour, "HH:mm:ss").second(),
+    //     })
+    //     .format("YYYY-MM-DD HH:mm:ss");
+    //   return {
+    //     start: close.end,
+    //     end: newDate,
+    //     display: "background",
+    //     className: "own-event__closeTime",
+    //   };
+    // });
+
     setEvents(books);
-    setEvents((prevEvents) => [...prevEvents, ...subs]);
+    setEvents((prevEvents) => [...prevEvents, ...subs, ...closes]);
+    // setEvents((prevEvents) => [...prevEvents, ...subs, ...closes, ...closes2]);
     if (bookings.length > 0)
       localStorage.setItem(
         "totalPrice",
@@ -296,156 +344,176 @@ const Calendar: FC<{ data: any; suscriptions: any }> = ({
             eventColor={"#184135"}
             events={events}
             eventClick={(e) => {
-              // console.log("click event", e);
-              const justCreated = e.event._def.extendedProps.justCreated;
-              const sub = e.event._def.extendedProps.subscription;
-              if (sub) {
-                const tag = "sub";
-                const start = new Date(e.event._def.extendedProps.detail.start);
-                const end = new Date(e.event._def.extendedProps.detail.end);
-                setBookingDetail({
-                  tag: tag,
-                  start: moment(start).format("hh:mm A"),
-                  end: moment(end).format("hh:mm A"),
-                  dayName: moment(start).format("dddd"),
-                  dayNumber: moment(start).format("D"),
-                  monthName: new Date(start).toLocaleString("es-ES", {
-                    month: "long",
-                  }),
-                  description: e.event._def.extendedProps.detail.description,
-                  responsables: [
-                    {
-                      name: e.event._def.extendedProps.detail.creator.name,
-                      sex: e.event._def.extendedProps.detail.creator.sex
-                        ? e.event._def.extendedProps.detail.creator.sex
-                        : "a",
-                      id: e.event._def.extendedProps.detail.creator.id,
-                    },
-                  ],
-                  totalPrice: localStorage.getItem("totalPrice"),
-                  totalPaid: localStorage.getItem("totalPrice"),
-                });
+              let closeTime = false;
+              const target = e.jsEvent.target;
+              if (target instanceof HTMLElement) {
+                closeTime = target.classList.contains("own-event__closeTime");
               }
-              if (justCreated) {
-                const start =
-                  e.event._instance && new Date(e.event._instance.range.start);
-                const dayName = moment(start).format("dddd");
-                const dayNumber = moment(start).format("D");
-                const monthName =
-                  e.event._instance &&
-                  new Date(e.event._instance.range.start).toLocaleString(
-                    "es-ES",
-                    {
-                      month: "long",
-                    }
+
+              if (!closeTime) {
+                const justCreated = e.event._def.extendedProps.justCreated;
+                const sub = e.event._def.extendedProps.subscription;
+                if (sub) {
+                  const tag = "sub";
+                  const start = new Date(
+                    e.event._def.extendedProps.detail.start
                   );
-                const totalPrice = localStorage.getItem("totalPrice");
-                const id = e.event._def.extendedProps.newId;
-                // console.log("id:", id);
-                setBookingDetail({
-                  id: id,
-                  justCreated: true,
-                  tag: e.event._def.extendedProps.tag,
-                  start: e.event._def.extendedProps.newStart,
-                  end: e.event._def.extendedProps.newEnd,
-                  dayName: dayName,
-                  dayNumber: dayNumber,
-                  monthName: monthName,
-                  description: e.event._def.extendedProps.description,
-                  responsables: [
-                    {
-                      name: localStorage.getItem("clientName"),
-                      sex: localStorage.getItem("clientSex"),
-                    },
-                  ],
-                  totalPrice: totalPrice,
-                  totalPaid: totalPrice,
-                });
+                  const end = new Date(e.event._def.extendedProps.detail.end);
+                  setBookingDetail({
+                    tag: tag,
+                    start: moment(start).format("hh:mm A"),
+                    end: moment(end).format("hh:mm A"),
+                    dayName: moment(start).format("dddd"),
+                    dayNumber: moment(start).format("D"),
+                    monthName: new Date(start).toLocaleString("es-ES", {
+                      month: "long",
+                    }),
+                    description: e.event._def.extendedProps.detail.description,
+                    responsables: [
+                      {
+                        name: e.event._def.extendedProps.detail.creator.name,
+                        sex: e.event._def.extendedProps.detail.creator.sex
+                          ? e.event._def.extendedProps.detail.creator.sex
+                          : "a",
+                        id: e.event._def.extendedProps.detail.creator.id,
+                      },
+                    ],
+                    totalPrice: localStorage.getItem("totalPrice"),
+                    totalPaid: localStorage.getItem("totalPrice"),
+                  });
+                }
+                if (justCreated) {
+                  const start =
+                    e.event._instance &&
+                    new Date(e.event._instance.range.start);
+                  const dayName = moment(start).format("dddd");
+                  const dayNumber = moment(start).format("D");
+                  const monthName =
+                    e.event._instance &&
+                    new Date(e.event._instance.range.start).toLocaleString(
+                      "es-ES",
+                      {
+                        month: "long",
+                      }
+                    );
+                  const totalPrice = localStorage.getItem("totalPrice");
+                  const id = e.event._def.extendedProps.newId;
+                  // console.log("id:", id);
+                  setBookingDetail({
+                    id: id,
+                    justCreated: true,
+                    tag: e.event._def.extendedProps.tag,
+                    start: e.event._def.extendedProps.newStart,
+                    end: e.event._def.extendedProps.newEnd,
+                    dayName: dayName,
+                    dayNumber: dayNumber,
+                    monthName: monthName,
+                    description: e.event._def.extendedProps.description,
+                    responsables: [
+                      {
+                        name: localStorage.getItem("clientName"),
+                        sex: localStorage.getItem("clientSex"),
+                      },
+                    ],
+                    totalPrice: totalPrice,
+                    totalPaid: totalPrice,
+                  });
+                }
+                if (!justCreated && !sub) {
+                  const tag = e.event._def.extendedProps.detail.originPlatform;
+                  const start = new Date(
+                    e.event._def.extendedProps.detail.startsAt
+                  );
+                  const startStr = moment(start).format("hh:mm A");
+                  const end = new Date(
+                    e.event._def.extendedProps.detail.endsAt
+                  );
+                  const endStr = moment(end).format("hh:mm A");
+                  const dayName = moment(start).format("dddd");
+                  const dayNumber = moment(start).format("D");
+                  const monthName = new Date(start).toLocaleString("es-ES", {
+                    month: "long",
+                  });
+                  const description =
+                    e.event._def.extendedProps.detail.description;
+                  const teams = e.event._def.extendedProps.detail.teams;
+                  const totalPrice =
+                    e.event._def.extendedProps.detail.totalPrice.amount;
+                  const totalPaid =
+                    e.event._def.extendedProps.detail.totalPaid.amount;
+                  const responsables = teams.map((t: any) => ({
+                    name: t.teamLeader.name,
+                    sex: t.teamLeader.sex,
+                    id: t.teamLeader.id,
+                  }));
+                  const id = e.event._def.extendedProps.detail.id;
+                  setBookingDetail({
+                    id: id,
+                    tag: tag,
+                    start: startStr,
+                    end: endStr,
+                    dayName: dayName,
+                    dayNumber: dayNumber,
+                    monthName: monthName,
+                    description: description,
+                    responsables: responsables,
+                    totalPrice: totalPrice,
+                    totalPaid: totalPaid,
+                  });
+                }
+                setModalEventDetailVisible(true);
               }
-              if (!justCreated && !sub) {
-                const tag = e.event._def.extendedProps.detail.originPlatform;
-                const start = new Date(
-                  e.event._def.extendedProps.detail.startsAt
-                );
-                const startStr = moment(start).format("hh:mm A");
-                const end = new Date(e.event._def.extendedProps.detail.endsAt);
-                const endStr = moment(end).format("hh:mm A");
-                const dayName = moment(start).format("dddd");
-                const dayNumber = moment(start).format("D");
-                const monthName = new Date(start).toLocaleString("es-ES", {
-                  month: "long",
-                });
-                const description =
-                  e.event._def.extendedProps.detail.description;
-                const teams = e.event._def.extendedProps.detail.teams;
-                const totalPrice =
-                  e.event._def.extendedProps.detail.totalPrice.amount;
-                const totalPaid =
-                  e.event._def.extendedProps.detail.totalPaid.amount;
-                const responsables = teams.map((t: any) => ({
-                  name: t.teamLeader.name,
-                  sex: t.teamLeader.sex,
-                  id: t.teamLeader.id,
-                }));
-                const id = e.event._def.extendedProps.detail.id;
-                setBookingDetail({
-                  id: id,
-                  tag: tag,
-                  start: startStr,
-                  end: endStr,
-                  dayName: dayName,
-                  dayNumber: dayNumber,
-                  monthName: monthName,
-                  description: description,
-                  responsables: responsables,
-                  totalPrice: totalPrice,
-                  totalPaid: totalPaid,
-                });
-              }
-              setModalEventDetailVisible(true);
             }}
             eventMinWidth={50}
             eventClassNames={"own-event"}
             eventStartEditable={false}
-            disableDragging={true}
-            //close times logic
-            //close times logic
             dateClick={(info) => {
-              const dayName = moment(info.dateStr).format("dddd");
-              const dayNumber = moment(info.dateStr).format("D");
-              const monthName = new Date(info.dateStr).toLocaleString("es-ES", {
-                month: "long",
-              });
-              const startHour = moment(info.dateStr).format("hh:mm A");
-              const endHour = moment(info.date)
-                .add(1, "hours")
-                .format("hh:mm A");
-              const startsAtDate = moment(info.date).format("YYYY-MM-DD");
-              const endsAtDate = moment(info.date).format("YYYY-MM-DD");
-              const startsAtTime = moment(info.dateStr).format("hh:mm");
-              const endsAtTime = moment(info.dateStr)
-                .add(1, "hours")
-                .format("hh:mm");
-              const startsAtTime24 = moment(info.dateStr).format("HH:mm");
-              const endsAtTime24 = moment(info.dateStr)
-                .add(1, "hours")
-                .format("HH:mm");
+              let closeTime = false;
+              const target = info.jsEvent.target;
+              if (target instanceof HTMLElement) {
+                closeTime = target.classList.contains("own-event__closeTime");
+              }
 
-              setBookingInfo({
-                dateStr: info.dateStr,
-                dayName: dayName,
-                dayNumber: dayNumber,
-                monthName: monthName,
-                startHour: startHour,
-                endHour: endHour,
-                startsAtDate: startsAtDate,
-                startsAtTime: startsAtTime,
-                startsAtTime24: startsAtTime24,
-                endsAtDate: endsAtDate,
-                endsAtTime: endsAtTime,
-                endsAtTime24: endsAtTime24,
-              });
-              setModalVisible(true);
+              if (!closeTime) {
+                const dayName = moment(info.dateStr).format("dddd");
+                const dayNumber = moment(info.dateStr).format("D");
+                const monthName = new Date(info.dateStr).toLocaleString(
+                  "es-ES",
+                  {
+                    month: "long",
+                  }
+                );
+                const startHour = moment(info.dateStr).format("hh:mm A");
+                const endHour = moment(info.date)
+                  .add(1, "hours")
+                  .format("hh:mm A");
+                const startsAtDate = moment(info.date).format("YYYY-MM-DD");
+                const endsAtDate = moment(info.date).format("YYYY-MM-DD");
+                const startsAtTime = moment(info.dateStr).format("hh:mm");
+                const endsAtTime = moment(info.dateStr)
+                  .add(1, "hours")
+                  .format("hh:mm");
+                const startsAtTime24 = moment(info.dateStr).format("HH:mm");
+                const endsAtTime24 = moment(info.dateStr)
+                  .add(1, "hours")
+                  .format("HH:mm");
+
+                setBookingInfo({
+                  dateStr: info.dateStr,
+                  dayName: dayName,
+                  dayNumber: dayNumber,
+                  monthName: monthName,
+                  startHour: startHour,
+                  endHour: endHour,
+                  startsAtDate: startsAtDate,
+                  startsAtTime: startsAtTime,
+                  startsAtTime24: startsAtTime24,
+                  endsAtDate: endsAtDate,
+                  endsAtTime: endsAtTime,
+                  endsAtTime24: endsAtTime24,
+                });
+                setModalVisible(true);
+              }
             }}
             //@ts-ignore
             longPressDelay="0"
