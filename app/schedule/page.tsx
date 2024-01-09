@@ -79,6 +79,7 @@ function Schedule() {
           params: {
             "start-date": "2023-12-01",
             "end-date": "2024-02-28",
+            "closed-times": true,
           },
           headers: {
             "x-callejero-web-token": localStorage.getItem("auth"),
