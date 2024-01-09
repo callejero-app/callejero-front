@@ -74,6 +74,7 @@ function Schedule() {
     const url = `https://callejero.com.co/api/v1/game-fields/${gamefieldId}/booking/get-all-bookings`;
     // const url = `https://dbbk.callejero.com.co/api/v1/${gamefieldId}/booking/get-all-bookings`;
     try {
+      console.log("");
       const res = await axios
         .get(url, {
           params: {
