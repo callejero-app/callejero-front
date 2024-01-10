@@ -122,7 +122,8 @@ function Login() {
   const validateToken = () => {
     const token = localStorage.getItem("auth");
     if (token) {
-      window.location.href = "/selectgamefield";
+      // window.location.href = "/selectgamefield";
+      router.push("/selectgamefield");
     } else {
       setVisible(true);
     }
