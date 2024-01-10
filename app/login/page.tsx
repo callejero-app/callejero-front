@@ -81,7 +81,7 @@ function Login() {
       console.log(error);
       // console.log(error.response.data.error.message);
       //@ts-ignore
-      const codeMessage = error.response.data.error.message;
+      const codeMessage = error?.response?.data?.error?.message;
       setModalDetail({
         //@ts-ignore
         title: codeMessage,
