@@ -5,7 +5,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { globals } from "../globals";
+// import { globals } from "../globals";
 
 function Organizations() {
   const [loading, setLoading] = useState(false);
@@ -24,7 +24,7 @@ function Organizations() {
     const clientId = localStorage.getItem("clientId");
     try {
       const res = await axios
-        .get(`${globals.apiURL}/organizations/${clientId}`, {
+        .get(`${process.env.NEXT_PUBLIC_API_URL}/organizations/${clientId}`, {
           headers: {
             "x-callejero-web-token": localStorage.getItem("auth"),
             "x-tz": localStorage.getItem("timezone"),

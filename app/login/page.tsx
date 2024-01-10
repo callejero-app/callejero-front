@@ -15,7 +15,7 @@ import banner from "@/public/images/desktop-login-banner.svg";
 import Image from "next/image";
 import Button from "@/components/Button";
 // import Loader from "@/components/loader/Loader";
-import { globals } from "../globals";
+// import { globals } from "../globals";
 
 function Login() {
   const router = useRouter();
@@ -45,7 +45,8 @@ function Login() {
       remoteTimezone != undefined ? remoteTimezone : "America/Bogota";
     localStorage.setItem("timezone", timezone);
 
-    const url = `${globals.apiURL}/auth/web`;
+    // const url = `${globals.apiURL}/auth/web`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/web`;
     console.log("url ENV", url);
     try {
       const res = await axios

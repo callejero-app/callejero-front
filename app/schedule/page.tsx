@@ -10,7 +10,7 @@ import Modal from "@/components/Modal";
 
 import Calendar from "@/components/Calendar/Calendar";
 import "./schedule.scss";
-import { globals } from "../globals";
+// import { globals } from "../globals";
 
 function Schedule() {
   const [loading, setLoading] = useState(false);
@@ -72,7 +72,7 @@ function Schedule() {
 
   const fetchBookings = async (gamefieldId: string) => {
     setLoading(true);
-    const url = `${globals.apiURL}/game-fields/${gamefieldId}/booking/get-all-bookings`;
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/game-fields/${gamefieldId}/booking/get-all-bookings`;
     try {
       const res = await axios
         .get(url, {

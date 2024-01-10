@@ -5,7 +5,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { globals } from "../globals";
+// import { globals } from "../globals";
 
 function Organizations() {
   const [loading, setLoading] = useState(false);
@@ -22,13 +22,17 @@ function Organizations() {
     const organizationId = localStorage.getItem("organizationId");
     try {
       const res = await axios
-        .get(`${globals.apiURL}/game-fields/org/${organizationId}`, {
-          headers: {
-            "x-callejero-web-token": localStorage.getItem("auth"),
-            "x-tz": localStorage.getItem("timezone"),
-            "accept-language": "es",
-          },
-        })
+        // .get(`${globals.apiURL}/game-fields/org/${organizationId}`, {
+        .get(
+          `${process.env.NEXT_PUBLIC_API_URL}/game-fields/org/${organizationId}`,
+          {
+            headers: {
+              "x-callejero-web-token": localStorage.getItem("auth"),
+              "x-tz": localStorage.getItem("timezone"),
+              "accept-language": "es",
+            },
+          }
+        )
         .then((res) => {
           const gamefieldsFound = res.data.data.results;
           let gamefieldsTuples;

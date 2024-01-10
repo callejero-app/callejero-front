@@ -8,7 +8,7 @@ import { Spinner } from "@nextui-org/react";
 import ModalLoading from "@/components/ModalLoading";
 import Modal from "@/components/Modal";
 import "./styles.scss";
-import { globals } from "../globals";
+// import { globals } from "../globals";
 
 function SelectGamefield() {
   const [loadingOrgs, setLoadingOrgs] = useState(false);
@@ -47,7 +47,7 @@ function SelectGamefield() {
     const clientId = localStorage.getItem("clientId");
     try {
       const res = await axios
-        .get(`${globals.apiURL}/organizations/${clientId}`, {
+        .get(`${process.env.NEXT_PUBLIC_API_URL}/organizations/${clientId}`, {
           // withCredentials: true,
           headers: {
             "Content-Type": "application/json",
@@ -140,13 +140,16 @@ function SelectGamefield() {
     const organizationId = localStorage.getItem("organizationId");
     try {
       const res = await axios
-        .get(`${globals.apiURL}/game-fields/org/${organizationId}`, {
-          headers: {
-            "x-callejero-web-token": localStorage.getItem("auth"),
-            "x-tz": localStorage.getItem("timezone"),
-            "accept-language": "es",
-          },
-        })
+        .get(
+          `${process.env.NEXT_PUBLIC_API_URL}/game-fields/org/${organizationId}`,
+          {
+            headers: {
+              "x-callejero-web-token": localStorage.getItem("auth"),
+              "x-tz": localStorage.getItem("timezone"),
+              "accept-language": "es",
+            },
+          }
+        )
         .then((res) => {
           const gamefieldsFound = res.data.data.results;
           let gamefieldsTuples;
