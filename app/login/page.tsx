@@ -7,16 +7,18 @@ import { EyeFilledIcon } from "@/components/login/EyeFilledIcon";
 import { EyeSlashFilledIcon } from "@/components/login/EyeSlashFilledIcon";
 import Modal from "@/components/Modal";
 import { Spinner } from "@nextui-org/react";
+import { useRouter } from "next/router";
 
 import "./login.css";
 import logo from "@/public/images/callejero-dark.svg";
 import banner from "@/public/images/desktop-login-banner.svg";
 import Image from "next/image";
 import Button from "@/components/Button";
-import Loader from "@/components/loader/Loader";
+// import Loader from "@/components/loader/Loader";
 import { globals } from "../globals";
 
 function Login() {
+  const router = useRouter();
   const [isVisible, setIsVisible] = React.useState(false);
   const [loading, setLoading] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
@@ -26,6 +28,10 @@ function Login() {
     type: "",
   });
   const [modalVisible, setModalVisible] = useState(false);
+
+  const redirectToSelectGameField = () => {
+    router.push("/selectgamefield");
+  };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -40,6 +46,7 @@ function Login() {
     localStorage.setItem("timezone", timezone);
 
     const url = `${globals.apiURL}/auth/web`;
+    console.log("url ENV", url);
     try {
       const res = await axios
         .post(
@@ -74,7 +81,8 @@ function Login() {
             });
             setModalVisible(true);
             setLoading(false);
-            window.location.href = "/selectgamefield";
+            // window.location.href = "/selectgamefield";
+            redirectToSelectGameField();
           }
         });
     } catch (error) {
