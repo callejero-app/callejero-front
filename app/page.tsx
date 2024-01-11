@@ -13,7 +13,7 @@ function Home() {
   const validateToken = () => {
     const token = localStorage.getItem("auth");
     if (!token) {
-      window.location.href = "/test/login";
+      window.location.href = "/login";
     } else {
       window.location.href = "/selectgamefield";
     }

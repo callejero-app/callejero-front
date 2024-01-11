@@ -7,7 +7,7 @@ import { EyeFilledIcon } from "@/components/login/EyeFilledIcon";
 import { EyeSlashFilledIcon } from "@/components/login/EyeSlashFilledIcon";
 import Modal from "@/components/Modal";
 import { Spinner } from "@nextui-org/react";
-// import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 import "./login.css";
 import logo from "@/public/images/callejero-dark.svg";
@@ -18,7 +18,7 @@ import Button from "@/components/Button";
 // import { globals } from "../globals";
 
 function Login() {
-  // const router = useRouter();
+  const router = useRouter();
   const [isVisible, setIsVisible] = React.useState(false);
   const [loading, setLoading] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
@@ -30,9 +30,9 @@ function Login() {
   const [modalVisible, setModalVisible] = useState(false);
 
   const redirectToSelectGameField = () => {
-    // if (router) {
-    //   router.push("/selectgamefield");
-    // }
+    if (router) {
+      router.push("/selectgamefield");
+    }
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -84,8 +84,8 @@ function Login() {
             });
             setModalVisible(true);
             setLoading(false);
-            window.location.href = "/selectgamefield";
-            // redirectToSelectGameField();
+            // window.location.href = "/selectgamefield";
+            redirectToSelectGameField();
           }
         });
     } catch (error) {
