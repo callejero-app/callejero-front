@@ -260,19 +260,17 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
   const handleCompletePayment = (bookingId: string, justCreated: boolean) => {
     // console.log("entro in calendar");
     // console.log("handleCompletePayment id received", bookingId);
-    if (justCreated) {
-      setEvents((prevEvents) =>
-        prevEvents.map((event) =>
-          justCreated == true
-            ? event.newId == bookingId
-              ? { ...event, paymentCompleted: true, totalPaid: totalPrice }
-              : event
-            : event.id == bookingId
+    setEvents((prevEvents) =>
+      prevEvents.map((event) =>
+        justCreated == true
+          ? event.newId == bookingId
             ? { ...event, paymentCompleted: true, totalPaid: totalPrice }
             : event
-        )
-      );
-    }
+          : event.id == bookingId
+          ? { ...event, paymentCompleted: true, totalPaid: totalPrice }
+          : event
+      )
+    );
     console.log(
       "evento actualizado payment",
       justCreated

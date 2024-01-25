@@ -142,7 +142,7 @@ const ModalEventDetail: React.FC<{
   };
 
   const completePayment = async () => {
-    if (bookingClosed == false || paymentCompleted == false) {
+    if (bookingClosed == false && paymentCompleted == false) {
       setLoadingPayment(true);
       const gamefieldId = localStorage.getItem("gamefieldId");
       const bookingId = bookingReceived.id;
@@ -434,7 +434,7 @@ const ModalEventDetail: React.FC<{
                       <button
                         className={`text-sm md:text-sm h-10 border bg-callejero text-white rounded-full px-6 
                         w-[158px] transition-all ${
-                          bookingClosed && paymentCompleted == true
+                          bookingClosed || paymentCompleted == true
                             ? "opacity-70 cursor-not-allowed hover:scale-100"
                             : "hover:scale-105"
                         }`}
