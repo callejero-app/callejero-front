@@ -405,6 +405,10 @@ const ModalEventDetail: React.FC<{
                               ? bookingReceived.totalPrice.toLocaleString()
                               : bookingReceived.totalPaid
                                   .toString()
+                                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",") == ""
+                              ? "0.00"
+                              : bookingReceived.totalPaid
+                                  .toString()
                                   .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                           }  `}
                         </p>
