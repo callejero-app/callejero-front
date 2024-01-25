@@ -19,14 +19,15 @@ import Image from "next/image";
 import calendar from "@/public/images/calendar.svg";
 import male from "@/public/images/male.png";
 import admin from "@/public/images/verified-callejero.png";
-// import admin from "@/public/images/verified-callejero-light.png";
 import female from "@/public/images/female.png";
 import axios from "axios";
+import { globals } from "@/app/globals";
 
 const ModalEventDetail: React.FC<{
   bookingDetail: {
     id: string;
     justCreated: boolean;
+    paymentCompleted: boolean;
     tag: string;
     start: string;
     end: string;
@@ -41,20 +42,34 @@ const ModalEventDetail: React.FC<{
   openEventDetail: boolean;
   updateOpenEventDetail: Function;
   handleDeleteEvent: Function;
+  handleCompletePayment: Function;
 }> = ({
   bookingDetail,
   openEventDetail,
   updateOpenEventDetail,
   handleDeleteEvent,
+  handleCompletePayment,
 }) => {
   const [modalEventDetailOpen, setModalEventDetailOpen] =
     useState(openEventDetail);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [loading, setLoading] = useState(false);
+  const [loadingPayment, setLoadingPayment] = useState(false);
+  const [bookingClosed, setBookingClosed] = useState(
+    bookingDetail.totalPaid == bookingDetail.totalPrice ? true : false
+  );
+  const [paymentCompleted, setPaymentCompleted] = useState(
+    bookingClosed ? true : bookingDetail.paymentCompleted
+  );
+  const [totalPrice, setTotalPrice] = useState(() => {
+    const localStorageValue = localStorage.getItem("totalPrice");
+    return localStorageValue ? parseInt(localStorageValue) * 1000 : 0;
+  });
 
   const [bookingReceived, setBookingReceived] = useState({
     id: bookingDetail.id,
     justCreated: bookingDetail.justCreated,
+    paymentCompleted: bookingDetail.paymentCompleted,
     tag: bookingDetail.tag,
     start: bookingDetail.start,
     end: bookingDetail.end,
@@ -67,20 +82,22 @@ const ModalEventDetail: React.FC<{
     totalPaid: bookingDetail.totalPaid,
   });
 
+  // console.log("modal detail total price", bookingReceived.totalPrice);
+  // console.log("modal detail total paid", bookingReceived.totalPaid);
+  // console.log("paymentCompleted", bookingReceived.paymentCompleted);
+  // console.log("modal detail total price", bookingReceived.totalPrice);
+  // console.log("modal detail abono ", totalPrice);
+  // console.log("Booking closed ?", bookingClosed);
+
   const deleteBooking = async () => {
     setLoading(true);
-    // const API_URL = process.env.NEXT_PUBLIC_API_URL;
-    const API_URL = "https://callejero.com.co/test/api/v1";
-    // const API_URL = "https://callejero.com.co/api/v1";
-    // const API_URL = "https://dbbk.callejero.com.co/api/v1";
     const gamefieldId = localStorage.getItem("gamefieldId");
     const bookingId = bookingDetail.id;
-    const url = `${API_URL}/game-fields/${gamefieldId}/booking/client/${bookingId}`;
+    const url = `${globals.apiURL}/game-fields/${gamefieldId}/booking/client/${bookingId}`;
     const headers = {
       "x-callejero-web-token": localStorage.getItem("auth"),
       "x-tz": localStorage.getItem("timezone"),
       "accept-language": "es",
-      origin: "callejero.com.co",
     };
 
     try {
@@ -124,6 +141,73 @@ const ModalEventDetail: React.FC<{
     }
   };
 
+  const completePayment = async () => {
+    if (bookingClosed == false || paymentCompleted == false) {
+      setLoadingPayment(true);
+      const gamefieldId = localStorage.getItem("gamefieldId");
+      const bookingId = bookingReceived.id;
+      // console.log("gamefieldId", gamefieldId);
+      // console.log("booking id", bookingId);
+      const url = `${globals.apiURL}/game-fields/${gamefieldId}/booking/close-booking`;
+      const headers = {
+        "x-callejero-web-token": localStorage.getItem("auth"),
+        "x-tz": localStorage.getItem("timezone"),
+        "accept-language": "es",
+      };
+
+      try {
+        const res = await axios
+          .patch(
+            url,
+            {
+              bookId: bookingId,
+            },
+            { headers }
+          )
+          .then((res) => {
+            setLoadingPayment(false);
+            if (res.status == 200) {
+              setBookingClosed(true);
+              setPaymentCompleted(true);
+              handleCompletePayment(bookingId, bookingReceived.justCreated);
+              toast.success("Pago total completado!", {
+                autoClose: 2000,
+                icon: "✅",
+              });
+            }
+          });
+      } catch (error) {
+        setLoadingPayment(false);
+        console.log(error);
+        // @ts-ignore
+        const codeError = error?.response?.data?.error?.code;
+        //@ts-ignore
+        const codeMessage = error?.response?.data?.error?.message;
+        switch (codeError) {
+          case "auth.web.failure.session.1000":
+          case "auth.web.failure.session.1001":
+          case "auth.web.failure.session.1002":
+          case "auth.web.failure.session.1003":
+          case "auth.web.failure.session.1004:":
+            toast.error("La sesión ha caducado!", {
+              autoClose: 2000,
+              icon: "❌",
+            });
+            localStorage.clear();
+            window.location.href = "/login";
+            break;
+          default:
+            toast.error("Algo salió mal!", {
+              autoClose: 2000,
+              icon: "❌",
+            });
+            break;
+        }
+        setLoading(false);
+      }
+    }
+  };
+
   useEffect(() => {
     onOpen();
     const closeBtn = document.getElementsByClassName(
@@ -131,7 +215,6 @@ const ModalEventDetail: React.FC<{
     )[0];
     closeBtn.classList.add("close-btn");
     closeBtn.addEventListener("click", () => closeEventDetail());
-    // console.log("booking received:", bookingReceived);
   }, []);
 
   const closeEventDetail = () => {
@@ -288,70 +371,94 @@ const ModalEventDetail: React.FC<{
                     </div>
                   </div>
                   <button
-                    className="text-xs h-8 border border-callejero rounded-full px-3 opacity-30"
+                    className="text-xs h-8 border border-callejero rounded-full px-3 opacity-30 hidden"
                     disabled
                   >
                     Modificar
                   </button>
                 </div>
-                <div className="mb-2 border-b-small border-slate-200"></div>
+                {bookingReceived.tag !== "sub" && (
+                  <div className="mb-2 border-b-small border-slate-200"></div>
+                )}
                 {/* <div className="flex column justify-between mb-2 items-center">
-                  <p className="font-medium text-sm text-[#393939]">
-                    Responsables
-                  </p>
-                  <button
-                    className="text-xs px-4 h-8 border border-callejero rounded-full opacity-30"
-                    disabled
-                  >
-                    Añadir responsables
-                  </button>
-                </div> */}
+                <p className="font-medium text-sm text-[#393939]">
+                  Responsables
+                </p>
+                <button
+                  className="text-xs px-4 h-8 border border-callejero rounded-full opacity-30"
+                  disabled
+                >
+                  Añadir responsables
+                </button>
+              </div> */}
                 {/* <div className="mb-2 border-b-small border-slate-200"></div> */}
-                <div className="mb-2">
-                  <p className="font-medium text-sm text-[#393939] mb-2">
-                    Dinero Abonado
-                  </p>
-                  <div className="flex justify-between items-center">
-                    <div className="flex flex-col">
-                      <p className="text-callejero text-2xl">
-                        $
-                        {(bookingReceived.tag == "web" ||
-                          bookingReceived.tag == "sub") &&
-                          `0,00`}
-                        {bookingReceived.tag == "app" &&
-                          `${bookingReceived.totalPaid.toLocaleString()}`}
-                      </p>
-                      <p className="text-[#818181] text-xs mt-1">
-                        $
-                        {(bookingReceived.tag == "web" ||
-                          bookingReceived.tag == "sub") &&
-                          `${bookingReceived.totalPrice.toLocaleString()} pendiente por abonar`}
-                        {bookingReceived.tag == "app" &&
-                          `${(
-                            bookingReceived.totalPrice -
-                            bookingReceived.totalPaid
-                          ).toLocaleString()} pendiente por abonar`}
-                      </p>
-                      <p className="text-[#818181] text-xs mt-1">
-                        Total: ${bookingReceived.totalPrice.toLocaleString()}
-                      </p>
+                {bookingReceived.tag !== "sub" && (
+                  <div className="mb-2">
+                    <p className="font-medium text-sm text-[#393939] mb-2">
+                      Dinero Abonado
+                    </p>
+                    <div className="flex justify-between items-center">
+                      <div className="flex flex-col">
+                        <p className="text-callejero text-2xl">
+                          {`$${
+                            bookingClosed || paymentCompleted
+                              ? bookingReceived.totalPrice.toLocaleString()
+                              : bookingReceived.totalPaid
+                                  .toString()
+                                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                          }  `}
+                        </p>
+                        <p className="text-[#818181] text-sm mt-1">
+                          $
+                          {`${
+                            bookingClosed || paymentCompleted
+                              ? "0,00"
+                              : (
+                                  totalPrice - bookingReceived.totalPaid
+                                ).toLocaleString()
+                          } pago pendiente`}
+                        </p>
+                        <p
+                          className={`text-[#818181] text-sm mt-1 ${
+                            (bookingClosed || paymentCompleted) &&
+                            "line-through"
+                          }`}
+                        >
+                          Total: ${bookingReceived.totalPrice.toLocaleString()}
+                        </p>
+                      </div>
+                      <button
+                        className={`text-sm md:text-sm h-10 border bg-callejero text-white rounded-full px-6 
+                        w-[158px] transition-all ${
+                          bookingClosed && paymentCompleted == true
+                            ? "opacity-70 cursor-not-allowed hover:scale-100"
+                            : "hover:scale-105"
+                        }`}
+                        onClick={completePayment}
+                      >
+                        {loadingPayment ? (
+                          <Spinner size="sm" color="white" />
+                        ) : (
+                          `${
+                            bookingClosed || paymentCompleted
+                              ? "Pagado"
+                              : "Completar pago"
+                          } `
+                        )}
+                      </button>
                     </div>
-                    <button
-                      className="text-xs h-8 border border-callejero rounded-full px-6 opacity-30"
-                      disabled
-                    >
-                      Registrar pago
-                    </button>
                   </div>
-                </div>
-                <div className="border-b-small border-slate-200"></div>
+                )}
+                {bookingReceived.tag !== "sub" && (
+                  <div className="border-b-small border-slate-200"></div>
+                )}
               </ModalBody>
               <ModalFooter>
                 {bookingReceived.tag === "web" ? (
                   <div className="flex w-full justify-between">
                     <button
                       className="h-12 w-40 border bg-red-600 rounded-full text-white text-base font-medium mb-2 
-                       hover:scale-105 transition-all flex place-items-center justify-center"
+                      hover:scale-105 transition-all flex place-items-center justify-center"
                       onClick={deleteBooking}
                     >
                       {loading ? (
@@ -361,7 +468,8 @@ const ModalEventDetail: React.FC<{
                       )}
                     </button>
                     <button
-                      className="h-12 w-40 border border-callejero rounded-full text-callejero text-base font-medium hover:scale-105 transition-all"
+                      className="h-12 w-40 border border-callejero rounded-full text-callejero text-base 
+                      font-medium hover:scale-105 transition-all"
                       onClick={closeEventDetail}
                     >
                       Cerrar
@@ -370,7 +478,8 @@ const ModalEventDetail: React.FC<{
                 ) : (
                   <div className="flex w-full justify-end">
                     <button
-                      className="h-12 w-[167px] border border-callejero rounded-full text-callejero text-base font-medium hover:scale-105 transition-all"
+                      className="h-12 w-[167px] border border-callejero rounded-full text-callejero text-base 
+                      font-medium hover:scale-105 transition-all"
                       onClick={closeEventDetail}
                     >
                       Cerrar

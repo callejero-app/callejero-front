@@ -5,6 +5,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { globals } from "../globals";
 
 function Organizations() {
   const [loading, setLoading] = useState(false);
@@ -18,18 +19,14 @@ function Organizations() {
 
   const fetchGamefields = async () => {
     setLoading(true);
-    // const API_URL = "https://callejero.com.co/test/api/v1";
-    const API_URL = "https://callejero.com.co/api/v1";
-    // const API_URL = "https://dbbk.callejero.com.co/api/v1";
     const organizationId = localStorage.getItem("organizationId");
     try {
       const res = await axios
-        .get(`${API_URL}/game-fields/org/${organizationId}`, {
+        .get(`${globals.apiURL}/game-fields/org/${organizationId}`, {
           headers: {
             "x-callejero-web-token": localStorage.getItem("auth"),
             "x-tz": localStorage.getItem("timezone"),
             "accept-language": "es",
-            origin: "callejero.com.co",
           },
         })
         .then((res) => {
