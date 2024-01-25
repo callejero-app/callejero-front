@@ -5,6 +5,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { globals } from "../globals";
 
 function Organizations() {
   const [loading, setLoading] = useState(false);
@@ -20,37 +21,27 @@ function Organizations() {
 
   const fetchOrganization = async () => {
     setLoading(true);
-    // const API_URL = "https://callejero.com.co/test/api/v1";
-    const API_URL = "https://callejero.com.co/api/v1";
-    // const API_URL = "https://dbbk.callejero.com.co/api/v1";
     const clientId = localStorage.getItem("clientId");
     try {
       const res = await axios
-        .get(`${API_URL}/organizations/${clientId}`, {
+        .get(`${globals.apiURL}/organizations/${clientId}`, {
           headers: {
             "x-callejero-web-token": localStorage.getItem("auth"),
             "x-tz": localStorage.getItem("timezone"),
             "accept-language": "es",
-            origin: "callejero.com.co",
           },
         })
         .then((res) => {
           const orgsFound = res.data.data;
-          // console.log(orgsFound);
-
-          // const firstGamefieldId = orgsFound[0].gameFields[0];
           if (orgsFound.length == 1) {
             const orgId = orgsFound[0]._id;
             const orgName = orgsFound[0].name;
             localStorage.setItem("organizationId", orgId);
             localStorage.setItem("organizationName", orgName);
             setOrganizations([{ _id: orgId, name: orgName }]);
-
-            // window.location.href = "/gamefields";
           } else {
             setOrganizations(orgsFound);
           }
-          // setOrganizations(orgsFound);
           if (res.status == 200 && orgsFound.length > 0) {
             toast.success("Organizaciones cargadas!", {
               autoClose: 2000,

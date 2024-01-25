@@ -18,6 +18,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./styles.scss";
 import Image from "next/image";
 import calendar from "@/public/images/calendar.svg";
+import { globals } from "@/app/globals";
 
 const ModalCreateEvent: React.FC<{
   open: boolean;
@@ -34,6 +35,16 @@ const ModalCreateEvent: React.FC<{
   const [modalOpen, setModalOpen] = useState(open);
   const [loading, setLoading] = useState(false);
   const [emptyDescription, setEmptyDescription] = useState(false);
+  // const [emptyAbono, setEmptyAbono] = useState(false);
+  const [abonoValue, setAbonoValue] = useState("");
+  const [abonoPending, setAbonoPending] = useState(() => {
+    const localStorageValue = localStorage.getItem("totalPrice");
+    return localStorageValue ? parseInt(localStorageValue) * 1000 : 0;
+  });
+  const [totalPrice, setTotalPrice] = useState(() => {
+    const localStorageValue = localStorage.getItem("totalPrice");
+    return localStorageValue ? parseInt(localStorageValue) * 1000 : 0;
+  });
 
   const [booking, setBooking] = useState({
     //@ts-ignore
@@ -59,7 +70,7 @@ const ModalCreateEvent: React.FC<{
     //@ts-ignore
     endsAtTime24: bookingInfo.endsAtTime24,
     //@ts-ignore
-    totalPrice: localStorage.getItem("totalPrice"),
+    totalPrice: totalPrice,
   });
 
   useEffect(() => {
@@ -72,19 +83,6 @@ const ModalCreateEvent: React.FC<{
     // deleteHoverGray();
   }, []);
 
-  // const deleteHoverGray = () => {
-  //   document
-  //     .getElementsByClassName(
-  //       "relative px-3 w-full inline-flex shadow-sm tap-highlight-transparent bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 min-h-unit-10 rounded-medium flex-col items-start justify-center gap-0 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 h-14 py-2"
-  //     )[0]
-  //     .classList.remove("data-[hover=true]:bg-default-200");
-  //   document
-  //     .getElementsByClassName(
-  //       "relative px-3 w-full inline-flex shadow-sm tap-highlight-transparent bg-default-100 data-[hover=true]:bg-default-200 group-data-[focus=true]:bg-default-100 min-h-unit-10 rounded-medium flex-col items-start justify-center gap-0 outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 h-14 py-2"
-  //     )[0]
-  //     .classList.remove("data-[hover=true]:bg-default-200");
-  // };
-
   const createEventCalendar = (
     description: string,
     error: boolean,
@@ -96,6 +94,7 @@ const ModalCreateEvent: React.FC<{
         id: "",
         newId: bookingId,
         justCreated: true,
+        paymentCompleted: parseInt(abonoValue) == totalPrice,
         newStart: booking.startHour,
         newEnd: booking.endHour,
         title: description,
@@ -105,7 +104,8 @@ const ModalCreateEvent: React.FC<{
         end: `${booking.endsAtDate} ${bookingInfo.endsAtTime24}`,
         description: description,
         tag: "web",
-        totalPrice: localStorage.getItem("totalPrice"),
+        totalPrice: totalPrice,
+        totalPaid: abonoValue,
       };
       addEvent(newEvent);
     } else {
@@ -117,33 +117,34 @@ const ModalCreateEvent: React.FC<{
     setLoading(true);
     setEmptyDescription(false);
     let descriptionEl = document.getElementById("description");
+    let abonoEl = document.getElementById("abono");
     //@ts-ignore
     const description = descriptionEl != null ? descriptionEl.value : "";
+    //@ts-ignore
+    const abono = abonoEl.value != "" ? abonoEl.value : 0;
 
     if (description == "") {
       setLoading(false);
       setEmptyDescription(true);
-    } else {
-      setEmptyDescription(false);
-      const gamefieldId = localStorage.getItem("gamefieldId");
-      const API_URL = process.env.NEXT_PUBLIC_API_URL;
+    }
 
-      // const url = `${API_URL}/game-fields/${gamefieldId}/booking/create-client`;
-      // const url = `https://callejero.com.co/test/api/v1/game-fields/${gamefieldId}/booking/create-client`;
-      const url = `https://callejero.com.co/api/v1/game-fields/${gamefieldId}/booking/create-client`;
-      // const url = `https://dbbk.callejero.com.co/api/v1/game-fields/${gamefieldId}/booking/create-client`;
+    if (description !== "") {
+      setEmptyDescription(false);
+      // setEmptyAbono(false);
+      const gamefieldId = localStorage.getItem("gamefieldId");
+      const url = `${globals.apiURL}/game-fields/${gamefieldId}/booking/create-client`;
       const data = {
         startsAtDate: booking.startsAtDate,
         startsAtTime: booking.startsAtTime24,
         endsAtDate: booking.endsAtDate,
         endsAtTime: booking.endsAtTime24,
         description: description,
+        payment: abono,
       };
       const headers = {
         "x-callejero-web-token": localStorage.getItem("auth"),
         "x-tz": localStorage.getItem("timezone"),
         "accept-language": "es",
-        origin: "callejero.com.co",
       };
       try {
         const res = await axios.post(url, data, { headers }).then((res) => {
@@ -189,14 +190,6 @@ const ModalCreateEvent: React.FC<{
     <>
       <Modal isOpen={modalOpen} onOpenChange={onOpenChange}>
         <ToastContainer />
-        {/* {modalInfoVisible && (
-          <Modal
-            title={modalDetail.title}
-            footer={modalDetail.subtitle}
-            type={modalDetail.type}
-            updateOpen={updateOpen}
-          />
-        )} */}
         <ModalContent>
           {(onClose) => (
             <div className="modal">
@@ -221,7 +214,6 @@ const ModalCreateEvent: React.FC<{
                     height={15}
                     priority={true}
                   />
-
                   <p className=" modal__date ml-2">
                     <span className="capitalize">{booking.dayName}</span>,{" "}
                     {booking.dayNumber} de {booking.monthName} ·{" "}
@@ -250,7 +242,7 @@ const ModalCreateEvent: React.FC<{
                   }`}
                 />
                 <div className=" mb-2 border-b-small border-slate-200"></div>
-                <div className="flex column justify-between mb-2 items-center hidden">
+                {/* <div className="flex column justify-between mb-2 items-center">
                   <p className="font-medium text-sm text-[#393939]">
                     Responsables
                   </p>
@@ -260,27 +252,56 @@ const ModalCreateEvent: React.FC<{
                   >
                     Añadir responsables
                   </button>
-                </div>
+                </div> */}
                 <div className="mb-2 border-b-small border-slate-200 hidden"></div>
+                <input
+                  id="abono"
+                  name="abono"
+                  value={abonoValue}
+                  onChange={(e) => {
+                    setAbonoValue(e.target.value);
+                    if (e.target.value !== "") {
+                      const priceStorage = localStorage.getItem("totalPrice");
+                      const abono = parseInt(e.target.value);
+                      if (priceStorage) {
+                        const priceStorageInt = parseInt(priceStorage) * 1000;
+                        setAbonoPending(priceStorageInt - abono);
+                      }
+                    } else {
+                      setAbonoPending(abonoPending);
+                    }
+                  }}
+                  type="number"
+                  placeholder="Abono (Opcional)"
+                  className="modal__input mb-2 text-xs"
+                />
                 <div className="mb-2">
                   <p className="font-medium text-sm text-[#393939] mb-2">
                     Dinero Abonado
                   </p>
                   <div className="flex justify-between items-center">
                     <div className="flex flex-col">
-                      <p className="text-callejero text-2xl">$0,00</p>
-                      <p className="text-[#818181] text-xs">
+                      <p className="text-callejero text-2xl">
                         $
-                        {booking.totalPrice?.toLocaleString()
-                          ? booking.totalPrice?.toLocaleString()
-                          : localStorage
-                              .getItem("totalPrice")
-                              ?.toLocaleString()}{" "}
-                        penditente por abonar
+                        {abonoValue == ""
+                          ? "0.00"
+                          : abonoValue
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                      </p>
+                      <p className="text-[#818181] text-sm">
+                        $
+                        {abonoValue == ""
+                          ? localStorage.getItem("totalPrice")
+                          : abonoPending.toLocaleString()}{" "}
+                        pendiente por abonar
+                      </p>
+                      <p className="text-[#818181] text-sm mt-1">
+                        Total: ${localStorage.getItem("totalPrice")}
                       </p>
                     </div>
                     <button
-                      className="text-xs w-36 h-8 border border-callejero rounded-full px-3 opacity-30"
+                      className="text-sm w-36 h-8 border border-callejero rounded-full px-3 opacity-30 hidden"
                       disabled
                     >
                       Registrar pago

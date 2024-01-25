@@ -5,7 +5,8 @@ import { FormEvent, useState } from "react";
 import { Input } from "@nextui-org/react";
 import { EyeFilledIcon } from "@/components/login/EyeFilledIcon";
 import { EyeSlashFilledIcon } from "@/components/login/EyeSlashFilledIcon";
-import { ToastContainer, toast } from "react-toastify";
+import Modal from "@/components/Modal";
+import { Spinner } from "@nextui-org/react";
 
 import "./login.css";
 import logo from "@/public/images/callejero-dark.svg";
@@ -13,11 +14,18 @@ import banner from "@/public/images/desktop-login-banner.svg";
 import Image from "next/image";
 import Button from "@/components/Button";
 import Loader from "@/components/loader/Loader";
+import { globals } from "../globals";
 
 function Login() {
   const [isVisible, setIsVisible] = React.useState(false);
   const [loading, setLoading] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
+  const [modalDetail, setModalDetail] = useState({
+    title: "",
+    subtitle: "",
+    type: "",
+  });
+  const [modalVisible, setModalVisible] = useState(false);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -30,25 +38,22 @@ function Login() {
     const timezone =
       remoteTimezone != undefined ? remoteTimezone : "America/Bogota";
     localStorage.setItem("timezone", timezone);
-    // Varaibles de entorno
-    // const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/web`;
 
-    // const url = `https://callejero.com.co/test/api/v1/auth/web`;
-    const url = `https://callejero.com.co/api/v1/auth/web`;
-    // const url = `https://dbbk.callejero.com.co/api/v1/auth/web`;
+    const url = `${globals.apiURL}/auth/web`;
     try {
       const res = await axios
         .post(
           url,
           {
-            email: email,
-            password: password,
+            email,
+            password,
           },
           {
+            // withCredentials: true,
             headers: {
               "Content-Type": "application/json",
               "x-tz": localStorage.getItem("timezone"),
-              origin: "callejero.com.co",
+              "accept-language": "es",
             },
           }
         )
@@ -62,25 +67,40 @@ function Login() {
           localStorage.setItem("clientName", res.data.data.user.name);
           localStorage.setItem("clientSex", res.data.data.user.sex);
           if (res.status == 200) {
-            toast.success("User found!", {
-              autoClose: 2000,
-              icon: "✅",
-              theme: "dark",
+            setModalDetail({
+              title: "Inicio de Sesión Exitoso!",
+              subtitle: "¡Bienvenido de nuevo! Has iniciado sesión con éxito.",
+              type: "success",
             });
+            setModalVisible(true);
             setLoading(false);
             window.location.href = "/selectgamefield";
           }
         });
     } catch (error) {
       console.log(error);
-      toast.error("Something failed!", {
-        autoClose: 2000,
-        icon: "❌",
-        theme: "dark",
+      // console.log(error.response.data.error.message);
+      //@ts-ignore
+      const codeMessage = error.response.data.error.message;
+      setModalDetail({
+        //@ts-ignore
+        title: codeMessage,
+        subtitle: "",
+        type: "error",
       });
+      setModalVisible(true);
+      // toast.error("Something failed!", {
+      //   autoClose: 2000,
+      //   icon: "❌",
+      //   theme: "dark",
+      // });
       setLoading(false);
       localStorage.clear();
     }
+  };
+
+  const updateOpen = (open: boolean) => {
+    setModalVisible(open);
   };
 
   //middleware
@@ -102,6 +122,14 @@ function Login() {
   if (visible)
     return (
       <div>
+        {modalVisible && (
+          <Modal
+            title={modalDetail.title}
+            footer={modalDetail.subtitle}
+            type={modalDetail.type}
+            updateOpenInfo={updateOpen}
+          />
+        )}
         <div className="login text-center items-center flex h-screen">
           <div className="w-full flex">
             <form
@@ -123,6 +151,7 @@ function Login() {
                 type="email"
                 label="Correo electrónico"
                 className="mt-8 mx-auto w-[342px]"
+                size="lg"
               />
               <Input
                 name="password"
@@ -132,6 +161,7 @@ function Login() {
                 label="Contraseña"
                 className="mt-8 mx-auto w-[342px]"
                 type={isVisible ? "text" : "password"}
+                size="lg"
                 endContent={
                   <button
                     className="focus:outline-none"
@@ -147,21 +177,24 @@ function Login() {
                 }
               />
               {loading ? (
-                <Loader />
+                // <Loader />
+                <Spinner size="lg" color="primary" className="mt-8" />
               ) : (
                 <Button text="Ingresar" width={342} className="mt-8" />
               )}
-              <p className="mt-8">
-                ¿Olvidaste tu contraseña?{" "}
-                <a href="">
-                  <b className="text-callejero">Recupérala aquí.</b>
-                </a>
+              <p className="mt-8 opacity-70">
+                ¿Olvidaste tu contraseña? {/* <a href=""> */}
+                <b style={{ cursor: "not-allowed" }} className="text-callejero">
+                  Recupérala aquí.
+                </b>
+                {/* </a> */}
               </p>
-              <p className="mt-6">
-                ¿No tienes una cuenta?{" "}
-                <a href="">
-                  <b className="text-callejero">Regístrate.</b>
-                </a>
+              <p className="mt-6 opacity-70">
+                ¿No tienes una cuenta? {/* <a href=""> */}
+                <b style={{ cursor: "not-allowed" }} className="text-callejero">
+                  Regístrate.
+                </b>
+                {/* </a> */}
               </p>
             </form>
             <div className="login__banner hidden lg:block lg:w-1/2">

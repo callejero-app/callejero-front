@@ -8,6 +8,7 @@ import { Spinner } from "@nextui-org/react";
 import ModalLoading from "@/components/ModalLoading";
 import Modal from "@/components/Modal";
 import "./styles.scss";
+import { globals } from "../globals";
 
 function SelectGamefield() {
   const [loadingOrgs, setLoadingOrgs] = useState(false);
@@ -44,19 +45,15 @@ function SelectGamefield() {
   const fetchOrganization = async () => {
     setLoadingOrgs(true);
     const clientId = localStorage.getItem("clientId");
-    // const API_URL = "https://callejero.com.co/test/api/v1";
-    const API_URL = "https://callejero.com.co/api/v1";
-    // const API_URL = "https://dbbk.callejero.com.co/api/v1";
     try {
       const res = await axios
-        .get(`${API_URL}/organizations/${clientId}`, {
-          withCredentials: true,
+        .get(`${globals.apiURL}/organizations/${clientId}`, {
+          // withCredentials: true,
           headers: {
             "Content-Type": "application/json",
             "x-callejero-web-token": localStorage.getItem("auth"),
             "x-tz": localStorage.getItem("timezone"),
             "accept-language": "es",
-            origin: "callejero.com.co",
           },
         })
         .then((res) => {
@@ -90,10 +87,10 @@ function SelectGamefield() {
           }
         });
     } catch (error) {
+      // @ts-ignore
+      const codeError = error.response?.data?.error?.code;
       //@ts-ignore
-      const codeError = error.response.data.error.code;
-      //@ts-ignore
-      const codeMessage = error.response.data.error.message;
+      const codeMessage = error.response?.data?.error?.message;
       // console.log("codeError", codeError);
       // console.log("error", error);
       switch (codeError) {
@@ -141,17 +138,13 @@ function SelectGamefield() {
   const fetchGamefields = async () => {
     setLoadingGamefields(true);
     const organizationId = localStorage.getItem("organizationId");
-    // const API_URL = "https://callejero.com.co/test/api/v1";
-    const API_URL = "https://callejero.com.co/api/v1";
-    // const API_URL = "https://dbbk.callejero.com.co/api/v1";
     try {
       const res = await axios
-        .get(`${API_URL}/game-fields/org/${organizationId}`, {
+        .get(`${globals.apiURL}/game-fields/org/${organizationId}`, {
           headers: {
             "x-callejero-web-token": localStorage.getItem("auth"),
             "x-tz": localStorage.getItem("timezone"),
             "accept-language": "es",
-            origin: "callejero.com.co",
           },
         })
         .then((res) => {

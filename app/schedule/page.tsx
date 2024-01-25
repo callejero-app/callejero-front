@@ -4,16 +4,19 @@ import { ToastContainer, toast } from "react-toastify";
 import { Select, SelectItem } from "@nextui-org/react";
 import ModalLoading from "@/components/ModalLoading";
 import axios from "axios";
+import moment from "moment";
 import "react-toastify/dist/ReactToastify.css";
 import Modal from "@/components/Modal";
 
 import Calendar from "@/components/Calendar/Calendar";
 import "./schedule.scss";
+import { globals } from "../globals";
 
 function Schedule() {
   const [loading, setLoading] = useState(false);
   const [bookings, setBookings] = useState<any[]>([]);
   const [suscriptions, setSuscriptions] = useState<any[]>([]);
+  const [closeTimes, setCloseTimes] = useState<any[]>([]);
   const [gamefieldIdSelected, setGamefieldIdSelected] = useState("");
   const [gamefieldNameSelected, setGamefieldNameSelected] = useState("");
   const [gamefieldsList, setGamefieldsList] = useState([{ id: "", name: "" }]);
@@ -69,29 +72,51 @@ function Schedule() {
 
   const fetchBookings = async (gamefieldId: string) => {
     setLoading(true);
-    // const API_URL = process.env.NEXT_PUBLIC_API_URL;
-    // const url = `https://callejero.com.co/test/api/v1/game-fields/${gamefieldId}/booking/get-all-bookings`;
-    const url = `https://callejero.com.co/api/v1/game-fields/${gamefieldId}/booking/get-all-bookings`;
-    // const url = `https://dbbk.callejero.com.co/api/v1/${gamefieldId}/booking/get-all-bookings`;
+    const url = `${globals.apiURL}/game-fields/${gamefieldId}/booking/get-all-bookings`;
     try {
       console.log("");
       const res = await axios
         .get(url, {
           params: {
-            "start-date": "2023-10-01",
-            "end-date": "2023-12-30",
+            "start-date": "2023-12-01",
+            "end-date": "2024-02-28",
+            "closed-times": true,
           },
           headers: {
             "x-callejero-web-token": localStorage.getItem("auth"),
             "x-tz": localStorage.getItem("timezone"),
-            origin: "callejero.com.co",
           },
         })
         .then((res) => {
           const bookingsFound = res.data.data.schedules;
           const suscriptionsFound = res.data.data.suscriptions;
+          const closeTimesFound = res.data.data.times;
+          // console.log("times", closeTimesFound);
+
+          //vamos a crear un rango entre las 12 am y el start de la primera fecha
+          // start: "2024-01-04T00:00:00",
+          // console.log("times", closeTimesFound[36]);
+          const start = closeTimesFound[36].start;
+
+          // console.log("time start", start);
+
+          const fechaOriginal = start;
+          const nuevaHora = "00:00:00";
+          const fechaMoment = moment(fechaOriginal, "YYYY-MM-DD HH:mm:ss");
+
+          // Crea una nueva fecha con la misma fecha pero con la hora diferente
+          const nuevaFecha = fechaMoment.set({
+            hour: moment(nuevaHora, "HH:mm:ss").hour(),
+            minute: moment(nuevaHora, "HH:mm:ss").minute(),
+            second: moment(nuevaHora, "HH:mm:ss").second(),
+          });
+
+          // Muestra la nueva fecha
+          // console.log("nueva fecha:", nuevaFecha.format("YYYY-MM-DD HH:mm:ss"));
+
           setBookings(bookingsFound);
           setSuscriptions(suscriptionsFound);
+          setCloseTimes(closeTimesFound);
           if (res.status == 200) {
             setModalDetail({
               title: "Reservas cargadas!",
@@ -258,7 +283,11 @@ function Schedule() {
                 </div>
               </div>
             </div>
-            <Calendar data={bookings} suscriptions={suscriptions} />
+            <Calendar
+              data={bookings}
+              suscriptions={suscriptions}
+              closeTimes={closeTimes}
+            />
           </>
         </div>
       </div>
