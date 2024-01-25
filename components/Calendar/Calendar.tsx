@@ -16,9 +16,6 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
   suscriptions,
   closeTimes,
 }) => {
-  // console.log("data", data);
-  // console.log("suscriptions", suscriptions);
-  // console.log("closeTimes receives in calendar", closeTimes);
   const [bookings, setBookings] = useState(data);
   const [suscriptionsReceiveds, setSuscriptionsReceiveds] =
     useState(suscriptions);
@@ -26,11 +23,16 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
   const [gridModified, setGridModified] = useState(false);
   const [widthScreen, setWidthScreen] = useState(window.innerWidth);
   const [bookingInfo, setBookingInfo] = useState({});
+  const [totalPrice, setTotalPrice] = useState(() => {
+    const localStorageValue = localStorage.getItem("totalPrice");
+    return localStorageValue ? parseInt(localStorageValue) * 1000 : 0;
+  });
   const [events, setEvents] = useState([
     {
       id: "",
       newId: "",
       justCreated: false,
+      paymentCompleted: false,
       subscription: false,
       newStart: "",
       newEnd: "",
@@ -64,6 +66,7 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
       id: "",
       newId: "",
       justCreated: false,
+      paymentCompleted: false,
       subscription: true,
       newStart: "",
       newEnd: "",
@@ -79,6 +82,7 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
       id: booking.id,
       newId: "",
       justCreated: false,
+      paymentCompleted: false,
       subscription: false,
       newStart: "",
       newEnd: "",
@@ -92,53 +96,16 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
 
     //closetimes
     const closes = closeTimesReceiveds.map((close: any) => {
-      // const newHour = "00:00:00";
-      // const momentDate = moment(close.start, "YYYY-MM-DD HH:mm:ss");
-      // let newDate = momentDate
-      //   .set({
-      //     hour: moment(newHour, "HH:mm:ss").hour(),
-      //     minute: moment(newHour, "HH:mm:ss").minute(),
-      //     second: moment(newHour, "HH:mm:ss").second(),
-      //   })
-      //   .format("YYYY-MM-DD HH:mm:ss");
-      // if (close.start != undefined) {
-      //   return {
-      //     start: newDate,
-      //     end: close.start,
-      //     display: "background",
-      //     className: "own-event__closeTime",
-      //   };
-      // } else {
       return {
         start: close.start,
         end: close.end,
         display: "background",
         className: "own-event__closeTime",
       };
-      // }
     });
-
-    // const closes2 = closeTimesReceiveds.map((close: any) => {
-    //   const newHour = "23:59:00";
-    //   const momentDate = moment(close.end, "YYYY-MM-DD HH:mm:ss");
-    //   let newDate = momentDate
-    //     .set({
-    //       hour: moment(newHour, "HH:mm:ss").hour(),
-    //       minute: moment(newHour, "HH:mm:ss").minute(),
-    //       second: moment(newHour, "HH:mm:ss").second(),
-    //     })
-    //     .format("YYYY-MM-DD HH:mm:ss");
-    //   return {
-    //     start: close.end,
-    //     end: newDate,
-    //     display: "background",
-    //     className: "own-event__closeTime",
-    //   };
-    // });
 
     setEvents(books);
     setEvents((prevEvents) => [...prevEvents, ...subs, ...closes]);
-    // setEvents((prevEvents) => [...prevEvents, ...subs, ...closes, ...closes2]);
     if (bookings.length > 0)
       localStorage.setItem(
         "totalPrice",
@@ -182,6 +149,7 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
     id: string;
     newId: string;
     justCreated: boolean;
+    paymentCompleted: boolean;
     subscription: boolean;
     newStart: string;
     newEnd: string;
@@ -192,6 +160,7 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
     description: string;
     tag: string;
     totalPrice: 0;
+    totalPaid: 0;
   }
 
   const addEvent = (newEvent: Event) => {
@@ -201,6 +170,7 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
           id: "",
           newId: newEvent.newId,
           justCreated: newEvent.justCreated,
+          paymentCompleted: newEvent.paymentCompleted,
           subscription: false,
           newStart: newEvent.newStart,
           newEnd: newEvent.newEnd,
@@ -212,6 +182,7 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
           description: newEvent.description,
           tag: newEvent.tag,
           totalPrice: newEvent.totalPrice,
+          totalPaid: newEvent.totalPaid,
         },
       ]);
     } else {
@@ -221,6 +192,7 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
           id: "",
           newId: newEvent.newId,
           justCreated: newEvent.justCreated,
+          paymentCompleted: newEvent.paymentCompleted,
           subscription: false,
           newStart: newEvent.newStart,
           newEnd: newEvent.newEnd,
@@ -232,10 +204,10 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
           description: newEvent.description,
           tag: newEvent.tag,
           totalPrice: newEvent.totalPrice,
+          totalPaid: newEvent.totalPaid,
         },
       ]);
     }
-    // console.log("Events state:", events);
     setModalDetail({
       title: "Reserva creada!",
       subtitle: "",
@@ -267,17 +239,12 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
       setTimeout(() => {
         setModalInfoVisible(false);
       }, 1200);
-
-      // console.log("Llego al calendar el id:", bookingId);
-      // console.log("estado de eventos antes de eliminar", events);
       if (justCreated == true) {
         const newEvents = events.filter((e) => e.newId !== bookingId);
         setEvents(newEvents);
-        // console.log("nuevos eventos after delete JUST created", newEvents);
       } else {
         const newEvents = events.filter((e) => e.id !== bookingId);
         setEvents(newEvents);
-        // console.log("nuevos eventos after delete", newEvents);
       }
       //actualizar estado con new events ->
     } else {
@@ -288,6 +255,30 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
       });
       setModalInfoVisible(true);
     }
+  };
+
+  const handleCompletePayment = (bookingId: string, justCreated: boolean) => {
+    // console.log("entro in calendar");
+    // console.log("handleCompletePayment id received", bookingId);
+    if (justCreated) {
+      setEvents((prevEvents) =>
+        prevEvents.map((event) =>
+          justCreated == true
+            ? event.newId == bookingId
+              ? { ...event, paymentCompleted: true, totalPaid: totalPrice }
+              : event
+            : event.id == bookingId
+            ? { ...event, paymentCompleted: true, totalPaid: totalPrice }
+            : event
+        )
+      );
+    }
+    console.log(
+      "evento actualizado payment",
+      justCreated
+        ? events.filter((e) => e.newId == bookingId)
+        : events.filter((e) => e.id == bookingId)
+    );
   };
 
   if (gridModified)
@@ -349,11 +340,13 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
               if (target instanceof HTMLElement) {
                 closeTime = target.classList.contains("own-event__closeTime");
               }
-
               if (!closeTime) {
                 const justCreated = e.event._def.extendedProps.justCreated;
+                const paymentCompleted =
+                  e.event._def.extendedProps.paymentCompleted;
                 const sub = e.event._def.extendedProps.subscription;
                 if (sub) {
+                  // console.log("sub event", e);
                   const tag = "sub";
                   const start = new Date(
                     e.event._def.extendedProps.detail.start
@@ -379,7 +372,7 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
                       },
                     ],
                     totalPrice: localStorage.getItem("totalPrice"),
-                    totalPaid: localStorage.getItem("totalPrice"),
+                    totalPaid: e.event._def.extendedProps.totalPaid,
                   });
                 }
                 if (justCreated) {
@@ -396,12 +389,13 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
                         month: "long",
                       }
                     );
-                  const totalPrice = localStorage.getItem("totalPrice");
+                  const totalPrice = e.event._def.extendedProps.totalPrice;
+                  const totalPaid = e.event._def.extendedProps.totalPaid;
                   const id = e.event._def.extendedProps.newId;
-                  // console.log("id:", id);
                   setBookingDetail({
                     id: id,
                     justCreated: true,
+                    paymentCompleted: paymentCompleted,
                     tag: e.event._def.extendedProps.tag,
                     start: e.event._def.extendedProps.newStart,
                     end: e.event._def.extendedProps.newEnd,
@@ -416,10 +410,11 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
                       },
                     ],
                     totalPrice: totalPrice,
-                    totalPaid: totalPrice,
+                    totalPaid: totalPaid,
                   });
                 }
                 if (!justCreated && !sub) {
+                  // console.log("event click DB", e);
                   const tag = e.event._def.extendedProps.detail.originPlatform;
                   const start = new Date(
                     e.event._def.extendedProps.detail.startsAt
@@ -450,6 +445,7 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
                   setBookingDetail({
                     id: id,
                     tag: tag,
+                    paymentCompleted: paymentCompleted,
                     start: startStr,
                     end: endStr,
                     dayName: dayName,
@@ -535,6 +531,7 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
               //@ts-ignore
               bookingDetail={bookingDetail}
               handleDeleteEvent={handleDeleteEvent}
+              handleCompletePayment={handleCompletePayment}
             />
           )}
           {modalInfoVisible && (
