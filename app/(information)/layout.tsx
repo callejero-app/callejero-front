@@ -1,5 +1,4 @@
 import NavbarInfo from "@/components/NavbarInfo/NavbarInfo";
-import Navbar from "@/components/NavbarInfo/NavbarInfo";
 export default function infoNavbarLayout({
   children,
 }: {
