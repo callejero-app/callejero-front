@@ -5,9 +5,9 @@ import logo from "@/public/images/-callejero-light.svg";
 import logoutButton from "@/public/images/right-from-bracket-solid.svg";
 import logoMobile from "@/public/images/callejero-long.svg";
 import { Link, Button } from "@nextui-org/react";
-import "./Navbar2.scss";
+import "./NavbarInfo.scss";
 
-function Navbar2() {
+function NavbarInfo() {
   const [visible, setVisible] = useState(false);
 
   const logout = () => {
@@ -24,33 +24,33 @@ function Navbar2() {
 
   if (visible)
     return (
-      <div className="navbar flex bg-callejero h-20 px-6 md:px-14">
-        <div className="items-center column flex md:hidden">
+      <div className="navbar flex w-screen fixed z-10 bg-callejero h-20 px-6 md:px-14">
+        {/* <div className="items-center column flex md:hidden">
           <div className="burguer-menu">
             <div className="burguer-menu__line burguer-menu__line--one"></div>
             <div className="burguer-menu__line burguer-menu__line--two"></div>
             <div className="burguer-menu__line burguer-menu__line--three"></div>
           </div>
-        </div>
-        <Image
+        </div> */}
+        {/* <Image
           src={logo}
           alt="icon"
           width={38}
           height={38}
           priority={true}
           className="hidden md:block"
-        />
-        <div className="w-screen flex justify-center md:hidden">
+        /> */}
+        <div className="w-screen flex justify-center">
           <Image
             src={logoMobile}
             alt="icon"
             priority={true}
             width={140}
             height={80}
-            className="md:hidden"
+            // className="md:hidden"
           />
         </div>
-        <ul className="hidden md:flex text-white items-center w-full">
+        {/* <ul className="hidden md:flex text-white items-center w-full">
           <div className=" flex float-left">
             <li className="hidden md:block ml-12">
               <Link
@@ -80,9 +80,16 @@ function Navbar2() {
               Log Out
             </Button>
           </div>
-        </ul>
-        <div className="flex float-right md:hidden items-center">
-          <button>
+        </ul> */}
+        <div className="flex float-right items-center">
+          <Link
+            href={`/login`}
+            className="text-white px-4 py-2 bg-[#557b6b] rounded-full fixed right-[1.5rem] md:right-[3.5rem]"
+            // style={{ right: "3.5rem" }}
+          >
+            Volver
+          </Link>
+          {/* <button>
             <Image
               src={logoutButton}
               onClick={logout}
@@ -92,10 +99,10 @@ function Navbar2() {
               priority={true}
               className="md:hidden"
             />
-          </button>
+          </button> */}
         </div>
       </div>
     );
 }
 
-export default Navbar2;
+export default NavbarInfo;

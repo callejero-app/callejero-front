@@ -1,23 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import {
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
-  Link,
-  Button,
-  NavbarMenu,
-  NavbarMenuItem,
-  NavbarMenuToggle,
-} from "@nextui-org/react";
 import logo from "@/public/images/-callejero-light.svg";
-import "./Navbar.css";
+import logoutButton from "@/public/images/right-from-bracket-solid.svg";
+import logoMobile from "@/public/images/callejero-long.svg";
+import { Link, Button } from "@nextui-org/react";
+import "./Navbar.scss";
 
-export default function App() {
-  const menuItems = ["Inicio", "Horario de Canchas", "Personal", "Log Out"];
-
+function Navbar() {
   const [visible, setVisible] = useState(false);
 
   const logout = () => {
@@ -34,93 +24,78 @@ export default function App() {
 
   if (visible)
     return (
-      <Navbar
-        disableAnimation
-        isBordered
-        className="bg-callejero h-20 text-white px-14"
-      >
-        <NavbarContent className="sm:hidden" justify="start">
-          <NavbarMenuToggle />
-        </NavbarContent>
-
-        <NavbarContent className="sm:hidden pr-3" justify="center">
-          <NavbarBrand>
-            <Image
-              src={logo}
-              alt="icon"
-              height={38}
-              priority={true}
-              className="mx-auto"
-            />
-          </NavbarBrand>
-        </NavbarContent>
-
-        <NavbarContent className="hidden sm:flex gap-4" justify="center">
-          <NavbarBrand>
-            <Image
-              src={logo}
-              alt="icon"
-              height={38}
-              priority={true}
-              className="mx-auto"
-            />
-          </NavbarBrand>
-          <NavbarItem>
-            <Link color="foreground" href="#">
-              Inicio
-            </Link>
-          </NavbarItem>
-          <NavbarItem isActive>
-            <Link color="foreground" href="#" className="selected">
-              Horario de Canchas
-            </Link>
-          </NavbarItem>
-          <NavbarItem>
-            <Link color="foreground" href="#">
-              Personal
-            </Link>
-          </NavbarItem>
-        </NavbarContent>
-
-        <NavbarContent justify="end">
-          <NavbarItem>
+      <div className="navbar flex bg-callejero h-20 px-6 md:px-14">
+        <div className="items-center column flex md:hidden">
+          <div className="burguer-menu">
+            <div className="burguer-menu__line burguer-menu__line--one"></div>
+            <div className="burguer-menu__line burguer-menu__line--two"></div>
+            <div className="burguer-menu__line burguer-menu__line--three"></div>
+          </div>
+        </div>
+        <Image
+          src={logo}
+          alt="icon"
+          width={38}
+          height={38}
+          priority={true}
+          className="hidden md:block"
+        />
+        <div className="w-screen flex justify-center md:hidden">
+          <Image
+            src={logoMobile}
+            alt="icon"
+            priority={true}
+            width={140}
+            height={80}
+            className="md:hidden"
+          />
+        </div>
+        <ul className="hidden md:flex text-white items-center w-full">
+          <div className=" flex float-left">
+            <li className="hidden md:block ml-12">
+              <Link
+                href={`/selectgamefield`}
+                className="text-white px-4 py-2 hover:bg-[#557b6b] rounded-full"
+              >
+                Organizaciones
+              </Link>
+            </li>
+            <li className="hidden ml-6">
+              <Link
+                href={`/gamefields`}
+                className="text-white px-4 py-2 hover:bg-[#557b6b] rounded-full transition-all"
+              >
+                Canchas
+              </Link>
+            </li>
+          </div>
+          <div className="float-right hidden w-full justify-end md:flex">
             <Button
               onClick={logout}
               as={Link}
-              className="text-white logout-btn"
+              fullWidth={false}
+              className="text-white logout-btn rounded-full hover:scale-105 transition-all"
               variant="flat"
             >
               Log Out
             </Button>
-          </NavbarItem>
-          <NavbarItem className="hidden lg:flex">
-            <div
-              className="bg-white rounded-full"
-              style={{ width: "48px", height: "48px" }}
-            ></div>
-          </NavbarItem>
-        </NavbarContent>
-
-        <NavbarMenu>
-          {menuItems.map((item, index) => (
-            <NavbarMenuItem key={`${item}-${index}`}>
-              <Link
-                className="w-full"
-                color={
-                  index === 1
-                    ? "warning"
-                    : index === menuItems.length - 1
-                    ? "danger"
-                    : "foreground"
-                }
-                href="#"
-                size="lg"
-              >
-                {item}
-              </Link>
-            </NavbarMenuItem>
-          ))}
-        </NavbarMenu>
-      </Navbar>
+          </div>
+        </ul>
+        <div className="flex float-right md:hidden items-center">
+          <button>
+            <Image
+              src={logoutButton}
+              onClick={logout}
+              alt="icon"
+              width={38}
+              height={38}
+              priority={true}
+              className="md:hidden"
+            />
+          </button>
+        </div>
+      </div>
     );
 }
+
+export default Navbar;

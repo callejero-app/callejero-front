@@ -10,7 +10,7 @@ import Modal from "@/components/Modal";
 
 import Calendar from "@/components/Calendar/Calendar";
 import "./schedule.scss";
-import { globals } from "../globals";
+import { globals } from "../../globals";
 
 function Schedule() {
   const [loading, setLoading] = useState(false);
