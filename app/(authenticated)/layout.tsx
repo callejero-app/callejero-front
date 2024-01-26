@@ -4,6 +4,7 @@ export default function AuthNavbarLayout({
 }: {
   children: React.ReactNode;
 }) {
+  console.log("refresh");
   return (
     <div>
       <Navbar />
