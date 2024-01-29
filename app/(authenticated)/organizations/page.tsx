@@ -5,7 +5,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { globals } from "../globals";
+import { globals } from "../../globals";
 
 function Organizations() {
   const [loading, setLoading] = useState(false);

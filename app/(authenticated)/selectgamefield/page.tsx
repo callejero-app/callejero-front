@@ -8,7 +8,7 @@ import { Spinner } from "@nextui-org/react";
 import ModalLoading from "@/components/ModalLoading";
 import Modal from "@/components/Modal";
 import "./styles.scss";
-import { globals } from "../globals";
+import { globals } from "../../globals";
 
 function SelectGamefield() {
   const [loadingOrgs, setLoadingOrgs] = useState(false);
