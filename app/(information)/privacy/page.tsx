@@ -2,10 +2,12 @@ function Privacy() {
   return (
     <div
       className="w-full md:w-8/12 mx-auto pt-[80px]"
-      style={{
-        background: `url("/images/callejero-dark.png")`,
-        backgroundRepeat: "space",
-      }}
+      style={
+        {
+          // background: `url("/images/callejero-dark.png")`,
+          // backgroundRepeat: "space",
+        }
+      }
     >
       <div
         className="px-4 py-4"
