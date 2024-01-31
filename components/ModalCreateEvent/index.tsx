@@ -9,6 +9,7 @@ import {
   Spinner,
   Select,
   SelectItem,
+  Input,
 } from "@nextui-org/react";
 import moment from "moment";
 import "moment/locale/es";
@@ -232,14 +233,17 @@ const ModalCreateEvent: React.FC<{
                     Selecciona una opcion
                   </SelectItem>
                 </Select>
-                <input
+                <Input
                   id="description"
                   name="description"
+                  isRequired
+                  variant="bordered"
                   type="text"
-                  placeholder="Descripcción (Requerido)"
-                  className={`modal__input mb-2 text-xs ${
+                  label="Descripcción (Requerido)"
+                  className={`mx-auto w-[342px] mb-2 text-xs ${
                     emptyDescription ? "modal__input--danger" : ""
                   }`}
+                  size="lg"
                 />
                 <div className=" mb-2 border-b-small border-slate-200"></div>
                 {/* <div className="flex column justify-between mb-2 items-center">
@@ -254,7 +258,7 @@ const ModalCreateEvent: React.FC<{
                   </button>
                 </div> */}
                 <div className="mb-2 border-b-small border-slate-200 hidden"></div>
-                <input
+                <Input
                   id="abono"
                   name="abono"
                   value={abonoValue}
@@ -271,9 +275,11 @@ const ModalCreateEvent: React.FC<{
                       setAbonoPending(abonoPending);
                     }
                   }}
+                  variant="bordered"
                   type="number"
-                  placeholder="Abono (Opcional)"
-                  className="modal__input mb-2 text-xs"
+                  label="Abono (Opcional)"
+                  className="mb-2 text-xs"
+                  size="lg"
                 />
                 <div className="mb-2">
                   <p className="font-medium text-sm text-[#393939] mb-2">

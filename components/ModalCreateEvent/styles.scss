@@ -67,7 +67,8 @@
       border: 1px solid #557b6b !important;
     }
     &--danger {
-      border: 1px solid red;
+      border: 2px solid rgb(198, 94, 94);
+      border-radius: 15px;
     }
   }
 }
