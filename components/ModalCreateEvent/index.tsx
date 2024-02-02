@@ -240,7 +240,7 @@ const ModalCreateEvent: React.FC<{
                   variant="bordered"
                   type="text"
                   label="Descripcción (Requerido)"
-                  className={`mx-auto w-[342px] mb-2 text-xs ${
+                  className={`mx-auto w-full mb-2 text-xs ${
                     emptyDescription ? "modal__input--danger" : ""
                   }`}
                   size="lg"

@@ -168,6 +168,7 @@ function Schedule() {
     if (gamefield) setGamefieldNameSelected(gamefield.name);
     if (gamefield) localStorage.setItem("gamefieldName", gamefield.name);
     localStorage.setItem("gamefieldId", id);
+    setSuscriptions([]);
     fetchBookings(id);
   };
 
