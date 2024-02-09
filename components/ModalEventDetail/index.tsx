@@ -29,6 +29,7 @@ const ModalEventDetail: React.FC<{
     justCreated: boolean;
     paymentCompleted: boolean;
     tag: string;
+    isHistory: boolean;
     start: string;
     end: string;
     dayName: string;
@@ -59,7 +60,9 @@ const ModalEventDetail: React.FC<{
     bookingDetail.totalPaid == bookingDetail.totalPrice ? true : false
   );
   const [paymentCompleted, setPaymentCompleted] = useState(
-    bookingClosed ? true : bookingDetail.paymentCompleted
+    bookingClosed || bookingDetail.isHistory
+      ? true
+      : bookingDetail.paymentCompleted
   );
   const [totalPrice, setTotalPrice] = useState(() => {
     const localStorageValue = localStorage.getItem("totalPrice");
@@ -71,6 +74,7 @@ const ModalEventDetail: React.FC<{
     justCreated: bookingDetail.justCreated,
     paymentCompleted: bookingDetail.paymentCompleted,
     tag: bookingDetail.tag,
+    isHistory: bookingDetail.isHistory,
     start: bookingDetail.start,
     end: bookingDetail.end,
     dayName: bookingDetail.dayName,
@@ -81,13 +85,6 @@ const ModalEventDetail: React.FC<{
     totalPrice: bookingDetail.totalPrice,
     totalPaid: bookingDetail.totalPaid,
   });
-
-  // console.log("modal detail total price", bookingReceived.totalPrice);
-  // console.log("modal detail total paid", bookingReceived.totalPaid);
-  // console.log("paymentCompleted", bookingReceived.paymentCompleted);
-  // console.log("modal detail total price", bookingReceived.totalPrice);
-  // console.log("modal detail abono ", totalPrice);
-  // console.log("Booking closed ?", bookingClosed);
 
   const deleteBooking = async () => {
     setLoading(true);
@@ -254,6 +251,11 @@ const ModalEventDetail: React.FC<{
                     {bookingReceived.tag == "app" && "📱"}
                     {bookingReceived.tag == "web" && "💻"}
                   </p>
+                  {bookingReceived.isHistory && (
+                    <p className="mt-1 ml-3 text-xl font-bold text-red-500">
+                      FINALIZADA
+                    </p>
+                  )}
                 </div>
                 <div className="flex mb-3">
                   <Image
@@ -394,12 +396,21 @@ const ModalEventDetail: React.FC<{
                 {/* <div className="mb-2 border-b-small border-slate-200"></div> */}
                 {bookingReceived.tag !== "sub" && (
                   <div className="mb-2">
-                    <p className="font-medium text-sm text-[#393939] mb-2">
+                    <p
+                      className={`font-medium text-sm text-[#393939] mb-2 ${
+                        bookingReceived.isHistory && "line-through opacity-50"
+                      }`}
+                    >
                       Dinero Abonado
                     </p>
                     <div className="flex justify-between items-center">
                       <div className="flex flex-col">
-                        <p className="text-callejero text-2xl">
+                        <p
+                          className={`text-callejero text-2xl ${
+                            bookingReceived.isHistory &&
+                            "line-through opacity-50"
+                          }`}
+                        >
                           {`$${
                             bookingClosed || paymentCompleted
                               ? bookingReceived.totalPrice.toLocaleString()
@@ -412,7 +423,12 @@ const ModalEventDetail: React.FC<{
                                   .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                           }  `}
                         </p>
-                        <p className="text-[#818181] text-sm mt-1">
+                        <p
+                          className={`text-[#818181] text-sm mt-1 ${
+                            bookingReceived.isHistory &&
+                            "line-through opacity-50"
+                          }`}
+                        >
                           $
                           {`${
                             bookingClosed || paymentCompleted
@@ -425,7 +441,7 @@ const ModalEventDetail: React.FC<{
                         <p
                           className={`text-[#818181] text-sm mt-1 ${
                             (bookingClosed || paymentCompleted) &&
-                            "line-through"
+                            "line-through opacity-50"
                           }`}
                         >
                           Total: ${bookingReceived.totalPrice.toLocaleString()}

@@ -11,15 +11,18 @@ import moment from "moment";
 import "./Calendar.scss";
 import Modal from "@/components/Modal";
 
-const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
-  data,
-  suscriptions,
-  closeTimes,
-}) => {
+const Calendar: FC<{
+  data: any;
+  suscriptions: any;
+  closeTimes: any;
+  history: any;
+}> = ({ data, suscriptions, closeTimes, history }) => {
   const [bookings, setBookings] = useState(data);
   const [suscriptionsReceiveds, setSuscriptionsReceiveds] =
     useState(suscriptions);
   const [closeTimesReceiveds, setCloseTimesReceiveds] = useState(closeTimes);
+  const [historyReceiveds, setHistoryReceiveds] = useState(history);
+
   const [gridModified, setGridModified] = useState(false);
   const [widthScreen, setWidthScreen] = useState(window.innerWidth);
   const [bookingInfo, setBookingInfo] = useState({});
@@ -42,6 +45,7 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
       tag: "",
       detail: {},
       price: 0,
+      isHistory: false,
     },
   ]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -58,7 +62,8 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
     setBookings(data);
     if (suscriptions) setSuscriptionsReceiveds(suscriptions);
     if (closeTimes) setCloseTimesReceiveds(closeTimes);
-  }, [data, suscriptions, closeTimes]);
+    if (history) setHistoryReceiveds(history);
+  }, [data, suscriptions, closeTimes, history]);
 
   //fill events
   useEffect(() => {
@@ -76,6 +81,7 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
       end: sub.end,
       description:
         sub.description != null ? sub.description : "Sin descripcción",
+      isHistory: sub.isHistory,
     }));
     //bookings
     const books = bookings.map((booking: any) => ({
@@ -92,6 +98,27 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
       end: booking.endsAt,
       description:
         booking.description != null ? booking.description : "Sin descripcción",
+      isHistory: booking.isHistory,
+    }));
+    //history
+    const historyEvents = historyReceiveds.map((historyEl: any) => ({
+      id: historyEl.id,
+      newId: "",
+      justCreated: false,
+      paymentCompleted: false,
+      subscription: false,
+      newStart: "",
+      newEnd: "",
+      detail: historyEl,
+      title: historyEl.description != null ? historyEl.description : "Reserva",
+      start: historyEl.startsAt,
+      end: historyEl.endsAt,
+      description:
+        historyEl.description != null
+          ? historyEl.description
+          : "Sin descripcción",
+      isHistory: historyEl.isHistory,
+      className: "own-event__history",
     }));
 
     //closetimes
@@ -105,7 +132,12 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
     });
 
     setEvents(books);
-    setEvents((prevEvents) => [...prevEvents, ...subs, ...closes]);
+    setEvents((prevEvents) => [
+      ...prevEvents,
+      ...subs,
+      ...historyEvents,
+      ...closes,
+    ]);
     if (bookings.length > 0)
       localStorage.setItem(
         "totalPrice",
@@ -412,8 +444,9 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
                   });
                 }
                 if (!justCreated && !sub) {
-                  // console.log("event click DB", e);
+                  console.log("history entra aqui", e);
                   const tag = e.event._def.extendedProps.detail.originPlatform;
+                  const isHistory = e.event._def.extendedProps.detail.isHistory;
                   const start = new Date(
                     e.event._def.extendedProps.detail.startsAt
                   );
@@ -443,6 +476,7 @@ const Calendar: FC<{ data: any; suscriptions: any; closeTimes: any }> = ({
                   setBookingDetail({
                     id: id,
                     tag: tag,
+                    isHistory: isHistory,
                     paymentCompleted: paymentCompleted,
                     start: startStr,
                     end: endStr,

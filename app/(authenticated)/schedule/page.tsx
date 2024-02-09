@@ -17,6 +17,7 @@ function Schedule() {
   const [bookings, setBookings] = useState<any[]>([]);
   const [suscriptions, setSuscriptions] = useState<any[]>([]);
   const [closeTimes, setCloseTimes] = useState<any[]>([]);
+  const [history, setHistory] = useState<any[]>([]);
   const [gamefieldIdSelected, setGamefieldIdSelected] = useState("");
   const [gamefieldNameSelected, setGamefieldNameSelected] = useState("");
   const [gamefieldsList, setGamefieldsList] = useState([{ id: "", name: "" }]);
@@ -90,32 +91,12 @@ function Schedule() {
           const bookingsFound = res.data.data.schedules;
           const suscriptionsFound = res.data.data.suscriptions;
           const closeTimesFound = res.data.data.times;
-          // console.log("times", closeTimesFound);
-
-          //vamos a crear un rango entre las 12 am y el start de la primera fecha
-          // start: "2024-01-04T00:00:00",
-          // console.log("times", closeTimesFound[36]);
-          const start = closeTimesFound[36].start;
-
-          // console.log("time start", start);
-
-          const fechaOriginal = start;
-          const nuevaHora = "00:00:00";
-          const fechaMoment = moment(fechaOriginal, "YYYY-MM-DD HH:mm:ss");
-
-          // Crea una nueva fecha con la misma fecha pero con la hora diferente
-          const nuevaFecha = fechaMoment.set({
-            hour: moment(nuevaHora, "HH:mm:ss").hour(),
-            minute: moment(nuevaHora, "HH:mm:ss").minute(),
-            second: moment(nuevaHora, "HH:mm:ss").second(),
-          });
-
-          // Muestra la nueva fecha
-          // console.log("nueva fecha:", nuevaFecha.format("YYYY-MM-DD HH:mm:ss"));
+          const historyFound = res.data.data.history;
 
           setBookings(bookingsFound);
           setSuscriptions(suscriptionsFound);
           setCloseTimes(closeTimesFound);
+          setHistory(historyFound);
           if (res.status == 200) {
             setModalDetail({
               title: "Reservas cargadas!",
@@ -287,6 +268,7 @@ function Schedule() {
               data={bookings}
               suscriptions={suscriptions}
               closeTimes={closeTimes}
+              history={history}
             />
           </>
         </div>
