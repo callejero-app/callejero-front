@@ -82,13 +82,13 @@ function NavbarInfo() {
           </div>
         </ul> */}
         <div className="flex float-right items-center">
-          <Link
+          {/* <Link
             href={`/login`}
             className="text-white px-4 py-2 bg-[#557b6b] rounded-full fixed right-[1.5rem] md:right-[3.5rem]"
             // style={{ right: "3.5rem" }}
           >
             Volver
-          </Link>
+          </Link> */}
           {/* <button>
             <Image
               src={logoutButton}

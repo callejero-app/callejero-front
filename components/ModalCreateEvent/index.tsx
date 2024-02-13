@@ -90,6 +90,8 @@ const ModalCreateEvent: React.FC<{
     errorMessage: string,
     bookingId: string = ""
   ) => {
+    //@ts-ignore
+    if (bookingInfo.endsAtTime24 == "00:00") bookingInfo.endsAtTime24 = "23:59";
     if (error == false) {
       const newEvent = {
         id: "",
@@ -129,6 +131,7 @@ const ModalCreateEvent: React.FC<{
       setEmptyDescription(true);
     }
 
+    if (booking.endsAtTime24 == "00:00") booking.endsAtTime24 = "23:59";
     if (description !== "") {
       setEmptyDescription(false);
       // setEmptyAbono(false);
