@@ -99,6 +99,7 @@ const Calendar: FC<{
       description:
         booking.description != null ? booking.description : "Sin descripcción",
       isHistory: booking.isHistory,
+      className: booking.status === "partial" && "own-event__partial",
     }));
     //history
     const historyEvents = historyReceiveds.map((historyEl: any) => ({
@@ -444,7 +445,6 @@ const Calendar: FC<{
                   });
                 }
                 if (!justCreated && !sub) {
-                  console.log("history entra aqui", e);
                   const tag = e.event._def.extendedProps.detail.originPlatform;
                   const isHistory = e.event._def.extendedProps.detail.isHistory;
                   const start = new Date(
@@ -473,8 +473,10 @@ const Calendar: FC<{
                     id: t.teamLeader.id,
                   }));
                   const id = e.event._def.extendedProps.detail.id;
+                  const status = e.event._def.extendedProps.detail.status;
                   setBookingDetail({
                     id: id,
+                    status: status,
                     tag: tag,
                     isHistory: isHistory,
                     paymentCompleted: paymentCompleted,
