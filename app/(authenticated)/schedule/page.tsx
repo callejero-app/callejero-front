@@ -20,7 +20,9 @@ function Schedule() {
   const [history, setHistory] = useState<any[]>([]);
   const [gamefieldIdSelected, setGamefieldIdSelected] = useState("");
   const [gamefieldNameSelected, setGamefieldNameSelected] = useState("");
-  const [gamefieldsList, setGamefieldsList] = useState([{ id: "", name: "" }]);
+  const [gamefieldsList, setGamefieldsList] = useState([
+    { id: "", name: "", price: "" },
+  ]);
   const [gridModified, setGridModified] = useState(false);
   const [modalDetail, setModalDetail] = useState({
     title: "",
@@ -149,6 +151,7 @@ function Schedule() {
     if (gamefield) setGamefieldNameSelected(gamefield.name);
     if (gamefield) localStorage.setItem("gamefieldName", gamefield.name);
     localStorage.setItem("gamefieldId", id);
+    if (gamefield) localStorage.setItem("totalPrice", gamefield.price);
     setSuscriptions([]);
     fetchBookings(id);
   };

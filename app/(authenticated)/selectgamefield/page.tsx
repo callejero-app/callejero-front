@@ -154,23 +154,27 @@ function SelectGamefield() {
             gamefieldsTuples = {
               id: gamefieldsFound[0].id,
               name: gamefieldsFound[0].name,
+              price: gamefieldsFound[0].price.amount.toLocaleString(),
             };
             localStorage.setItem("gamefieldId", gamefieldsFound[0].id);
             localStorage.setItem("gamefieldName", gamefieldsFound[0].name);
+            localStorage.setItem(
+              "totalPrice",
+              gamefieldsFound[0].price.amount.toLocaleString()
+            );
           }
           if (gamefieldsFound.length > 1) {
             gamefieldsTuples = gamefieldsFound.map((gm: any) => {
-              return { id: gm.id, name: gm.name };
+              return {
+                id: gm.id,
+                name: gm.name,
+                price: gm.price.amount.toLocaleString(),
+              };
             });
           }
           const gamefieldsTuplesJSON = JSON.stringify(gamefieldsTuples);
           localStorage.setItem("gamefieldsTuples", gamefieldsTuplesJSON);
           const storage = localStorage.getItem("gamefieldsTuples");
-          // if (gamefieldsFound.length == 1) {
-          //   window.location.href = "/schedule";
-          // } else {
-          //   setGamefields(gamefieldsFound);
-          // }
           setGamefields(gamefieldsFound);
           if (res.status == 200) {
             setModalDetail({
@@ -216,9 +220,10 @@ function SelectGamefield() {
     }
   };
 
-  const handleSelectGamefield = (id: string, name: string) => {
+  const handleSelectGamefield = (id: string, name: string, price: string) => {
     localStorage.setItem("gamefieldId", id);
     localStorage.setItem("gamefieldName", name);
+    localStorage.setItem("totalPrice", price);
     window.location.href = "/schedule";
   };
 
@@ -333,7 +338,11 @@ function SelectGamefield() {
                   {gamefields.map((gamefield) => (
                     <button
                       onClick={() =>
-                        handleSelectGamefield(gamefield.id, gamefield.name)
+                        handleSelectGamefield(
+                          gamefield.id,
+                          gamefield.name,
+                          gamefield.price.amount.toLocaleString()
+                        )
                       }
                       key={gamefield.id}
                       style={{
