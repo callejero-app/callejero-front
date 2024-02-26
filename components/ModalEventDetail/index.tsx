@@ -88,11 +88,17 @@ const ModalEventDetail: React.FC<{
     status: bookingDetail.status,
   });
 
-  const deleteBooking = async () => {
+  const deleteBooking = async (tag: string) => {
     setLoading(true);
     const gamefieldId = localStorage.getItem("gamefieldId");
     const bookingId = bookingDetail.id;
-    const url = `${globals.apiURL}/game-fields/${gamefieldId}/booking/client/${bookingId}`;
+    let url = "";
+    if (tag == "sub") {
+      url = `${globals.apiURL}/game-fields/${gamefieldId}/suscriptions/${bookingId}`;
+    } else {
+      url = `${globals.apiURL}/game-fields/${gamefieldId}/booking/client/${bookingId}`;
+    }
+
     const headers = {
       "x-callejero-web-token": localStorage.getItem("auth"),
       "x-tz": localStorage.getItem("timezone"),
@@ -254,8 +260,13 @@ const ModalEventDetail: React.FC<{
                     {bookingReceived.tag == "web" && "💻"}
                   </p>
                   {bookingReceived.isHistory && (
-                    <p className="mt-1 ml-3 text-xl font-bold text-red-500">
-                      FINALIZADA
+                    <p className="mt-[4px] ml-3 text-xl font-medium text-callejero">
+                      Finalizada
+                    </p>
+                  )}
+                  {bookingReceived.status == "partial" && (
+                    <p className="mt-[4px] ml-3 text-xl font-medium text-callejero">
+                      Parcial
                     </p>
                   )}
                 </div>
@@ -479,12 +490,13 @@ const ModalEventDetail: React.FC<{
               </ModalBody>
               <ModalFooter>
                 {bookingReceived.tag === "web" ||
+                bookingReceived.tag === "sub" ||
                 bookingReceived.status === "partial" ? (
                   <div className="flex w-full justify-between">
                     <button
                       className="h-12 w-40 border bg-red-600 rounded-full text-white text-base font-medium mb-2 
                       hover:scale-105 transition-all flex place-items-center justify-center"
-                      onClick={deleteBooking}
+                      onClick={() => deleteBooking(bookingReceived.tag)}
                     >
                       {loading ? (
                         <Spinner size="sm" color="white" />

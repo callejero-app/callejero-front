@@ -68,7 +68,7 @@ const Calendar: FC<{
   //fill events
   useEffect(() => {
     const subs = suscriptionsReceiveds.map((sub: any) => ({
-      id: "",
+      id: sub.id,
       newId: "",
       justCreated: false,
       paymentCompleted: false,
@@ -291,8 +291,6 @@ const Calendar: FC<{
   };
 
   const handleCompletePayment = (bookingId: string, justCreated: boolean) => {
-    // console.log("entro in calendar");
-    // console.log("handleCompletePayment id received", bookingId);
     setEvents((prevEvents) =>
       prevEvents.map((event) =>
         justCreated == true
@@ -377,13 +375,14 @@ const Calendar: FC<{
                   e.event._def.extendedProps.paymentCompleted;
                 const sub = e.event._def.extendedProps.subscription;
                 if (sub) {
-                  // console.log("sub event", e);
+                  const id = e.event._def.extendedProps.detail.id;
                   const tag = "sub";
                   const start = new Date(
                     e.event._def.extendedProps.detail.start
                   );
                   const end = new Date(e.event._def.extendedProps.detail.end);
                   setBookingDetail({
+                    id: id,
                     tag: tag,
                     start: moment(start).format("hh:mm A"),
                     end: moment(end).format("hh:mm A"),
