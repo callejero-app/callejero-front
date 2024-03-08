@@ -81,8 +81,10 @@ const Calendar: FC<{
       end: sub.end,
       description:
         sub.description != null ? sub.description : "Sin descripcción",
-      isHistory: sub.isHistory,
+      isHistory: false,
+      tag: "sub",
     }));
+    console.log("subs que llegan", subs[0]);
     //bookings
     const books = bookings.map((booking: any) => ({
       id: booking.id,
@@ -98,9 +100,10 @@ const Calendar: FC<{
       end: booking.endsAt,
       description:
         booking.description != null ? booking.description : "Sin descripcción",
-      isHistory: booking.isHistory,
+      isHistory: false,
       className: booking.status === "partial" && "own-event__partial",
     }));
+    // console.log("book q llegan", Object.keys(books[0]).length);
     //history
     const historyEvents = historyReceiveds.map((historyEl: any) => ({
       id: historyEl.id,
@@ -197,14 +200,78 @@ const Calendar: FC<{
   }
 
   const addEvent = (newEvent: Event) => {
+    if (newEvent.tag != "sub") {
+      if (events.length == undefined) {
+        setEvents([
+          {
+            id: "",
+            newId: newEvent.newId,
+            // isHistory: false,
+            justCreated: newEvent.justCreated,
+            paymentCompleted: newEvent.paymentCompleted,
+            subscription: false,
+            newStart: newEvent.newStart,
+            newEnd: newEvent.newEnd,
+            title: newEvent.title,
+            start: newEvent.start,
+            end: newEvent.end,
+            detail: newEvent.detail,
+            //@ts-ignore
+            description: newEvent.description,
+            tag: newEvent.tag,
+            totalPrice: newEvent.totalPrice,
+            totalPaid: newEvent.totalPaid,
+          },
+        ]);
+      } else {
+        setEvents([
+          ...events,
+          {
+            id: "",
+            newId: newEvent.newId,
+            justCreated: newEvent.justCreated,
+            paymentCompleted: newEvent.paymentCompleted,
+            subscription: false,
+            // isHistory: false,
+            newStart: newEvent.newStart,
+            newEnd: newEvent.newEnd,
+            title: newEvent.title,
+            start: newEvent.start,
+            end: newEvent.end,
+            detail: newEvent.detail,
+            //@ts-ignore
+            description: newEvent.description,
+            tag: newEvent.tag,
+            totalPrice: newEvent.totalPrice,
+            totalPaid: newEvent.totalPaid,
+          },
+        ]);
+      }
+      setModalDetail({
+        title: "Reserva creada!",
+        subtitle: "",
+        type: "success",
+      });
+      setModalInfoVisible(true);
+      setTimeout(() => {
+        setModalInfoVisible(false);
+      }, 1200);
+      // window.location.href = "/schedule";
+    } else {
+      addSubscription(newEvent);
+    }
+  };
+
+  const addSubscription = (newEvent: any) => {
     if (events.length == undefined) {
       setEvents([
         {
           id: "",
           newId: newEvent.newId,
+          isHistory: false,
           justCreated: newEvent.justCreated,
           paymentCompleted: newEvent.paymentCompleted,
-          subscription: false,
+          subscription: true,
           newStart: newEvent.newStart,
           newEnd: newEvent.newEnd,
           title: newEvent.title,
@@ -219,6 +286,27 @@ const Calendar: FC<{
         },
       ]);
     } else {
+      // console.log("events antes de agregar", events.length);
+      // const obj = {
+      //   id: "",
+      //   newId: newEvent.newId,
+      //   justCreated: newEvent.justCreated,
+      //   paymentCompleted: newEvent.paymentCompleted,
+      //   subscription: true,
+      //   isHistory: false,
+      //   newStart: newEvent.newStart,
+      //   newEnd: newEvent.newEnd,
+      //   title: newEvent.title,
+      //   start: newEvent.start,
+      //   end: newEvent.end,
+      //   detail: newEvent.detail,
+      //   //@ts-ignore
+      //   description: newEvent.description,
+      //   tag: newEvent.tag,
+      //   totalPrice: newEvent.totalPrice,
+      //   totalPaid: newEvent.totalPaid,
+      // };
+      // console.log("OBJa agregar en sub", obj);
       setEvents([
         ...events,
         {
@@ -226,20 +314,19 @@ const Calendar: FC<{
           newId: newEvent.newId,
           justCreated: newEvent.justCreated,
           paymentCompleted: newEvent.paymentCompleted,
-          subscription: false,
+          subscription: true,
           newStart: newEvent.newStart,
           newEnd: newEvent.newEnd,
           title: newEvent.title,
           start: newEvent.start,
           end: newEvent.end,
-          detail: newEvent.detail,
-          //@ts-ignore
-          description: newEvent.description,
           tag: newEvent.tag,
-          totalPrice: newEvent.totalPrice,
-          totalPaid: newEvent.totalPaid,
+          detail: {},
+          price: 0,
+          isHistory: false,
         },
       ]);
+      console.log("events despues de agregar", events.length);
     }
     setModalDetail({
       title: "Reserva creada!",
@@ -276,10 +363,11 @@ const Calendar: FC<{
         const newEvents = events.filter((e) => e.newId !== bookingId);
         setEvents(newEvents);
       } else {
-        const newEvents = events.filter((e) => e.id !== bookingId);
-        setEvents(newEvents);
+        setEvents(events.filter((e) => e.id !== bookingId));
+        const gamefieldId = localStorage.getItem("gamefieldId");
+        console.log("gamefieldId", gamefieldId);
+        window.location.href = "/schedule";
       }
-      //actualizar estado con new events ->
     } else {
       setModalDetail({
         title: "No se ha podido eliminar la reserva!",
@@ -375,7 +463,11 @@ const Calendar: FC<{
                   e.event._def.extendedProps.paymentCompleted;
                 const sub = e.event._def.extendedProps.subscription;
                 if (sub) {
+                  console.log("click en sub", e);
                   const id = e.event._def.extendedProps.detail.id;
+                  const newId = e.event._def.extendedProps.newId;
+                  console.log("id", id);
+                  console.log("newID", newId);
                   const tag = "sub";
                   const start = new Date(
                     e.event._def.extendedProps.detail.start

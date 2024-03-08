@@ -80,8 +80,8 @@ function Schedule() {
       const res = await axios
         .get(url, {
           params: {
-            "start-date": "2023-12-01",
-            "end-date": "2024-02-28",
+            "start-date": "2024-01-28",
+            "end-date": "2024-04-28",
             "closed-times": true,
           },
           headers: {
@@ -117,8 +117,8 @@ function Schedule() {
           }
         });
     } catch (error) {
-      //@ts-ignore
-      const codeError = error.response.data.error.code;
+      // @ts-ignore
+      const codeError = error?.response?.data?.error?.code;
       //@ts-ignore
       const codeMessage = error.response.data.error.message;
       switch (codeError) {

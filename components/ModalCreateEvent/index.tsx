@@ -10,6 +10,7 @@ import {
   Select,
   SelectItem,
   Input,
+  Checkbox,
 } from "@nextui-org/react";
 import moment from "moment";
 import "moment/locale/es";
@@ -27,6 +28,19 @@ const ModalCreateEvent: React.FC<{
   addEvent: Function;
   handleCreateEventError: Function;
   bookingInfo: {
+    dateStr: string;
+    // dayName: string;
+    // dayNumber: number;
+    // monthName: string;
+    // startHour: string;
+    // endHour: string;
+    // startsAtDate: string;
+    // startsAtTime: string;
+    // startsAtTime24: string;
+    // endsAtDate: string;
+    // endsAtTime: string;
+    // endsAtTime24: string;
+    // totalPrice: number;
     start: { getHours: Function; getDay: Function; getDate: Function };
     end: { getHours: Function };
   };
@@ -36,6 +50,7 @@ const ModalCreateEvent: React.FC<{
   const [modalOpen, setModalOpen] = useState(open);
   const [loading, setLoading] = useState(false);
   const [emptyDescription, setEmptyDescription] = useState(false);
+  const [isSubscription, setIsSubscription] = useState(false);
   // const [emptyAbono, setEmptyAbono] = useState(false);
   const [abonoValue, setAbonoValue] = useState("");
   const [abonoPending, setAbonoPending] = useState(() => {
@@ -48,6 +63,7 @@ const ModalCreateEvent: React.FC<{
   });
 
   const [booking, setBooking] = useState({
+    dateStr: bookingInfo.dateStr,
     //@ts-ignore
     dayName: bookingInfo.dayName,
     //@ts-ignore
@@ -96,23 +112,99 @@ const ModalCreateEvent: React.FC<{
       const newEvent = {
         id: "",
         newId: bookingId,
+        // isHistory: false,
+        // detail: {},
         justCreated: true,
         paymentCompleted: parseInt(abonoValue) == totalPrice,
         newStart: booking.startHour,
         newEnd: booking.endHour,
         title: description,
         //@ts-ignore
+        // subscription: booking.tag == "sub" ? true : false,
+        //@ts-ignore
         start: `${booking.startsAtDate} ${bookingInfo.startsAtTime24}`,
         //@ts-ignore
         end: `${booking.endsAtDate} ${bookingInfo.endsAtTime24}`,
         description: description,
-        tag: "web",
+        //@ts-ignore
+        tag: isSubscription ? "sub" : "web",
         totalPrice: totalPrice,
         totalPaid: abonoValue,
       };
+      console.log("sub a agregar", newEvent);
       addEvent(newEvent);
     } else {
       handleCreateEventError(errorMessage);
+    }
+  };
+
+  const createSubscription = async () => {
+    setLoading(true);
+    setEmptyDescription(false);
+    let descriptionEl = document.getElementById("description");
+    //@ts-ignore
+    const description = descriptionEl != null ? descriptionEl.value : "";
+    if (description == "") {
+      setLoading(false);
+      setEmptyDescription(true);
+    }
+
+    if (booking.endsAtTime24 == "00:00") booking.endsAtTime24 = "23:59";
+    if (description !== "") {
+      setEmptyDescription(false);
+      const gamefieldId = localStorage.getItem("gamefieldId");
+      const url = `${globals.apiURL}/game-fields/${gamefieldId}/suscriptions`;
+      let weekday = moment(booking.dateStr).format("d");
+      if (weekday == "0") weekday = "7";
+      const data = {
+        suscriptions: [
+          {
+            openTime: booking.startsAtTime24,
+            closeTime: booking.endsAtTime24,
+            weekday: weekday,
+            description: description,
+          },
+        ],
+      };
+
+      const headers = {
+        "x-callejero-web-token": localStorage.getItem("auth"),
+        "x-tz": localStorage.getItem("timezone"),
+        "accept-language": "es",
+      };
+
+      try {
+        const res = await axios.patch(url, data, { headers }).then((res) => {
+          if (res.status == 200) {
+            console.log("Llego al 200 de sub", res.data.data);
+            // const bookingId = res.data.data.schedule[0]._id;
+            createEventCalendar(description, false, "", "1234");
+            setLoading(false);
+            close();
+          }
+        });
+      } catch (error) {
+        console.log(error);
+        //@ts-ignore
+        const codeError = error?.response?.data?.error?.code;
+        //@ts-ignore
+        const codeMessage = error?.response?.data?.error?.message;
+        switch (codeError) {
+          case "auth.web.failure.session.1000":
+          case "auth.web.failure.session.1001":
+          case "auth.web.failure.session.1002":
+          case "auth.web.failure.session.1003":
+          case "auth.web.failure.session.1004:":
+            localStorage.clear();
+            window.location.href = "/login";
+            break;
+          default:
+            createEventCalendar("", true, codeMessage);
+            break;
+        }
+        createEventCalendar("", true, codeMessage);
+        close();
+      }
     }
   };
 
@@ -124,7 +216,7 @@ const ModalCreateEvent: React.FC<{
     //@ts-ignore
     const description = descriptionEl != null ? descriptionEl.value : "";
     //@ts-ignore
-    const abono = abonoEl.value != "" ? abonoEl.value : 0;
+    const abono = abonoEl?.value != "" ? abonoEl?.value : 0;
 
     if (description == "") {
       setLoading(false);
@@ -151,21 +243,32 @@ const ModalCreateEvent: React.FC<{
         "accept-language": "es",
       };
       try {
-        const res = await axios.post(url, data, { headers }).then((res) => {
-          if (res.status == 200) {
-            const bookingId = res.data.data.schedule[0]._id;
-            // console.log("id de booking recien creada:", bookingId);
-            createEventCalendar(description, false, "", bookingId);
-            setLoading(false);
-            close();
-          }
-        });
+        if (isSubscription) {
+          const res = await axios.patch(url, data, { headers }).then((res) => {
+            if (res.status == 200) {
+              // console.log("Llego al 200 de sub");
+              const bookingId = res.data.data.schedule[0]._id;
+              createEventCalendar(description, false, "", bookingId);
+              setLoading(false);
+              close();
+            }
+          });
+        } else {
+          const res = await axios.post(url, data, { headers }).then((res) => {
+            if (res.status == 200) {
+              const bookingId = res.data.data.schedule[0]._id;
+              createEventCalendar(description, false, "", bookingId);
+              setLoading(false);
+              close();
+            }
+          });
+        }
       } catch (error) {
         console.log(error);
         //@ts-ignore
-        const codeError = error.response.data.error.code;
+        const codeError = error?.response?.data?.error?.code;
         //@ts-ignore
-        const codeMessage = error.response.data.error.message;
+        const codeMessage = error?.response?.data?.error?.message;
         switch (codeError) {
           case "auth.web.failure.session.1000":
           case "auth.web.failure.session.1001":
@@ -211,6 +314,14 @@ const ModalCreateEvent: React.FC<{
                     Selecciona una opción
                   </SelectItem>
                 </Select>
+                <Checkbox
+                  className="mb-2"
+                  onValueChange={() => {
+                    setIsSubscription(!isSubscription);
+                  }}
+                >
+                  Suscripcción
+                </Checkbox>
                 <div className="flex mb-3">
                   <Image
                     src={calendar}
@@ -261,29 +372,31 @@ const ModalCreateEvent: React.FC<{
                   </button>
                 </div> */}
                 <div className="mb-2 border-b-small border-slate-200 hidden"></div>
-                <Input
-                  id="abono"
-                  name="abono"
-                  value={abonoValue}
-                  onChange={(e) => {
-                    setAbonoValue(e.target.value);
-                    if (e.target.value !== "") {
-                      const priceStorage = localStorage.getItem("totalPrice");
-                      const abono = parseInt(e.target.value);
-                      if (priceStorage) {
-                        const priceStorageInt = parseInt(priceStorage) * 1000;
-                        setAbonoPending(priceStorageInt - abono);
+                {!isSubscription && (
+                  <Input
+                    id="abono"
+                    name="abono"
+                    value={abonoValue}
+                    onChange={(e) => {
+                      setAbonoValue(e.target.value);
+                      if (e.target.value !== "") {
+                        const priceStorage = localStorage.getItem("totalPrice");
+                        const abono = parseInt(e.target.value);
+                        if (priceStorage) {
+                          const priceStorageInt = parseInt(priceStorage) * 1000;
+                          setAbonoPending(priceStorageInt - abono);
+                        }
+                      } else {
+                        setAbonoPending(abonoPending);
                       }
-                    } else {
-                      setAbonoPending(abonoPending);
-                    }
-                  }}
-                  variant="bordered"
-                  type="number"
-                  label="Abono (Opcional)"
-                  className="mb-2 text-xs"
-                  size="lg"
-                />
+                    }}
+                    variant="bordered"
+                    type="number"
+                    label="Abono (Opcional)"
+                    className="mb-2 text-xs"
+                    size="lg"
+                  />
+                )}
                 <div className="mb-2">
                   <p className="font-medium text-sm text-[#393939] mb-2">
                     Dinero Abonado
@@ -342,7 +455,9 @@ const ModalCreateEvent: React.FC<{
                   </button>
                   <button
                     className="h-12 w-40 border bg-callejero rounded-full text-white text-base font-medium mb-2 hover:scale-105 transition-all"
-                    onClick={createBooking}
+                    onClick={
+                      isSubscription ? createSubscription : createBooking
+                    }
                   >
                     {loading ? <Spinner size="sm" color="white" /> : "Guardar"}
                   </button>
