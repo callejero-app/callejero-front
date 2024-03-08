@@ -84,7 +84,7 @@ const Calendar: FC<{
       isHistory: false,
       tag: "sub",
     }));
-    console.log("subs que llegan", subs[0]);
+    console.log("subs que llegan", subs);
     //bookings
     const books = bookings.map((booking: any) => ({
       id: booking.id,
@@ -103,7 +103,7 @@ const Calendar: FC<{
       isHistory: false,
       className: booking.status === "partial" && "own-event__partial",
     }));
-    // console.log("book q llegan", Object.keys(books[0]).length);
+    console.log("book q llegan", books);
     //history
     const historyEvents = historyReceiveds.map((historyEl: any) => ({
       id: historyEl.id,
@@ -206,7 +206,7 @@ const Calendar: FC<{
           {
             id: "",
             newId: newEvent.newId,
-            // isHistory: false,
+            isHistory: false,
             justCreated: newEvent.justCreated,
             paymentCompleted: newEvent.paymentCompleted,
             subscription: false,
@@ -232,7 +232,7 @@ const Calendar: FC<{
             justCreated: newEvent.justCreated,
             paymentCompleted: newEvent.paymentCompleted,
             subscription: false,
-            // isHistory: false,
+            isHistory: false,
             newStart: newEvent.newStart,
             newEnd: newEvent.newEnd,
             title: newEvent.title,
@@ -256,10 +256,10 @@ const Calendar: FC<{
       setTimeout(() => {
         setModalInfoVisible(false);
       }, 1200);
-      // window.location.href = "/schedule";
     } else {
       addSubscription(newEvent);
     }
+    window.location.href = "/schedule";
   };
 
   const addSubscription = (newEvent: any) => {
@@ -337,6 +337,7 @@ const Calendar: FC<{
     setTimeout(() => {
       setModalInfoVisible(false);
     }, 1200);
+    window.location.href = "/schedule";
   };
 
   const handleCreateEventError = (codeMessage: string) => {
@@ -364,9 +365,8 @@ const Calendar: FC<{
         setEvents(newEvents);
       } else {
         setEvents(events.filter((e) => e.id !== bookingId));
-        const gamefieldId = localStorage.getItem("gamefieldId");
-        console.log("gamefieldId", gamefieldId);
-        window.location.href = "/schedule";
+        // const gamefieldId = localStorage.getItem("gamefieldId");
+        // console.log("gamefieldId", gamefieldId);
       }
     } else {
       setModalDetail({
@@ -376,6 +376,7 @@ const Calendar: FC<{
       });
       setModalInfoVisible(true);
     }
+    window.location.href = "/schedule";
   };
 
   const handleCompletePayment = (bookingId: string, justCreated: boolean) => {
