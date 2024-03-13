@@ -149,12 +149,14 @@ function SelectGamefield() {
         })
         .then((res) => {
           const gamefieldsFound = res.data.data.results;
+          console.log(gamefieldsFound);
           let gamefieldsTuples;
           if (gamefieldsFound.length == 1) {
             gamefieldsTuples = {
               id: gamefieldsFound[0].id,
               name: gamefieldsFound[0].name,
               price: gamefieldsFound[0].price.amount.toLocaleString(),
+              timeZone: gamefieldsFound[0].timeZone,
             };
             localStorage.setItem("gamefieldId", gamefieldsFound[0].id);
             localStorage.setItem("gamefieldName", gamefieldsFound[0].name);
@@ -162,6 +164,7 @@ function SelectGamefield() {
               "totalPrice",
               gamefieldsFound[0].price.amount.toLocaleString()
             );
+            localStorage.setItem("timezone", gamefieldsFound[0].timeZone);
           }
           if (gamefieldsFound.length > 1) {
             gamefieldsTuples = gamefieldsFound.map((gm: any) => {
@@ -169,6 +172,7 @@ function SelectGamefield() {
                 id: gm.id,
                 name: gm.name,
                 price: gm.price.amount.toLocaleString(),
+                timeZone: gm.timeZone,
               };
             });
           }
@@ -220,10 +224,16 @@ function SelectGamefield() {
     }
   };
 
-  const handleSelectGamefield = (id: string, name: string, price: string) => {
+  const handleSelectGamefield = (
+    id: string,
+    name: string,
+    price: string,
+    timezone: string
+  ) => {
     localStorage.setItem("gamefieldId", id);
     localStorage.setItem("gamefieldName", name);
     localStorage.setItem("totalPrice", price);
+    localStorage.setItem("timezone", timezone);
     window.location.href = "/schedule";
   };
 
@@ -341,7 +351,8 @@ function SelectGamefield() {
                         handleSelectGamefield(
                           gamefield.id,
                           gamefield.name,
-                          gamefield.price.amount.toLocaleString()
+                          gamefield.price.amount.toLocaleString(),
+                          gamefield.timeZone
                         )
                       }
                       key={gamefield.id}
