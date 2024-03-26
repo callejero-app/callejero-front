@@ -20,7 +20,9 @@ function Schedule() {
   const [history, setHistory] = useState<any[]>([]);
   const [gamefieldIdSelected, setGamefieldIdSelected] = useState("");
   const [gamefieldNameSelected, setGamefieldNameSelected] = useState("");
-  const [gamefieldsList, setGamefieldsList] = useState([{ id: "", name: "" }]);
+  const [gamefieldsList, setGamefieldsList] = useState([
+    { id: "", name: "", price: "", timeZone: "" },
+  ]);
   const [gridModified, setGridModified] = useState(false);
   const [modalDetail, setModalDetail] = useState({
     title: "",
@@ -78,8 +80,8 @@ function Schedule() {
       const res = await axios
         .get(url, {
           params: {
-            "start-date": "2023-12-01",
-            "end-date": "2024-02-28",
+            "start-date": "2024-02-20",
+            "end-date": "2024-05-28",
             "closed-times": true,
           },
           headers: {
@@ -115,8 +117,8 @@ function Schedule() {
           }
         });
     } catch (error) {
-      //@ts-ignore
-      const codeError = error.response.data.error.code;
+      // @ts-ignore
+      const codeError = error?.response?.data?.error?.code;
       //@ts-ignore
       const codeMessage = error.response.data.error.message;
       switch (codeError) {
@@ -148,7 +150,9 @@ function Schedule() {
     setGamefieldIdSelected(id);
     if (gamefield) setGamefieldNameSelected(gamefield.name);
     if (gamefield) localStorage.setItem("gamefieldName", gamefield.name);
-    localStorage.setItem("gamefieldId", id);
+    if (gamefield) localStorage.setItem("gamefieldId", id);
+    if (gamefield) localStorage.setItem("totalPrice", gamefield.price);
+    if (gamefield) localStorage.setItem("timezone", gamefield.timeZone);
     setSuscriptions([]);
     fetchBookings(id);
   };
@@ -269,6 +273,7 @@ function Schedule() {
               suscriptions={suscriptions}
               closeTimes={closeTimes}
               history={history}
+              fetchBookings={fetchBookings}
             />
           </>
         </div>

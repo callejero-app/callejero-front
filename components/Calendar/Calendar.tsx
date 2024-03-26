@@ -7,16 +7,40 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import ModalCreateEvent from "@/components/ModalCreateEvent";
 import ModalEventDetail from "@/components/ModalEventDetail";
+import Modal from "@/components/Modal";
+import ModalLoading from "@/components/ModalLoading";
 import moment from "moment";
 import "./Calendar.scss";
-import Modal from "@/components/Modal";
 
 const Calendar: FC<{
   data: any;
   suscriptions: any;
   closeTimes: any;
   history: any;
-}> = ({ data, suscriptions, closeTimes, history }) => {
+  fetchBookings: Function;
+}> = ({ data, suscriptions, closeTimes, history, fetchBookings }) => {
+  const [events, setEvents] = useState([
+    {
+      id: "",
+      newId: "",
+      justCreated: false,
+      paymentCompleted: false,
+      subscription: false,
+      newStart: "",
+      newEnd: "",
+      // detail: {},
+      title: "",
+      start: "",
+      end: "",
+      description: "",
+      tag: "",
+      // price: 0,
+      totalPrice: 0,
+      totalPaid: 0,
+      isHistory: false,
+      // className: "",
+    },
+  ]);
   const [bookings, setBookings] = useState(data);
   const [suscriptionsReceiveds, setSuscriptionsReceiveds] =
     useState(suscriptions);
@@ -30,24 +54,6 @@ const Calendar: FC<{
     const localStorageValue = localStorage.getItem("totalPrice");
     return localStorageValue ? parseInt(localStorageValue) * 1000 : 0;
   });
-  const [events, setEvents] = useState([
-    {
-      id: "",
-      newId: "",
-      justCreated: false,
-      paymentCompleted: false,
-      subscription: false,
-      newStart: "",
-      newEnd: "",
-      title: "",
-      start: "",
-      end: "",
-      tag: "",
-      detail: {},
-      price: 0,
-      isHistory: false,
-    },
-  ]);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEventDetailVisible, setModalEventDetailVisible] = useState(false);
   const [bookingDetail, setBookingDetail] = useState({});
@@ -56,7 +62,12 @@ const Calendar: FC<{
     subtitle: "",
     type: "",
   });
+  const [modalLoadingDetail, setModalLoadingDetail] = useState({
+    title: "",
+    footer: "",
+  });
   const [modalInfoVisible, setModalInfoVisible] = useState(false);
+  const [modalLoadingVisible, setModalLoadingVisible] = useState(false);
 
   useEffect(() => {
     setBookings(data);
@@ -68,7 +79,7 @@ const Calendar: FC<{
   //fill events
   useEffect(() => {
     const subs = suscriptionsReceiveds.map((sub: any) => ({
-      id: "",
+      idSub: sub.id,
       newId: "",
       justCreated: false,
       paymentCompleted: false,
@@ -81,8 +92,14 @@ const Calendar: FC<{
       end: sub.end,
       description:
         sub.description != null ? sub.description : "Sin descripcción",
-      isHistory: sub.isHistory,
+      // tag: "sub",
+      // price: 0,
+      // totalPrice: 0,
+      // totalPaid: 0,
+      isHistory: false,
+      // className: "sub",
     }));
+    // console.log("subs que llegan", subs);
     //bookings
     const books = bookings.map((booking: any) => ({
       id: booking.id,
@@ -98,8 +115,14 @@ const Calendar: FC<{
       end: booking.endsAt,
       description:
         booking.description != null ? booking.description : "Sin descripcción",
-      isHistory: booking.isHistory,
+      // tag: "web",
+      // price: 0,
+      // totalPrice: 0,
+      // totalPaid: 0,
+      isHistory: false,
+      className: booking.status === "partial" && "own-event__partial",
     }));
+    // console.log("book q llegan", books);
     //history
     const historyEvents = historyReceiveds.map((historyEl: any) => ({
       id: historyEl.id,
@@ -138,6 +161,9 @@ const Calendar: FC<{
       ...historyEvents,
       ...closes,
     ]);
+    // setTimeout(() => {
+    //   console.log("events primer useEffect", events);
+    // }, 3000);
     if (bookings.length > 0)
       localStorage.setItem(
         "totalPrice",
@@ -185,17 +211,20 @@ const Calendar: FC<{
     subscription: boolean;
     newStart: string;
     newEnd: string;
+    // detail: {};
     title: string;
     start: string;
     end: string;
-    detail: {};
     description: string;
     tag: string;
+    // price: 0;
     totalPrice: 0;
     totalPaid: 0;
+    // className: "";
   }
 
   const addEvent = (newEvent: Event) => {
+    // if (newEvent.tag != "sub") {
     if (events.length == undefined) {
       setEvents([
         {
@@ -207,14 +236,16 @@ const Calendar: FC<{
           newStart: newEvent.newStart,
           newEnd: newEvent.newEnd,
           title: newEvent.title,
+          // detail: {},
           start: newEvent.start,
           end: newEvent.end,
-          detail: newEvent.detail,
-          //@ts-ignore
           description: newEvent.description,
           tag: newEvent.tag,
+          // price: 0,
           totalPrice: newEvent.totalPrice,
           totalPaid: newEvent.totalPaid,
+          isHistory: false,
+          // className: "",
         },
       ]);
     } else {
@@ -229,27 +260,108 @@ const Calendar: FC<{
           newStart: newEvent.newStart,
           newEnd: newEvent.newEnd,
           title: newEvent.title,
+          // detail: {},
           start: newEvent.start,
           end: newEvent.end,
-          detail: newEvent.detail,
-          //@ts-ignore
           description: newEvent.description,
           tag: newEvent.tag,
+          // price: 0,
           totalPrice: newEvent.totalPrice,
           totalPaid: newEvent.totalPaid,
+          isHistory: false,
+          // className: "",
         },
       ]);
     }
-    setModalDetail({
-      title: "Reserva creada!",
-      subtitle: "",
-      type: "success",
-    });
-    setModalInfoVisible(true);
-    setTimeout(() => {
-      setModalInfoVisible(false);
-    }, 1200);
+    if (newEvent.tag == "sub") {
+      fetchBookings(localStorage.getItem("gamefieldId")!);
+      setModalLoadingDetail({
+        title: "Creando suscripcción",
+        footer: "Espera un momento",
+      });
+      setModalLoadingVisible(true);
+      setTimeout(() => {
+        setModalLoadingVisible(false);
+      }, 1200);
+    } else {
+      setModalDetail({
+        title: "Reserva creada!",
+        subtitle: "",
+        type: "success",
+      });
+      setModalInfoVisible(true);
+      setTimeout(() => {
+        setModalInfoVisible(false);
+      }, 1200);
+    }
+    // console.log("events dsps de crear", events);
+    // } else {
+    //   addSubscription(newEvent);
+    // }
+    // window.location.href = "/schedule";
   };
+
+  // const addSubscription = (newEvent: any) => {
+  //   if (events.length == undefined) {
+  //     setEvents([
+  //       {
+  //         id: "",
+  //         newId: newEvent.newId,
+  //         isHistory: false,
+  //         justCreated: newEvent.justCreated,
+  //         paymentCompleted: newEvent.paymentCompleted,
+  //         subscription: true,
+  //         newStart: newEvent.newStart,
+  //         newEnd: newEvent.newEnd,
+  //         title: newEvent.title,
+  //         start: newEvent.start,
+  //         end: newEvent.end,
+  //         // detail: newEvent.detail,
+  //         description: newEvent.description,
+  //         tag: newEvent.tag,
+  //         // price: 0,
+  //         totalPrice: newEvent.totalPrice,
+  //         totalPaid: newEvent.totalPaid,
+  //         // className: "",
+  //       },
+  //     ]);
+  //   } else {
+  //     setEvents([
+  //       ...events,
+  //       {
+  //         id: "",
+  //         newId: newEvent.newId,
+  //         justCreated: newEvent.justCreated,
+  //         paymentCompleted: newEvent.paymentCompleted,
+  //         subscription: true,
+  //         newStart: newEvent.newStart,
+  //         newEnd: newEvent.newEnd,
+  //         title: newEvent.title,
+  //         start: newEvent.start,
+  //         end: newEvent.end,
+  //         description: "",
+  //         tag: newEvent.tag,
+  //         // detail: {},
+  //         // price: 0,
+  //         totalPrice: 0,
+  //         totalPaid: 0,
+  //         isHistory: false,
+  //         // className: "",
+  //       },
+  //     ]);
+  //     console.log("events despues de agregar", events.length);
+  //   }
+  //   setModalDetail({
+  //     title: "Reserva creada!",
+  //     subtitle: "",
+  //     type: "success",
+  //   });
+  //   setModalInfoVisible(true);
+  //   setTimeout(() => {
+  //     setModalInfoVisible(false);
+  //   }, 1200);
+  //   // window.location.href = "/schedule";
+  // };
 
   const handleCreateEventError = (codeMessage: string) => {
     setModalDetail({ title: codeMessage, subtitle: "", type: "error" });
@@ -259,26 +371,39 @@ const Calendar: FC<{
   const handleDeleteEvent = (
     status: boolean,
     bookingId: string = "",
-    justCreated: boolean
+    justCreated: boolean,
+    tag: string = ""
   ) => {
+    console.log("id que llega", bookingId);
     if (status == true) {
-      setModalDetail({
-        title: "Reserva eliminada con exito!",
-        subtitle: "",
-        type: "success",
-      });
-      setModalInfoVisible(true);
-      setTimeout(() => {
-        setModalInfoVisible(false);
-      }, 1200);
-      if (justCreated == true) {
-        const newEvents = events.filter((e) => e.newId !== bookingId);
-        setEvents(newEvents);
+      if (tag == "sub") {
+        fetchBookings(localStorage.getItem("gamefieldId")!);
+        setModalLoadingDetail({
+          title: "Eliminando suscripcción",
+          footer: "Espera un momento",
+        });
+        setModalLoadingVisible(true);
+        setTimeout(() => {
+          setModalLoadingVisible(false);
+        }, 1200);
       } else {
-        const newEvents = events.filter((e) => e.id !== bookingId);
-        setEvents(newEvents);
+        if (justCreated == true) {
+          const newEvents = events.filter((e) => e.newId !== bookingId);
+          setEvents(newEvents);
+        } else {
+          const newEvents = events.filter((e) => e.id !== bookingId);
+          setEvents(newEvents);
+        }
+        setModalDetail({
+          title: "Reserva eliminada con exito!",
+          subtitle: "",
+          type: "success",
+        });
+        setModalInfoVisible(true);
+        setTimeout(() => {
+          setModalInfoVisible(false);
+        }, 1200);
       }
-      //actualizar estado con new events ->
     } else {
       setModalDetail({
         title: "No se ha podido eliminar la reserva!",
@@ -287,11 +412,10 @@ const Calendar: FC<{
       });
       setModalInfoVisible(true);
     }
+    // window.location.href = "/schedule";
   };
 
   const handleCompletePayment = (bookingId: string, justCreated: boolean) => {
-    // console.log("entro in calendar");
-    // console.log("handleCompletePayment id received", bookingId);
     setEvents((prevEvents) =>
       prevEvents.map((event) =>
         justCreated == true
@@ -376,13 +500,18 @@ const Calendar: FC<{
                   e.event._def.extendedProps.paymentCompleted;
                 const sub = e.event._def.extendedProps.subscription;
                 if (sub) {
-                  // console.log("sub event", e);
+                  console.log("click en sub", e);
+                  const id = e.event._def.extendedProps.detail.id;
+                  const newId = e.event._def.extendedProps.newId;
+                  console.log("id", id);
+                  console.log("newID", newId);
                   const tag = "sub";
                   const start = new Date(
                     e.event._def.extendedProps.detail.start
                   );
                   const end = new Date(e.event._def.extendedProps.detail.end);
                   setBookingDetail({
+                    id: id,
                     tag: tag,
                     start: moment(start).format("hh:mm A"),
                     end: moment(end).format("hh:mm A"),
@@ -444,7 +573,6 @@ const Calendar: FC<{
                   });
                 }
                 if (!justCreated && !sub) {
-                  console.log("history entra aqui", e);
                   const tag = e.event._def.extendedProps.detail.originPlatform;
                   const isHistory = e.event._def.extendedProps.detail.isHistory;
                   const start = new Date(
@@ -473,8 +601,10 @@ const Calendar: FC<{
                     id: t.teamLeader.id,
                   }));
                   const id = e.event._def.extendedProps.detail.id;
+                  const status = e.event._def.extendedProps.detail.status;
                   setBookingDetail({
                     id: id,
+                    status: status,
                     tag: tag,
                     isHistory: isHistory,
                     paymentCompleted: paymentCompleted,
@@ -572,6 +702,12 @@ const Calendar: FC<{
               footer={modalDetail.subtitle}
               type={modalDetail.type}
               updateOpenInfo={updateOpenInfo}
+            />
+          )}
+          {modalLoadingVisible && (
+            <ModalLoading
+              title={modalLoadingDetail.title}
+              footer={modalLoadingDetail.footer}
             />
           )}
         </div>

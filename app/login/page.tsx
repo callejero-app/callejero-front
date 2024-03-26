@@ -35,8 +35,10 @@ function Login() {
     const email = formData.get("email");
     const password = formData.get("password");
     const remoteTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const timezone =
-      remoteTimezone != undefined ? remoteTimezone : "America/Bogota";
+    // const timezone =
+    //   remoteTimezone != undefined ? remoteTimezone : "America/Bogota";
+    // HOTFIX
+    const timezone = "America/Bogota";
     localStorage.setItem("timezone", timezone);
 
     const url = `${globals.apiURL}/auth/web`;
