@@ -110,9 +110,9 @@ const ModalEventDetail: React.FC<{
         if (res.status == 200) {
           closeEventDetail();
           if (bookingReceived.justCreated == true) {
-            handleDeleteEvent(true, bookingReceived.id, true);
+            handleDeleteEvent(true, bookingReceived.id, true, tag);
           } else {
-            handleDeleteEvent(true, bookingReceived.id, false);
+            handleDeleteEvent(true, bookingReceived.id, false, tag);
           }
           setLoading(false);
         }

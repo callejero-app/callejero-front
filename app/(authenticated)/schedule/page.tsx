@@ -80,8 +80,8 @@ function Schedule() {
       const res = await axios
         .get(url, {
           params: {
-            "start-date": "2024-01-28",
-            "end-date": "2024-04-28",
+            "start-date": "2024-02-20",
+            "end-date": "2024-05-28",
             "closed-times": true,
           },
           headers: {
@@ -273,6 +273,7 @@ function Schedule() {
               suscriptions={suscriptions}
               closeTimes={closeTimes}
               history={history}
+              fetchBookings={fetchBookings}
             />
           </>
         </div>

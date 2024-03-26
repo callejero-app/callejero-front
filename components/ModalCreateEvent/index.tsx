@@ -29,18 +29,19 @@ const ModalCreateEvent: React.FC<{
   handleCreateEventError: Function;
   bookingInfo: {
     dateStr: string;
-    // dayName: string;
-    // dayNumber: number;
-    // monthName: string;
-    // startHour: string;
-    // endHour: string;
-    // startsAtDate: string;
-    // startsAtTime: string;
-    // startsAtTime24: string;
-    // endsAtDate: string;
-    // endsAtTime: string;
-    // endsAtTime24: string;
-    // totalPrice: number;
+    dayName: string;
+    dayNumber: number;
+    monthName: string;
+    startHour: string;
+    endHour: string;
+    startsAtDate: string;
+    startsAtTime: string;
+    startsAtTime24: string;
+    endsAtDate: string;
+    endsAtTime: string;
+    endsAtTime24: string;
+    totalPrice: number;
+    tag: string;
     start: { getHours: Function; getDay: Function; getDate: Function };
     end: { getHours: Function };
   };
@@ -64,30 +65,19 @@ const ModalCreateEvent: React.FC<{
 
   const [booking, setBooking] = useState({
     dateStr: bookingInfo.dateStr,
-    //@ts-ignore
     dayName: bookingInfo.dayName,
-    //@ts-ignore
     dayNumber: bookingInfo.dayNumber,
-    //@ts-ignore
     monthName: bookingInfo.monthName,
-    //@ts-ignore
     startHour: bookingInfo.startHour,
-    //@ts-ignore
     endHour: bookingInfo.endHour,
-    //@ts-ignore
     startsAtDate: bookingInfo.startsAtDate,
-    //@ts-ignore
     startsAtTime: bookingInfo.startsAtTime,
-    //@ts-ignore
     startsAtTime24: bookingInfo.startsAtTime24,
-    //@ts-ignore
     endsAtDate: bookingInfo.endsAtDate,
-    //@ts-ignore
     endsAtTime: bookingInfo.endsAtTime,
-    //@ts-ignore
     endsAtTime24: bookingInfo.endsAtTime24,
-    //@ts-ignore
     totalPrice: totalPrice,
+    tag: bookingInfo.tag,
   });
 
   useEffect(() => {
@@ -112,26 +102,22 @@ const ModalCreateEvent: React.FC<{
       const newEvent = {
         id: "",
         newId: bookingId,
-        // isHistory: false,
+        isHistory: false,
         // detail: {},
         justCreated: true,
         paymentCompleted: parseInt(abonoValue) == totalPrice,
         newStart: booking.startHour,
         newEnd: booking.endHour,
         title: description,
-        //@ts-ignore
-        // subscription: booking.tag == "sub" ? true : false,
-        //@ts-ignore
+        subscription: booking.tag == "sub" ? true : false,
         start: `${booking.startsAtDate} ${bookingInfo.startsAtTime24}`,
-        //@ts-ignore
         end: `${booking.endsAtDate} ${bookingInfo.endsAtTime24}`,
         description: description,
-        //@ts-ignore
         tag: isSubscription ? "sub" : "web",
         totalPrice: totalPrice,
-        totalPaid: abonoValue,
+        totalPaid: abonoValue == "" ? 0 : abonoValue,
       };
-      console.log("sub a agregar", newEvent);
+      // console.log("sub a agregar", newEvent);
       addEvent(newEvent);
     } else {
       handleCreateEventError(errorMessage);
@@ -176,9 +162,11 @@ const ModalCreateEvent: React.FC<{
       try {
         const res = await axios.patch(url, data, { headers }).then((res) => {
           if (res.status == 200) {
-            console.log("Llego al 200 de sub", res.data.data);
+            const obj = res.data.data.suscriptions;
+            const lastIndex = obj.length - 1;
+            const subId = obj[lastIndex].id;
             // const bookingId = res.data.data.schedule[0]._id;
-            createEventCalendar(description, false, "", "1234");
+            createEventCalendar(description, false, "", subId);
             setLoading(false);
             close();
           }
@@ -243,26 +231,26 @@ const ModalCreateEvent: React.FC<{
         "accept-language": "es",
       };
       try {
-        if (isSubscription) {
-          const res = await axios.patch(url, data, { headers }).then((res) => {
-            if (res.status == 200) {
-              // console.log("Llego al 200 de sub");
-              const bookingId = res.data.data.schedule[0]._id;
-              createEventCalendar(description, false, "", bookingId);
-              setLoading(false);
-              close();
-            }
-          });
-        } else {
-          const res = await axios.post(url, data, { headers }).then((res) => {
-            if (res.status == 200) {
-              const bookingId = res.data.data.schedule[0]._id;
-              createEventCalendar(description, false, "", bookingId);
-              setLoading(false);
-              close();
-            }
-          });
-        }
+        // if (isSubscription) {
+        // const res = await axios.patch(url, data, { headers }).then((res) => {
+        //   if (res.status == 200) {
+        //     // console.log("Llego al 200 de sub");
+        //     const bookingId = res.data.data.schedule[0]._id;
+        //     createEventCalendar(description, false, "", bookingId);
+        //     setLoading(false);
+        //     close();
+        //   }
+        // });
+        // } else {
+        const res = await axios.post(url, data, { headers }).then((res) => {
+          if (res.status == 200) {
+            const bookingId = res.data.data.schedule[0]._id;
+            createEventCalendar(description, false, "", bookingId);
+            setLoading(false);
+            close();
+          }
+        });
+        // }
       } catch (error) {
         console.log(error);
         //@ts-ignore
