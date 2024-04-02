@@ -435,11 +435,74 @@ const Calendar: FC<{
     );
   };
 
+  function renderEventContent(eventInfo: any) {
+    console.log("event info", eventInfo);
+    return (
+      <>
+        <div id="overlayTypeEvent">{}</div>
+        <p>{eventInfo.event.title}</p>
+      </>
+    );
+    // if (arg.event.extendedProps?.detail?.originPlatform == "web") {
+    //         miDiv.style.cssText = `width: 32px;
+    //                             height: 32px;
+    //                             background-color: white;
+    //                             border-radius: 8rem;
+    //                             position: absolute;
+    //                             top: -18px;
+    //                             right: -20px;
+    //                             font-size: 20px;
+    //                             padding: 1px;`;
+    //         miDiv.innerHTML = "💻";
+    //       }
+  }
+
   if (gridModified)
     return (
       <div className="calendar bg-callejero">
         <div className="calendar__grid bg-white md:px-6">
           <Fullcalendar
+            // eventContent={renderEventContent}
+            eventContent={(arg) => {
+              console.log("arg", arg);
+              let miDiv = document.createElement("div");
+              let title = document.createElement("p");
+              title.innerHTML = arg.event.title;
+              const originPlatform =
+                arg.event.extendedProps?.detail?.originPlatform;
+              const isSub = arg.event.extendedProps?.subscription;
+              if (
+                originPlatform == "web" ||
+                originPlatform == "app" ||
+                isSub == true
+              ) {
+                miDiv.style.cssText = `width: 32px;
+                                    height: 32px;
+                                    background-color: white;
+                                    border-radius: 8rem;
+                                    position: absolute;
+                                    top: -18px;
+                                    right: -20px;
+                                    font-size: 20px;
+                                    padding: 1px;`;
+                switch (originPlatform) {
+                  case "web":
+                    miDiv.innerHTML = "💻";
+                    break;
+                  case "app":
+                    miDiv.innerHTML = "📱";
+                    break;
+
+                  default:
+                    "";
+                    break;
+                }
+                if (isSub) miDiv.innerHTML = "⭐";
+              }
+
+              let arrayOfDomNodes = [miDiv, title];
+              return { domNodes: arrayOfDomNodes };
+            }}
             slotDuration="01:00:00"
             slotLabelFormat={[
               {
