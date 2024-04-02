@@ -101,9 +101,6 @@ function Schedule() {
           );
           setCloseTimes(closeTimesFound);
           setHistory(historyFound);
-
-          console.log("suscripcciones del fetch de la res", suscriptionsFound);
-          console.log("suscripcciones que estan en el estado", suscriptions);
           if (res.status == 200) {
             setModalDetail({
               title: "Reservas cargadas!",
