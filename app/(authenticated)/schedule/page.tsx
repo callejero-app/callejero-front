@@ -96,9 +96,14 @@ function Schedule() {
           const historyFound = res.data.data.history;
 
           setBookings(bookingsFound);
-          setSuscriptions(suscriptionsFound);
+          setSuscriptions(
+            suscriptionsFound == undefined ? [] : suscriptionsFound
+          );
           setCloseTimes(closeTimesFound);
           setHistory(historyFound);
+
+          console.log("suscripcciones del fetch de la res", suscriptionsFound);
+          console.log("suscripcciones que estan en el estado", suscriptions);
           if (res.status == 200) {
             setModalDetail({
               title: "Reservas cargadas!",
