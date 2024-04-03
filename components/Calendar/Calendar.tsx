@@ -1,5 +1,5 @@
 "use client";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import Fullcalendar from "@fullcalendar/react";
 import esLocale from "@fullcalendar/core/locales/es";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -301,68 +301,6 @@ const Calendar: FC<{
     // window.location.href = "/schedule";
   };
 
-  // const addSubscription = (newEvent: any) => {
-  //   if (events.length == undefined) {
-  //     setEvents([
-  //       {
-  //         id: "",
-  //         newId: newEvent.newId,
-  //         isHistory: false,
-  //         justCreated: newEvent.justCreated,
-  //         paymentCompleted: newEvent.paymentCompleted,
-  //         subscription: true,
-  //         newStart: newEvent.newStart,
-  //         newEnd: newEvent.newEnd,
-  //         title: newEvent.title,
-  //         start: newEvent.start,
-  //         end: newEvent.end,
-  //         // detail: newEvent.detail,
-  //         description: newEvent.description,
-  //         tag: newEvent.tag,
-  //         // price: 0,
-  //         totalPrice: newEvent.totalPrice,
-  //         totalPaid: newEvent.totalPaid,
-  //         // className: "",
-  //       },
-  //     ]);
-  //   } else {
-  //     setEvents([
-  //       ...events,
-  //       {
-  //         id: "",
-  //         newId: newEvent.newId,
-  //         justCreated: newEvent.justCreated,
-  //         paymentCompleted: newEvent.paymentCompleted,
-  //         subscription: true,
-  //         newStart: newEvent.newStart,
-  //         newEnd: newEvent.newEnd,
-  //         title: newEvent.title,
-  //         start: newEvent.start,
-  //         end: newEvent.end,
-  //         description: "",
-  //         tag: newEvent.tag,
-  //         // detail: {},
-  //         // price: 0,
-  //         totalPrice: 0,
-  //         totalPaid: 0,
-  //         isHistory: false,
-  //         // className: "",
-  //       },
-  //     ]);
-  //     console.log("events despues de agregar", events.length);
-  //   }
-  //   setModalDetail({
-  //     title: "Reserva creada!",
-  //     subtitle: "",
-  //     type: "success",
-  //   });
-  //   setModalInfoVisible(true);
-  //   setTimeout(() => {
-  //     setModalInfoVisible(false);
-  //   }, 1200);
-  //   // window.location.href = "/schedule";
-  // };
-
   const handleCreateEventError = (codeMessage: string) => {
     setModalDetail({ title: codeMessage, subtitle: "", type: "error" });
     setModalInfoVisible(true);
@@ -435,74 +373,57 @@ const Calendar: FC<{
     );
   };
 
-  function renderEventContent(eventInfo: any) {
-    console.log("event info", eventInfo);
-    return (
-      <>
-        <div id="overlayTypeEvent">{}</div>
-        <p>{eventInfo.event.title}</p>
-      </>
-    );
-    // if (arg.event.extendedProps?.detail?.originPlatform == "web") {
-    //         miDiv.style.cssText = `width: 32px;
-    //                             height: 32px;
-    //                             background-color: white;
-    //                             border-radius: 8rem;
-    //                             position: absolute;
-    //                             top: -18px;
-    //                             right: -20px;
-    //                             font-size: 20px;
-    //                             padding: 1px;`;
-    //         miDiv.innerHTML = "💻";
-    //       }
-  }
+  const renderEventContent = (arg: any) => {
+    let miDiv = document.createElement("div");
+    let title = document.createElement("p");
+    title.innerHTML = arg.event?.title;
+
+    const originPlatform = arg.event.extendedProps?.detail?.originPlatform;
+    const isSub = arg.event.extendedProps?.subscription;
+    const justCreated = arg.event.extendedProps?.justCreated;
+
+    if (
+      originPlatform == "web" ||
+      originPlatform == "app" ||
+      isSub == true ||
+      justCreated == true
+    ) {
+      miDiv.style.cssText = ` width: 32px;
+                              height: 32px;
+                              background-color: white;
+                              border-radius: 8rem;
+                              position: absolute;
+                              top: -18px;
+                              right: -20px;
+                              font-size: 20px;
+                              padding: 1px;
+                              text-align: center;
+                              box-shadow: 1px 0px 15px -5px black;`;
+      switch (originPlatform) {
+        case "web":
+          miDiv.innerHTML = "💻";
+          break;
+        case "app":
+          miDiv.innerHTML = "📱";
+          break;
+        default:
+          "";
+          break;
+      }
+      if (isSub) miDiv.innerHTML = "⭐";
+      if (justCreated) miDiv.innerHTML = "🔥";
+    }
+
+    let arrayOfDomNodes = [miDiv, title];
+    return { domNodes: arrayOfDomNodes };
+  };
 
   if (gridModified)
     return (
       <div className="calendar bg-callejero">
         <div className="calendar__grid bg-white md:px-6">
           <Fullcalendar
-            // eventContent={renderEventContent}
-            eventContent={(arg) => {
-              console.log("arg", arg);
-              let miDiv = document.createElement("div");
-              let title = document.createElement("p");
-              title.innerHTML = arg.event.title;
-              const originPlatform =
-                arg.event.extendedProps?.detail?.originPlatform;
-              const isSub = arg.event.extendedProps?.subscription;
-              if (
-                originPlatform == "web" ||
-                originPlatform == "app" ||
-                isSub == true
-              ) {
-                miDiv.style.cssText = `width: 32px;
-                                    height: 32px;
-                                    background-color: white;
-                                    border-radius: 8rem;
-                                    position: absolute;
-                                    top: -18px;
-                                    right: -20px;
-                                    font-size: 20px;
-                                    padding: 1px;`;
-                switch (originPlatform) {
-                  case "web":
-                    miDiv.innerHTML = "💻";
-                    break;
-                  case "app":
-                    miDiv.innerHTML = "📱";
-                    break;
-
-                  default:
-                    "";
-                    break;
-                }
-                if (isSub) miDiv.innerHTML = "⭐";
-              }
-
-              let arrayOfDomNodes = [miDiv, title];
-              return { domNodes: arrayOfDomNodes };
-            }}
+            eventContent={renderEventContent}
             slotDuration="01:00:00"
             slotLabelFormat={[
               {
